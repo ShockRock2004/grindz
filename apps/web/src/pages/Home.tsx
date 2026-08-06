@@ -15,7 +15,7 @@ import { useData } from '../lib/app-context'
 import { CATALOG, categoryOf } from '../data/catalog'
 import { cdnHero } from '../data/assetCdn'
 import { Ring } from '../components/Ring'
-import { CategoryThumb, IconCheck, IconFlame, IconDumbbell, IconClock } from '../components/Icons'
+import { CategoryThumb, IconCheck, IconFlame, IconDumbbell, IconClock, IconPlay } from '../components/Icons'
 import { CountUp } from '../components/CountUp'
 import { currentStreak, weekSummary, hardSetsByCategory } from '../lib/stats'
 import { WEEKDAYS, dateKey, fmtCount, cx } from '../lib/util'
@@ -70,13 +70,20 @@ export function Home() {
     return Object.values(by).reduce((a, n) => a + n, 0)
   }, [sets, custom])
 
-  /** categories already trained today, so a finished plan row stops saying "Start" */
+  /**
+   * Categories already trained today, so a planned group can show as done.
+   *
+   * Read from the sets rather than the sessions. A session that spans several groups is
+   * filed as 'mixed', so asking the session what was trained would mark nothing done after
+   * a chest+triceps workout — and would mark a phantom 'mixed' group done instead. Each set
+   * carries the group it actually trained, which is the question being asked here.
+   */
   const doneToday = useMemo(() => {
     const today = dateKey()
     const out = new Set<string>()
-    for (const x of sessions) if (dateKey(new Date(x.started_at)) === today) out.add(x.category_key)
+    for (const st of sets) if (st.category_key && dateKey(new Date(st.performed_at)) === today) out.add(st.category_key)
     return out
-  }, [sessions])
+  }, [sets])
   const streak = currentStreak(sessions)
   const plannedDays = new Set(plan.map((p) => p.day)).size
   const goal = Math.max(plannedDays, 3)
@@ -222,34 +229,47 @@ export function Home() {
               </button>
             </div>
           ) : (
-            <div className="mt-3 flex flex-col gap-2">
-              {todaysPlan.map((c, i) => {
-                const done = doneToday.has(c!.key)
-                return (
-                  <button
-                    key={i}
-                    onClick={() => go(c!.key)}
-                    aria-label={done ? `${c!.title}, done today. Train it again` : `Start ${c!.title}`}
-                    className={cx(
-                      'flex items-center gap-3 overflow-hidden rounded-2xl p-2.5 pr-3 text-left transition hover:brightness-125',
-                      done ? 'bg-white/5 ring-1 ring-line' : 'bg-cyan/[0.1] ring-1 ring-cyan/25',
-                    )}
-                  >
-                    <CategoryThumb icon={c!.key} size={42} />
-                    <div className="min-w-0 flex-1">
-                      <p className={cx('truncate font-heading text-sm font-bold leading-tight', done && 'text-muted2')}>{c!.title}</p>
-                      <p className="truncate text-[11px] text-muted2">{done ? 'Done today' : c!.subtitle}</p>
-                    </div>
-                    {done ? (
-                      <span className="flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-bold text-cyan ring-1 ring-cyan/35">
-                        <IconCheck size={12} /> Again
-                      </span>
-                    ) : (
-                      <span className="shrink-0 rounded-lg bg-cyan px-2.5 py-1 text-[11px] font-bold text-cyan-ink">Start</span>
-                    )}
-                  </button>
-                )
-              })}
+            /*
+             * One entry point, not one per planned group.
+             *
+             * A day planned with chest and triceps used to render two "Start" cards, which
+             * described the plan but misdescribed the session: those are one trip to the gym,
+             * and starting the first meant finishing and starting the second to log the
+             * second half. The plan is now shown as what it is — a list of what today
+             * covers — with a single button that opens a picker across all of it.
+             */
+            <div className="mt-3 flex flex-col gap-3">
+              <div className="flex flex-wrap gap-1.5">
+                {todaysPlan.map((c, i) => {
+                  const done = doneToday.has(c!.key)
+                  return (
+                    <span
+                      key={i}
+                      className={cx(
+                        'flex items-center gap-1.5 rounded-full py-1 pl-1 pr-2.5 text-[11px] font-bold',
+                        done ? 'bg-white/5 text-muted2 ring-1 ring-line' : 'bg-cyan/[0.12] text-cyan ring-1 ring-cyan/25',
+                      )}
+                    >
+                      <CategoryThumb icon={c!.key} size={18} className="rounded-full" />
+                      {c!.title}
+                      {done && <IconCheck size={11} />}
+                    </span>
+                  )
+                })}
+              </div>
+              <button
+                onClick={() => { haptic.success(); nav('/workout/new') }}
+                aria-label="Start today's workout — choose exercises"
+                className="btn-cyan flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-[13px] font-bold shadow-glow-sm transition hover:brightness-110"
+              >
+                <IconPlay size={14} /> Start workout
+              </button>
+              <button
+                onClick={() => { haptic.select(); nav('/planner') }}
+                className="text-[11px] font-semibold text-muted transition hover:text-cyan"
+              >
+                Change today's plan
+              </button>
             </div>
           )}
         </section>
