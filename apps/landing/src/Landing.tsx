@@ -232,6 +232,48 @@ export function Landing() {
             </p>
           </div>
 
+          {/*
+            What Google asks for, and why.
+
+            This is a verification requirement, not decoration: the homepage must "explain with
+            transparency the purpose for which your app requests user data" and describe how the
+            app uses it. Saying "sign in with Google" is not that — it names the mechanism and
+            leaves the reason unstated.
+
+            It names the app in a heading too. Brand verification compares the consent screen's
+            app name against the name on the homepage, and the hero h1 is a tagline that does not
+            contain it.
+
+            Keep this in step with the same section in index.html and with docs at /privacy/.
+          */}
+          <div className="mt-8 rounded-3xl border border-line bg-white/[0.02] p-7">
+            <h2 className="font-heading text-xl font-extrabold tracking-tight">
+              What Grindz asks Google for
+            </h2>
+            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
+              Signing in with Google gives Grindz three things: your <strong>email address</strong>,
+              your <strong>name</strong> and your <strong>profile picture</strong>. The email
+              identifies your account so your training history follows you between the browser and
+              the phone. The name and picture are only shown back to you, so you can see which
+              account you are signed in as.
+            </p>
+            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
+              That is the whole list. Grindz cannot read your Gmail, your Drive, your Contacts or
+              your Calendar — it never asks for them, and no permission it holds would allow it.
+              Nothing from your Google account is sold, shared or used for advertising.
+            </p>
+            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted">
+              Full detail in the{' '}
+              <a
+                href="/privacy/"
+                className="text-cyan underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+              >
+                privacy policy
+              </a>
+              .
+            </p>
+          </div>
+
           <p className="mt-8 pb-4 text-xs leading-relaxed text-muted">
             Your training data is private to your account and is never shared with other users. No
             ads, no trackers, nothing sold on.
