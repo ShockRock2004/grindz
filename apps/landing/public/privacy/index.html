@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#050505" />
+    <link rel="icon" type="image/svg+xml" href="/grindz-mark.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+
+    <title>Privacy Policy — Grindz</title>
+    <meta
+      name="description"
+      content="What Grindz stores, why, where it lives, and how to get it back or delete it."
+    />
+    <link rel="canonical" href="https://grindz.dev/privacy/" />
+
+    <!--
+      A plain static page in public/, not a React route.
+
+      apps/landing deliberately ships no router (see docs/DOMAINS.md) — adding one so a
+      legal page could have a URL would put a routing library into a 70 KB marketing bundle
+      that every visitor downloads. A file in public/ costs the bundle nothing and is served
+      by Vercel directly at /privacy/.
+
+      Google requires a reachable privacy policy URL for OAuth brand verification, which is
+      what lets the consent screen say "Grindz" instead of the Supabase project hostname.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap"
+    />
+
+    <style>
+      :root {
+        --bg: #050505;
+        --panel: #0a0a0f;
+        --ink: #ffffff;
+        --ink2: #e7e9ee;
+        --muted: #8b8b94;
+        --muted2: #a7a7b0;
+        --line: rgba(255, 255, 255, 0.08);
+        --line2: rgba(255, 255, 255, 0.14);
+        --cyan: #00c6ff;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink2);
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 15px;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap { max-width: 720px; margin: 0 auto; padding: 40px 24px 96px; }
+
+      header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 48px; }
+      .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+      .brand span { font-family: 'Poppins', system-ui, sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.01em; }
+      .back { color: var(--muted); text-decoration: none; font-size: 13.5px; }
+      .back:hover { color: var(--cyan); }
+
+      h1 {
+        font-family: 'Poppins', system-ui, sans-serif;
+        font-weight: 800;
+        font-size: clamp(30px, 6vw, 42px);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        margin: 0 0 12px;
+      }
+      .updated { color: var(--muted); font-size: 13.5px; margin: 0 0 40px; }
+
+      h2 {
+        font-family: 'Poppins', system-ui, sans-serif;
+        font-weight: 700;
+        font-size: 19px;
+        color: var(--ink);
+        margin: 44px 0 14px;
+        letter-spacing: -0.01em;
+      }
+      p { margin: 0 0 16px; }
+      ul { margin: 0 0 16px; padding-left: 20px; }
+      li { margin-bottom: 9px; }
+      a { color: var(--cyan); }
+      strong { color: var(--ink); font-weight: 600; }
+
+      table { width: 100%; border-collapse: collapse; margin: 0 0 20px; font-size: 14px; }
+      th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      th { color: var(--ink); font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.05em; }
+      .scroll { overflow-x: auto; }
+
+      .callout {
+        border: 1px solid var(--line2);
+        border-left: 3px solid var(--cyan);
+        background: rgba(0, 198, 255, 0.06);
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin: 0 0 20px;
+      }
+      .callout p:last-child { margin-bottom: 0; }
+
+      footer {
+        margin-top: 64px;
+        padding-top: 28px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <header>
+        <a class="brand" href="/">
+          <img src="/grindz-mark.svg" alt="" width="26" height="26" />
+          <span>Grindz</span>
+        </a>
+        <a class="back" href="/">← Back to grindz.dev</a>
+      </header>
+
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated 7 August 2026</p>
+
+      <p>
+        Grindz is a training log. It stores the workouts you enter so they can be shown back to
+        you on your other devices. It is run by one person as a personal project, it carries no
+        advertising, and it has no analytics or tracking of any kind.
+      </p>
+
+      <h2>What is collected</h2>
+
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr><th>Data</th><th>Where it comes from</th><th>Why</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Email address, name, profile picture</td>
+              <td>Your Google account, when you sign in</td>
+              <td>To identify your account and show who is signed in</td>
+            </tr>
+            <tr>
+              <td>Workout sessions and sets — exercise, weight, reps, RPE, duration, distance, notes</td>
+              <td>You, as you log them</td>
+              <td>The purpose of the app</td>
+            </tr>
+            <tr>
+              <td>Weekly plan, saved templates, favourite exercises</td>
+              <td>You</td>
+              <td>To rebuild your setup on any device</td>
+            </tr>
+            <tr>
+              <td>Bodyweight and body-fat entries</td>
+              <td>You, if you choose to enter them</td>
+              <td>The progress charts. Entirely optional</td>
+            </tr>
+            <tr>
+              <td>Custom exercises you create, including any photo you attach</td>
+              <td>You</td>
+              <td>To add movements the built-in catalogue is missing</td>
+            </tr>
+            <tr>
+              <td>An optional Groq API key</td>
+              <td>You, only if you paste one in Settings</td>
+              <td>AI-assisted exercise authoring. Never used for anything else</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        Grindz requests only three permissions from Google — <strong>email</strong>,
+        <strong>profile</strong> and <strong>openid</strong>. It cannot read your Gmail, your
+        Drive, your contacts or your calendar, and it never asks to.
+      </p>
+
+      <h2>Custom exercises are public</h2>
+
+      <div class="callout">
+        <p>
+          <strong>Please read this one.</strong> When you create a custom exercise, it is visible
+          to <strong>every other Grindz user</strong> by default — including its name, the notes
+          and form cues you write, and any photo you upload.
+        </p>
+        <p>
+          This is deliberate: it means the exercise catalogue grows for everybody. But it does
+          mean you should not put anything private into a custom exercise. Do not use the name or
+          notes field for personal information.
+        </p>
+      </div>
+
+      <p>
+        Nothing else is shared. Your sessions, sets, plan, templates, bodyweight history and
+        favourites are visible only to you, enforced in the database itself rather than only in
+        the app.
+      </p>
+
+      <h2>Where it is stored</h2>
+
+      <ul>
+        <li>
+          <strong>Your data</strong> lives in a Postgres database and file storage hosted by
+          <a href="https://supabase.com/privacy" target="_blank" rel="noreferrer">Supabase</a>.
+          Every table has row-level security enabled, so one account cannot read another's rows.
+        </li>
+        <li>
+          <strong>The websites</strong> are served by
+          <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noreferrer">Vercel</a>,
+          and the exercise illustrations by
+          <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noreferrer">Cloudflare</a>.
+          Both receive ordinary web request information such as your IP address, as any web host does.
+        </li>
+        <li>
+          <strong>Your sign-in session</strong> is kept in your own browser's local storage — on
+          the Android app, in its local app storage. It is not a cookie sent to anyone.
+        </li>
+      </ul>
+
+      <h2>Cookies</h2>
+
+      <p>
+        Grindz sets exactly one cookie, <code>gz_hint</code>, on <code>.grindz.dev</code>. Its
+        entire contents are the number <strong>1</strong>. It records only that <em>somebody</em>
+        signed in on this browser, so that returning to <code>grindz.dev</code> sends you to the
+        app instead of a marketing page you have already read.
+      </p>
+      <p>
+        It contains no token, no user id and no email, and it cannot be used to access your
+        account. Signing out deletes it. There are no advertising or analytics cookies.
+      </p>
+
+      <h2>What is never done</h2>
+
+      <ul>
+        <li>Your data is <strong>not sold</strong>, rented, or shared with advertisers — there are none.</li>
+        <li>There is <strong>no analytics, telemetry or tracking</strong> in either the website or the Android app.</li>
+        <li>Your training data is <strong>not used to train any AI model</strong>.</li>
+        <li>No email is sent to you other than what Google itself sends during sign-in.</li>
+      </ul>
+
+      <h2>Getting your data out, or deleting it</h2>
+
+      <ul>
+        <li>
+          <strong>Export:</strong> Settings → <em>Export data</em> downloads your workout history
+          as a file, at any time, without asking anyone.
+        </li>
+        <li>
+          <strong>Delete individual items:</strong> sessions, custom exercises and body-metric
+          entries can each be deleted from within the app.
+        </li>
+        <li>
+          <strong>Delete everything:</strong> email the address below asking for account deletion.
+          Your account and all rows belonging to it will be removed. Custom exercises you made
+          public may be retained without your name attached, since other people's catalogues
+          reference them — say so in your message if you want those removed too.
+        </li>
+      </ul>
+
+      <p>
+        Data is kept for as long as your account exists. There is no automatic expiry, because a
+        training log is only useful if it goes back years.
+      </p>
+
+      <h2>Children</h2>
+
+      <p>
+        Grindz is not directed at children under 13, and accounts are not knowingly created for
+        them. If you believe a child has an account, email the address below and it will be removed.
+      </p>
+
+      <h2>Changes</h2>
+
+      <p>
+        If this policy changes materially, the date at the top of this page changes with it. There
+        is no mailing list to notify, by design.
+      </p>
+
+      <h2>Contact</h2>
+
+      <p>
+        Questions, data requests, or anything that looks wrong:
+        <a href="mailto:roguecaltrop@gmail.com">roguecaltrop@gmail.com</a>.
+      </p>
+
+      <footer>
+        Grindz · <a href="/">grindz.dev</a> ·
+        <a href="https://github.com/ShockRock2004/grindz" target="_blank" rel="noreferrer">source on GitHub</a>
+      </footer>
+    </div>
+  </body>
+</html>
