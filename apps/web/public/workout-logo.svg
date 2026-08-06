@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="cyan-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00c6ff" />
+      <stop offset="100%" stop-color="#0072ff" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="16" flood-color="#00c6ff" flood-opacity="0.4" />
+    </filter>
+  </defs>
+  
+  <!-- Dark Background -->
+  <rect width="512" height="512" rx="112" fill="#050505" />
+  
+  <!-- Subtle Inner Glass Panel -->
+  <rect x="32" y="32" width="448" height="448" rx="96" fill="#0a0a0f" stroke="rgba(255,255,255,0.08)" stroke-width="2" />
+
+  <!-- Dumbbell Icon (Rotated 45 degrees for a dynamic look) -->
+  <g transform="rotate(-40 256 256)" filter="url(#glow)">
+    <!-- Handle -->
+    <rect x="180" y="240" width="152" height="32" rx="8" fill="url(#cyan-grad)" />
+    
+    <!-- Inner Plates -->
+    <rect x="140" y="160" width="40" height="192" rx="12" fill="url(#cyan-grad)" />
+    <rect x="332" y="160" width="40" height="192" rx="12" fill="url(#cyan-grad)" />
+    
+    <!-- Outer Plates -->
+    <rect x="100" y="192" width="28" height="128" rx="8" fill="url(#cyan-grad)" />
+    <rect x="384" y="192" width="28" height="128" rx="8" fill="url(#cyan-grad)" />
+    
+    <!-- End Caps / Collars -->
+    <rect x="76" y="220" width="12" height="72" rx="4" fill="url(#cyan-grad)" />
+    <rect x="424" y="220" width="12" height="72" rx="4" fill="url(#cyan-grad)" />
+  </g>
+</svg>

@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background-color: #050505;
+    background-image: radial-gradient(circle at 50% -18%, #0a1f33 0%, #050505 58%);
+    background-attachment: fixed;
+    color: #fff;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  h1,
+  h2,
+  h3,
+  .font-heading {
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+  ::selection {
+    background: rgba(0, 198, 255, 0.3);
+  }
+  /*
+   * Visible focus for keyboard users, declared once at the base layer.
+   *
+   * An audit found focus styling on 8 of 74 interactive elements, so tabbing through the app
+   * was very nearly invisible. Rather than annotate 66 call sites — and miss the next one
+   * anyone adds — the ring lives here.
+   *
+   * Two deliberate details:
+   *   - `:focus-visible`, not `:focus`, so a mouse click never paints a ring.
+   *   - wrapped in `:where()`, which contributes ZERO specificity, so any component with its
+   *     own focus treatment still wins rather than fighting this one.
+   *
+   * Cyan on the near-black background measures 10.2:1, comfortably past the 3:1 WCAG 2.4.11
+   * asks of a focus indicator.
+   */
+  :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex='-1'])):focus-visible {
+    outline: 2px solid #00c6ff;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  /*
+   * Scrollbars.
+   *
+   * Ordering here is load-bearing. Since Chrome/Edge 121 (Jan 2024) the standard
+   * `scrollbar-width` / `scrollbar-color` properties OVERRIDE `::-webkit-scrollbar-*`
+   * whenever they are set to anything but `auto` — so declaring both unconditionally
+   * silently throws away the rounded thumb and hands you the platform's default bar.
+   * Firefox is the only engine with no `::-webkit-scrollbar` at all, so the standard
+   * properties are gated behind a selector-support query and reach Firefox alone.
+   *
+   * The thumb is rgba(255,255,255,0.34), not the fashionable 0.08–0.12: composited on
+   * #050505 that lands at ~3.1:1, which is the WCAG 1.4.11 non-text minimum. A 0.10 thumb
+   * measures ~1.5:1 and is genuinely hard to see.
+   *
+   * `border: 3px solid transparent` + `background-clip: content-box` is the only way to
+   * inset a WebKit thumb (padding does nothing on scrollbar pseudo-elements). It buys a
+   * 6px-looking thumb with a 12px pointer target.
+   */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.34);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 100px;
+    min-height: 44px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 198, 255, 0.6);
+  }
+  ::-webkit-scrollbar-thumb:active {
+    background-color: rgba(0, 198, 255, 0.85);
+  }
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.34) transparent;
+    }
+  }
+  /* forced-colors resets scrollbar-color for us but not the WebKit pseudo-elements */
+  @media (forced-colors: active) {
+    ::-webkit-scrollbar-thumb {
+      background-color: ButtonBorder;
+    }
+  }
+
+  /* number inputs: no spinners */
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.045);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+  }
+  .glass-strong {
+    background: rgba(10, 10, 16, 0.72);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .card {
+    @apply rounded-3xl glass;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+  .cyan-text {
+    color: #4fd6ff;
+  }
+  .btn-cyan {
+    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    color: #00232e;
+    font-weight: 700;
+    box-shadow: 0 0 22px rgba(0, 198, 255, 0.28);
+  }
+  .btn-cyan:active {
+    transform: scale(0.98);
+  }
+  /*
+   * Keyboard-shortcut chip.
+   *
+   * The ⌘ glyph (U+2318) is missing from most UI webfonts, so the browser falls back for
+   * that ONE character to a system symbol font with a different cap height and baseline —
+   * which is why it renders oversized and floating. Two fixes, both here:
+   *   1. inline-flex + fixed height + line-height:1, so the box no longer depends on the
+   *      fallback font's metrics at all. This does most of the work.
+   *   2. name the symbol fonts explicitly rather than leaving the pick to the UA.
+   * Text at 0.62 alpha over the chip fill measures ~7:1, comfortably readable at 11px.
+   */
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    min-width: 20px;
+    padding: 0 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.62);
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, 'Apple Symbols',
+      'Segoe UI Symbol', 'DejaVu Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+    -webkit-user-select: none;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .kbd-glyph {
+    /* U+2318 is drawn to full cap height and reads ~15% larger than adjacent Latin */
+    font-size: 1.08em;
+    line-height: 1;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  /* interactive muscles in the body map */
+  .bm-clickable {
+    transition: opacity 0.15s ease;
+  }
+  .bm-clickable:hover {
+    opacity: 0.82;
+  }
+  .bm-clickable:active {
+    opacity: 0.62;
+  }
+  /* line charts draw themselves in (path uses pathLength="1") */
+  .chart-line {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

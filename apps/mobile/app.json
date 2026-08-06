@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Grindz",
+    "slug": "grindz",
+    "version": "1.2.1",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#050505",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.grindz.app",
+      "versionCode": 16,
+      "resizeableActivity": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "backgroundColor": "#050505",
+    "scheme": "grindz",
+    "plugins": [
+      "expo-web-browser",
+      "expo-image"
+    ]
+  }
+}

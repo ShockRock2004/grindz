@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" height="100%" role="img" aria-label="Grindz">
+  <!--
+    The Grindz mark: lucide's `dumbbell` geometry, verbatim, painted with the brand gradient.
+
+    The path data below is copied unchanged from lucide-react, so the mark is identical to the
+    IconDumbbell already used throughout the app — one glyph doing duty as the sidebar icon,
+    the skeleton placeholder, the favicon and the Android launcher icon.
+
+    It stays a STROKED icon rather than being converted to filled shapes: the open, drawn
+    character is the whole point, and flattening it to solids would produce a different mark
+    that merely resembles this one. So the gradient paints the stroke, with `userSpaceOnUse`
+    so the ramp runs corner-to-corner across the whole glyph instead of restarting inside each
+    sub-path.
+  -->
+  <defs>
+    <linearGradient id="gz" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00c6ff"/>
+      <stop offset="100%" stop-color="#0072ff"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#gz)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/>
+    <path d="m2.5 21.5 1.4-1.4"/>
+    <path d="m20.1 3.9 1.4-1.4"/>
+    <path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/>
+    <path d="m9.6 14.4 4.8-4.8"/>
+  </g>
+</svg>

@@ -1,0 +1,36 @@
+{
+  "name": "grindz",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "verify:paint": "tsx scripts/verify-paint.mts",
+    "verify:web": "node scripts/verify-web.mjs",
+    "verify:a11y": "node scripts/verify-a11y.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "lucide-react": "^1.23.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "playwright-core": "^1.61.1",
+    "postcss": "^8.4.47",
+    "potrace": "^2.1.8",
+    "tailwindcss": "^3.4.13",
+    "tsx": "^4.23.1",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.8",
+    "vite-plugin-pwa": "^0.20.5"
+  }
+}
