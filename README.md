@@ -133,8 +133,10 @@ section, muscle group and exercise; `1`–`4` switch sections; `N` jumps to the 
 Deploys to **Vercel** — set the root directory to `apps/web` and add the two Supabase
 variables. See **[docs/DEPLOY.md](docs/DEPLOY.md)**.
 
-The landing page and the app are split across two hostnames, `grindz.dev` and
-`app.grindz.dev`, served by **one** Vercel project that branches on the hostname at runtime.
+The landing page and the app are **separate deployments** — `grindz.dev` from `apps/landing`
+and `app.grindz.dev` from `apps/web`. The marketing site ships no Supabase client, no router
+and no service worker, so a first-time visitor downloads 70 KB rather than the whole app. A
+returning user is redirected into the app by a boolean cookie on the shared parent domain.
 See **[docs/DOMAINS.md](docs/DOMAINS.md)**.
 
 ---
@@ -198,11 +200,13 @@ Prefer nothing to install? The web app is the same product — open it and **Add
 ```
 grindz/
 ├── apps/
-│   ├── web/           React 18 + TypeScript + Vite + Tailwind, installable PWA → Vercel
+│   ├── landing/       The pitch → grindz.dev. No auth, no router, 70 KB gzip
+│   ├── web/           React 18 + Vite + Tailwind, installable PWA → app.grindz.dev
 │   └── mobile/        React Native 0.86 · Expo SDK 57 · new architecture  ← ships the APK
 ├── cdn/               Cloudflare image delivery — the 42 PNGs, headers, wrangler config
-├── docs/              Install, build, architecture, screenshots
-└── scripts/           check-parity.mjs
+├── docs/              Install, build, architecture, domains, screenshots
+├── supabase/          migrations/0001_init.sql — the whole schema, from scratch
+└── scripts/           check-parity · check-cdn · check-domains
 ```
 
 Two stacks, deliberately **not** a shared component library — a Tailwind `<div>` and a React

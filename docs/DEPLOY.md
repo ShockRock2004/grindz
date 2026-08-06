@@ -1,15 +1,15 @@
 # Deploying
 
-Two things get deployed from this repo, to two different places, across three hostnames.
+Three deployments from this repo, across three hostnames.
 
-| What | Host(s) | Where | Source |
+| What | Host | Where | Source |
 |---|---|---|---|
-| Landing page | `grindz.dev` | **Vercel** | `apps/web` |
-| The app | `app.grindz.dev` | **Vercel** — same project | `apps/web` |
+| Landing page | `grindz.dev` | **Vercel** — project `grindz-landing` | `apps/landing` |
+| The app | `app.grindz.dev` | **Vercel** — project `grindz` | `apps/web` |
 | Exercise imagery | `cdn.grindz.dev` | **Cloudflare Workers** | `cdn/` |
 
-The two Vercel hostnames are one project serving one bundle that branches on
-`window.location.hostname` — see **[DOMAINS.md](DOMAINS.md)** for why, and for the DNS and
+The two Vercel projects are genuinely separate builds — the landing page ships no Supabase
+client, no router and no service worker — see **[DOMAINS.md](DOMAINS.md)** for why, and for the DNS and
 cookie details.
 
 > ### Which GitHub repo Cloudflare and Vercel should point at
@@ -41,10 +41,28 @@ that once when you import the project:
    Set both for **Production**, **Preview** and **Development**. The anon key is a
    publishable client key — it is designed to ship in the bundle, and row-level security is
    what actually protects the data.
-4. **Settings → Domains** — add **`grindz.dev`** *and* **`app.grindz.dev`**, both pointed at
-   Production. One project, two aliases; do not create a second project and do not redirect
-   one host to the other.
+4. **Settings → Domains** — add **`app.grindz.dev`**. Not `grindz.dev`; that belongs to the
+   landing project below.
 5. Deploy. Every push to `main` redeploys; every PR gets a preview URL.
+
+### Landing page → Vercel (second project)
+
+1. **Add New → Project**, import the **same** repo again.
+2. Set **Root Directory** to **`apps/landing`**.
+3. **No environment variables.** This project has no Supabase client and nothing to configure
+   — if you find yourself adding `VITE_SUPABASE_*` here, something has been imported that
+   should not have been.
+4. **Settings → Domains** — add **`grindz.dev`**, and `www.grindz.dev` redirecting to it.
+5. Deploy.
+
+Both projects build from the same `main`, so one push redeploys both. That is the trade for
+not maintaining two repositories: a change to `apps/web` triggers a landing rebuild that
+produces an identical artifact. Vercel's **Ignored Build Step** can suppress that if the
+noise ever matters:
+
+```bash
+git diff --quiet HEAD^ HEAD -- apps/landing
+```
 
 **Do not** set `VITE_DEV_BYPASS_AUTH` or `VITE_DEV_SEED` on Vercel. They only take effect
 when `import.meta.env.DEV` is true, so a production build ignores them entirely — but setting

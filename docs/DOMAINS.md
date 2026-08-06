@@ -35,20 +35,27 @@ Three hostnames, three different things serving them.
 
 | Host | Serves | Origin | Source |
 |---|---|---|---|
-| `grindz.dev` | the landing page | Vercel | `apps/web` |
-| `app.grindz.dev` | the app | Vercel — **same project** | `apps/web` |
+| `grindz.dev` | the landing page | Vercel project **`grindz-landing`** | `apps/landing` |
+| `app.grindz.dev` | the app | Vercel project **`grindz`** | `apps/web` |
 | `cdn.grindz.dev` | the 42 exercise photos | Cloudflare Worker | `cdn/` |
 
 ```
                         ┌──────────────────────────────┐
-   grindz.dev ─────────►│                              │
-                        │   ONE Vercel project         │
-   app.grindz.dev ─────►│   root directory apps/web    │
-                        │   one build, one bundle      │
-                        └──────────────────────────────┘
-                                     │
-                                     │ images
-                                     ▼
+   grindz.dev ─────────►│  Vercel: grindz-landing      │
+                        │  root directory apps/landing │
+                        │  no supabase, no router, no  │
+                        │  service worker — 70 KB gzip │
+                        └──────────────┬───────────────┘
+                                       │ "Continue with Google"
+                                       │ is a LINK across origins
+                                       ▼
+                        ┌──────────────────────────────┐
+   app.grindz.dev ─────►│  Vercel: grindz              │
+                        │  root directory apps/web     │
+                        │  the PWA — auth lives here   │
+                        └──────────────┬───────────────┘
+                                       │ images
+                                       ▼
                         ┌──────────────────────────────┐
    cdn.grindz.dev ─────►│  Cloudflare Worker           │
                         │  static assets from cdn/     │
@@ -57,60 +64,38 @@ Three hostnames, three different things serving them.
 
 ---
 
-## Why one Vercel project and not two
+## Two Vercel projects
 
-The split is a **runtime** decision, not a build one. Both hostnames are aliases on the same
-deployment and receive byte-identical bundles; `src/lib/domains.ts` reads
-`window.location.hostname` and `App.tsx` branches on it.
+Each hostname is its own deployment, built from its own directory:
 
-| | One project (chosen) | Two projects |
-|---|---|---|
-| Deploys to keep in sync | 1 | 2 |
-| Design system | shared, one copy | duplicated or extracted to a package |
-| Env vars | one set | two sets |
-| Landing page weight | ships the app bundle | ~20 KB |
-| Reverting | delete a domain | unpick a package split |
+| Vercel project | Root directory | Serves | Bundle |
+|---|---|---|---|
+| `grindz-landing` | `apps/landing` | `grindz.dev` | **212 KB** (70 KB gzip) |
+| `grindz` | `apps/web` | `app.grindz.dev` | 635 KB (187 KB gzip) |
 
-The landing page carrying the app's JS is the honest cost. It is one gzipped bundle that the
-visitor is about to need anyway the moment they sign in, and it buys a single source of truth
-for the mark, the palette, the muscle map and the copy. If the marketing page ever grows past
-the app in importance, extracting `apps/landing` is still open — nothing here forecloses it.
+The separation is real, not a runtime branch: **`apps/landing` has no `@supabase/supabase-js`,
+no router and no service worker.** A visitor who has never signed in — which is every visitor
+the marketing site is written for — no longer downloads an auth stack and an offline shell to
+read a pitch.
 
----
+Verified on the built bundle: `supabase`, `createClient` and `react-router` all appear **zero**
+times in `apps/landing/dist`.
 
-## The host test, and the trap in it
+There is also a correctness reason for the missing service worker. The app registers one on
+`app.grindz.dev`; a second registration on the parent domain would keep its own precache, and
+a stale marketing shell is a page that keeps sending people to a version of the app that has
+moved on.
 
-The obvious implementation is wrong:
+### What it costs
 
-```ts
-const isApp = location.hostname.startsWith('app.')   // ✗ do not do this
-```
+Some files exist in both trees — the traced muscle geometry, the heat-map palette, the theme
+and `BodyMap.tsx` itself. The hero muscle map is the strongest thing on the landing page, so
+it renders the **real component** rather than a screenshot of one, and that means the geometry
+and the renderer have to be present on both sides.
 
-Under that test, `localhost:5173`, `127.0.0.1` and every Vercel preview
-(`grindz-<hash>-<scope>.vercel.app`) are all "not the app" — so local development and every
-PR preview would be permanently pinned to the landing page with no route in.
-
-The rule is inverted instead: **the marketing host is an allow-list of one, and everything
-else is the app.**
-
-```ts
-export function isMarketingHost(): boolean {
-  const h = window.location.hostname.toLowerCase()
-  return h === SITE_HOST || h === `www.${SITE_HOST}`
-}
-```
-
-| Hostname | Renders |
-|---|---|
-| `grindz.dev` | Landing (marketing) |
-| `www.grindz.dev` | Landing (marketing) |
-| `app.grindz.dev` | app, or Landing (sign-in) when signed out |
-| `localhost:5173` | app ✅ |
-| `grindz-abc123.vercel.app` | app ✅ |
-| anything else | app ✅ |
-
-`SITE_HOST` and `APP_ORIGIN` are overridable via `VITE_SITE_HOST` / `VITE_APP_ORIGIN` if the
-domain ever changes, but the defaults are the production values so nothing has to be set.
+Copies are a genuine cost. `scripts/check-parity.mjs` is what stops them being a *silent* one
+— it now enforces seven files across three apps, so a marketing page cannot end up painting
+"trained" in a colour the app stopped using.
 
 ---
 
@@ -169,16 +154,21 @@ The listener fires on every route in, including a restored session and a token r
 `grindz.dev` would keep bouncing the user to `app.grindz.dev`, which would show a sign-in
 page — making the marketing site unreachable for the one person who just left.
 
-### Where the redirect happens
+### Where each half lives
 
-In `main.tsx`, **before React mounts**:
+The cookie is **written by the app** and **read by the landing page** — two codebases, one
+string between them:
+
+| | File | Does |
+|---|---|---|
+| Write | `apps/web/src/lib/domains.ts` → `setSignedInHint()` | called from `onAuthStateChange`, cleared in `signOut()` |
+| Read | `apps/landing/src/lib/domains.ts` → `redirectToAppIfSignedIn()` | called from `main.tsx` |
+
+In `apps/landing/src/main.tsx`, **before React mounts**:
 
 ```ts
-if (redirectToAppIfSignedIn()) {
-  // navigation committed — do not mount an app we are leaving
-} else {
-  installKeyboardHandling()
-  mount()
+if (!redirectToAppIfSignedIn()) {
+  createRoot(document.getElementById('root')!).render(<StrictMode><Landing /></StrictMode>)
 }
 ```
 
@@ -238,16 +228,21 @@ the old `grindz-assets` Worker. Full ordering in [DEPLOY.md](DEPLOY.md).
 
 ### Step 3 — Vercel domains
 
-**Settings → Domains** on the existing project. Add **both**:
+**Two** Vercel projects, both importing `ShockRock2004/grindz`. The only setting that matters
+on each is the root directory:
 
-```
-grindz.dev            → Production
-app.grindz.dev        → Production
-www.grindz.dev        → redirect to grindz.dev   (optional; the code handles it either way)
-```
+| Project | Root Directory | Domain | Env vars |
+|---|---|---|---|
+| `grindz` | **`apps/web`** | `app.grindz.dev` | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` |
+| `grindz-landing` | **`apps/landing`** | `grindz.dev` (+ `www`) | *none* |
 
-Do **not** create a second project. Do not redirect one host to the other — they must both
-serve the app.
+The landing project needs **no environment variables at all** — it has no Supabase client. If
+you ever move the app off `app.grindz.dev`, set `VITE_APP_ORIGIN` on the landing project and
+`VITE_SITE_HOST` on the app; nothing else hardcodes either host.
+
+> Vercel builds a monorepo subdirectory but still installs from the repo root by default. Both
+> `apps/web` and `apps/landing` carry their own `package.json` and lockfile, so setting the
+> root directory is sufficient — no `installCommand` override needed.
 
 Vercel will show you the DNS records it wants. In **Cloudflare → DNS → Records**:
 

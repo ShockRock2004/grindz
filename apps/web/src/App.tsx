@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './lib/app-context'
-import { isMarketingHost } from './lib/domains'
 import { DesktopShell } from './components/DesktopShell'
 import { Landing } from './pages/Landing'
 import { Home } from './pages/Home'
@@ -21,21 +20,17 @@ function Loading() {
 
 export default function App() {
   const { session } = useAuth()
-
-  /*
-   * grindz.dev is the shop window; app.grindz.dev is the shop.
-   *
-   * On the marketing host we render the pitch and stop — no session check, no Supabase
-   * round-trip, no loading spinner. A visitor there is not being asked to prove anything,
-   * and blocking the fold on an auth request they do not need is pure latency. (Anyone who
-   * *has* signed in before never reaches this component: main.tsx redirected them already.)
-   */
-  if (isMarketingHost()) return <Landing variant="marketing" />
-
   if (session === undefined) return <Loading />
-  // Signed out, the marketing landing page IS the sign-in page. Everything below is behind
-  // auth, so there is no route to guard individually — the tree simply does not exist yet.
-  if (session === null) return <Landing variant="signin" />
+  /*
+   * Signed out, the sign-in page IS this app's front door. The marketing pitch lives in a
+   * separate deployment (apps/landing → grindz.dev); what renders here is the shorter
+   * version of it, ending in a Google button rather than a link, because this is the origin
+   * whose localStorage will hold the session.
+   *
+   * Everything below is behind auth, so there is no route to guard individually — the tree
+   * simply does not exist yet.
+   */
+  if (session === null) return <Landing />
   return (
     <Routes>
       <Route element={<DesktopShell />}>

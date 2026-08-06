@@ -5,42 +5,25 @@ import { AppProviders } from './lib/app-context'
 import App from './App'
 import './index.css'
 import { installKeyboardHandling } from './lib/keyboard'
-import { redirectToAppIfSignedIn } from './lib/domains'
 
-/*
- * Before React mounts, not inside an effect.
- *
- * On grindz.dev a visitor who has signed in before is sent straight to app.grindz.dev. Doing
- * that here means the landing page never paints first — mounting the tree and redirecting
- * from a `useEffect` would show a frame or two of marketing copy to someone who is already a
- * user, which looks like a bug. `replace()` also stops the render below from ever running.
- */
-if (redirectToAppIfSignedIn()) {
-  // navigation is committed; do not mount an app we are leaving
-} else {
-  // keyboard-aware scrolling for every text field in the app; see src/lib/keyboard.ts
-  installKeyboardHandling()
+// keyboard-aware scrolling for every text field in the app; see src/lib/keyboard.ts
+installKeyboardHandling()
 
-  mount()
-}
-
-function mount() {
-  createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      {/*
-        Opt into the two v7 behaviours now rather than carrying the deprecation warnings.
-        startTransition batches route state updates, which is what we want anyway on a
-        desktop app where a click can swap a whole dashboard; relativeSplatPath only affects
-        resolution under the `*` route, which here just redirects home.
-      */}
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <AppProviders>
-          <App />
-        </AppProviders>
-      </BrowserRouter>
-    </StrictMode>,
-  )
-}
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    {/*
+      Opt into the two v7 behaviours now rather than carrying the deprecation warnings.
+      startTransition batches route state updates, which is what we want anyway on a
+      desktop app where a click can swap a whole dashboard; relativeSplatPath only affects
+      resolution under the `*` route, which here just redirects home.
+    */}
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <AppProviders>
+        <App />
+      </AppProviders>
+    </BrowserRouter>
+  </StrictMode>,
+)
 
 /*
  * Dismiss the boot splash in index.html the instant the app has painted.

@@ -1,5 +1,5 @@
 /**
- * Public landing page — the only thing a signed-out visitor sees.
+ * grindz.dev — the marketing site, and the whole of this deployment.
  *
  * Structured as three acts down a scrolling left column, with the door held open on the right:
  *
@@ -9,12 +9,15 @@
  *
  * The right pane is `position: sticky`, which is the point of the split: the left side can be
  * as long as it needs to be to earn the click, and the click is never more than a glance away.
- * Below `lg` the panes stack with sign-in FIRST, so a phone visitor lands on the button instead
- * of scrolling to find it.
+ * Below `lg` the panes stack with the call to action FIRST, so a phone visitor lands on it
+ * instead of scrolling to find it.
+ *
+ * **No sign-in happens here.** This origin has no Supabase client and no session — the CTA is
+ * a link to app.grindz.dev, which is the origin whose localStorage will hold the session. See
+ * src/lib/domains.ts for why that split is not optional.
  */
-import { useState } from 'react'
-import { signInWithGoogle } from '../lib/auth'
-import { BodyMap } from '../components/BodyMap'
+import { APP_ORIGIN } from './lib/domains'
+import { BodyMap } from './components/BodyMap'
 import {
   IconDumbbell,
   IconCalendar,
@@ -23,7 +26,7 @@ import {
   IconTrophy,
   IconHistory,
   IconScale,
-} from '../components/Icons'
+} from './components/Icons'
 
 function GoogleG() {
   return (
@@ -106,19 +109,6 @@ const HERO_TRAINED = new Map<string, 'primary' | 'secondary'>([
 ])
 
 export function Landing() {
-  const [busy, setBusy] = useState(false)
-  const [err, setErr] = useState<string | null>(null)
-
-  const go = () => {
-    setBusy(true)
-    setErr(null)
-    // a successful call navigates away, so reaching here means it failed
-    signInWithGoogle().catch(() => {
-      setBusy(false)
-      setErr('Could not reach Google just now. Try again.')
-    })
-  }
-
   return (
     <div data-testid="landing" className="min-h-full lg:grid lg:h-full lg:grid-cols-[1.25fr_minmax(400px,0.75fr)]">
       {/* ═════════════════════════════ LEFT — the pitch, in three acts ═════════════════ */}
@@ -268,24 +258,21 @@ export function Landing() {
           </p>
 
           {/*
-            This is the origin whose localStorage will hold the session, which is exactly why
-            the button lives here and not on grindz.dev. Running the OAuth round-trip on the
-            marketing origin would deposit the session there, where this app cannot read it.
+            A link, not a button — this origin cannot sign anyone in.
+
+            Sign-in has to happen on app.grindz.dev, because that is the origin whose
+            localStorage will hold the session. Running the OAuth round-trip here would
+            deposit it on grindz.dev, where the app cannot read it: the user would return
+            "signed in" to a page with no app on it, then be asked to sign in again the
+            moment they clicked through. So this deployment's job is to hand them over.
           */}
-          <button
-            onClick={go}
-            disabled={busy}
-            className="mt-7 flex w-full items-center justify-center gap-3 rounded-2xl bg-white px-6 py-4 font-heading text-[15px] font-bold text-[#111] transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan active:scale-[0.985] disabled:opacity-60"
+          <a
+            href={APP_ORIGIN}
+            className="mt-7 flex w-full items-center justify-center gap-3 rounded-2xl bg-white px-6 py-4 font-heading text-[15px] font-bold text-[#111] transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan active:scale-[0.985]"
           >
             <GoogleG />
-            {busy ? 'Redirecting to Google…' : 'Continue with Google'}
-          </button>
-
-          {err && (
-            <p role="alert" className="mt-3 text-[13px] text-bad">
-              {err}
-            </p>
-          )}
+            Continue with Google
+          </a>
 
           <div className="mt-7 space-y-3 border-t border-line pt-7">
             {PROMISES.map((t) => (

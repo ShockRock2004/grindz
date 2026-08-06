@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/grindz-mark.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#050505" />
+
+    <title>Grindz — log lifts, chase PRs, see what you've trained</title>
+    <meta
+      name="description"
+      content="A training tracker built twice — a React Native Android app and an installable web app. Log sets as you lift, see a muscle heat map of your week, and plan your split."
+    />
+    <link rel="canonical" href="https://grindz.dev/" />
+
+    <!--
+      Open Graph / Twitter. This is the page that gets shared; the app behind auth never is.
+      Absolute URLs on purpose — relative ones do not resolve in a crawler's context.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://grindz.dev/" />
+    <meta property="og:title" content="Grindz — log lifts, chase PRs, see what you've trained" />
+    <meta
+      property="og:description"
+      content="Log sets as you lift, see a muscle heat map of your week, and plan your split. Android app and installable web app, one account."
+    />
+    <meta property="og:image" content="https://grindz.dev/showcase/phone-home.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--
+      No boot splash here, unlike apps/web.
+
+      That splash exists to cover the wait while a large authenticated app bundle parses. This
+      page is a single static pitch that paints almost immediately — a splash over it would be
+      covering a wait that does not exist, which is just a slower first paint with extra steps.
+    -->
+    <style>
+      html,
+      body,
+      #root {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background: #050505;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
