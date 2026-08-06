@@ -303,9 +303,23 @@ export function Landing() {
             </a>
           </div>
 
+          {/*
+            The privacy link sits with the consent sentence rather than in a page footer, because
+            this is the moment it is relevant — and because Google's OAuth brand verification
+            wants a reachable policy URL discoverable from the page carrying the sign-in.
+
+            /privacy/ is a static file in public/, not a route: this deployment ships no router.
+          */}
           <p className="mt-6 text-xs leading-relaxed text-muted">
             By continuing you agree that Grindz may store the training data you enter, so it can be
-            shown back to you across your devices.
+            shown back to you across your devices. See the{' '}
+            <a
+              href="/privacy/"
+              className="text-muted2 underline underline-offset-2 transition hover:text-cyan focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+            >
+              privacy policy
+            </a>
+            .
           </p>
         </div>
       </aside>
