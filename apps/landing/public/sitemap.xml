@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Two URLs, which is all this deployment has: the pitch and the privacy policy.
+
+  It exists because a domain with no inbound links anywhere is not something Googlebot finds
+  on its own, and Google's OAuth brand verification reads its crawl index rather than fetching
+  the homepage live — so an uncrawled homepage reads to it as a homepage with no content.
+
+  /privacy/ carries the trailing slash: it is public/privacy/index.html, and the bare form
+  308-redirects to this one.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://grindz.dev/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://grindz.dev/privacy/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>

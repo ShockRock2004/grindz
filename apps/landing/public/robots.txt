@@ -1,0 +1,9 @@
+# grindz.dev — the marketing site. Everything here is meant to be found.
+#
+# The app itself lives on app.grindz.dev and is behind auth, so there is nothing there for a
+# crawler to index; it is a separate deployment and serves its own robots.txt, not this one.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://grindz.dev/sitemap.xml
