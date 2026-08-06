@@ -1,0 +1,60 @@
+view,id,muscle_name,common,region,function,exercises,keywords
+front,head,Head,Head and Face,head,Head movement and facial expressions,neck stretches; head rotations,head face neck cervical movement
+front,sternocleidomastoid,Sternocleidomastoid,SCM Neck Muscle,neck,Head rotation and flexion,neck flexion; head rotations; neck bridges,sternocleidomastoid SCM neck rotation flexion
+front,trapezius,Trapezius (Upper),Upper Traps,neck,Shoulder elevation and neck support,shrugs; upright rows; overhead press,trapezius upper traps neck shoulders shrugs
+front,pectoralis_major,Pectoralis Major,Pecs,chest,"Shoulder flexion, adduction, and internal rotation",bench press; push-ups; chest flyes; dips,pectoralis major pecs chest bench press push-ups
+front,pectoralis_minor,Pectoralis Minor,Upper Chest,chest,Shoulder blade stabilization,incline bench press; dips; chest dips,pectoralis minor upper chest shoulder blade
+front,deltoid_anterior_head,Anterior Deltoid,Front Delts,shoulders,Shoulder flexion and internal rotation,overhead press; front raises; push-ups; incline press,anterior deltoid front delts shoulders press raises
+front,deltoid_middle_head,Middle Deltoid,Side Delts,shoulders,Shoulder abduction,lateral raises; overhead press; upright rows,middle deltoid lateral delts side shoulders
+front,biceps_brachii_long_head,Biceps Brachii (Long Head),Outer Bicep,arms,Elbow flexion and forearm supination,curls; chin-ups; hammer curls; preacher curls,biceps long head arms curls chin-ups
+front,biceps_brachii_short_head,Biceps Brachii (Short Head),Inner Bicep,arms,Elbow flexion,concentration curls; close-grip curls; cable curls,biceps short head inner arms curls
+front,brachioradialis,Brachioradialis,Forearm,forearms,Elbow flexion and forearm rotation,hammer curls; reverse curls; rows,brachioradialis forearm elbow flexion grip
+front,flexor_carpi_ulnaris,Flexor Carpi Ulnaris,Wrist Flexor,forearms,Wrist flexion and grip strength,wrist curls; farmer carries; dead hangs,flexor carpi ulnaris wrist forearm grip
+front,extensor_carpi_ulnaris,Extensor Carpi Ulnaris,Wrist Extensor,forearms,Wrist extension,wrist extensions; reverse curls; farmer carries,extensor carpi ulnaris wrist forearm grip
+front,hands,Hands,Hands and Fingers,hands,Grip and fine motor control,grip trainers; dead hangs; farmer carries,hands fingers grip strength
+front,serratus_anterior,Serratus Anterior,Boxer's Muscle,core,Shoulder blade protraction,push-ups; overhead press; pull-overs; ab rollouts,serratus anterior boxer muscle core abs
+front,obliques_upper,External Obliques (Upper),Side Abs,core,Torso rotation and side flexion,Russian twists; side planks; wood chops; oblique crunches,obliques side abs core rotation twists
+front,obliques_lower,External Obliques (Lower),Lower Side Abs,core,Hip flexion and rotation,hanging leg raises; bicycle crunches; side planks,obliques lower abs core hip flexion
+front,tendinous_inscriptions_upper,Rectus Abdominis (Upper),Upper Abs,core,Spinal flexion,crunches; sit-ups; cable crunches,rectus abdominis upper abs six pack crunches
+front,tendinous_inscriptions_middle,Rectus Abdominis (Middle),Middle Abs,core,Spinal flexion,crunches; planks; leg raises,rectus abdominis middle abs core six pack
+front,tendinous_inscriptions_lower,Rectus Abdominis (Lower),Lower Abs,core,Hip flexion and spinal stabilization,leg raises; reverse crunches; mountain climbers,rectus abdominis lower abs core leg raises
+front,rectus_abdominis,Rectus Abdominis,Six Pack,core,Spinal flexion and core stability,crunches; planks; leg raises; sit-ups,rectus abdominis six pack abs core crunches
+front,tensor_fasciae_latae,Tensor Fasciae Latae,TFL Hip Muscle,legs,Hip flexion and abduction,leg raises; lunges; squats; hip abduction,tensor fasciae latae TFL hip flexion IT band
+front,pectineus,Pectineus,Hip Adductor,legs,Hip flexion and adduction,adductor machine; squats; lunges,pectineus hip adductor inner thigh
+front,adductor_longus,Adductor Longus,Inner Thigh,legs,Hip adduction,adductor machine; side lunges; sumo squats,adductor longus inner thigh hip adduction
+front,gracilis,Gracilis,Inner Thigh,legs,Hip adduction and knee flexion,leg curls; adductor exercises; side lunges,gracilis inner thigh hip adduction
+front,sartorius,Sartorius,Longest Muscle,legs,Hip and knee flexion,lunges; leg raises; cycling,sartorius hip knee flexion longest muscle
+front,rectus_femoris,Rectus Femoris,Quad,legs,Knee extension and hip flexion,squats; leg press; lunges; leg extensions,rectus femoris quadriceps quads knee extension
+front,vastus_lateralis,Vastus Lateralis,Outer Quad,legs,Knee extension,squats; leg press; lunges; leg extensions,vastus lateralis quadriceps outer quad knee
+front,vastus_medialis,Vastus Medialis,Inner Quad (Teardrop),legs,Knee extension and stability,squats; leg extensions; lunges; step-ups,vastus medialis quadriceps inner quad teardrop VMO
+front,knees,Knees,Knee Joint,legs,Leg flexion and extension,squats; lunges; leg curls; leg extensions,knees knee joint leg movement
+front,peroneus_longus,Peroneus Longus,Lateral Calf,calves,Ankle eversion and plantar flexion,calf raises; ankle circles; balance work,peroneus longus lateral calf ankle eversion
+front,gastrocnemius,Gastrocnemius,Calf,calves,Ankle plantar flexion and knee flexion,standing calf raises; jump rope; box jumps,gastrocnemius calves calf raises jumping
+front,tibialis_anterior,Tibialis Anterior,Shin,calves,Ankle dorsiflexion,toe raises; ankle dorsiflexion; heel walks,tibialis anterior shin ankle dorsiflexion
+front,extensor_digitorum_longus,Extensor Digitorum Longus,Toe Extensor,calves,Toe extension and ankle dorsiflexion,toe raises; ankle exercises; barefoot walking,extensor digitorum longus toe extension ankle
+front,feet,Feet,Foot Muscles,feet,"Balance, stability, and propulsion",toe raises; balance exercises; barefoot training,feet foot muscles balance stability
+back,head,Head and Neck,Head,upper,Head movement and stability,neck stretches; head rotations,head neck cervical spine movement
+back,trapezius_upper,Upper Trapezius,Upper Traps,upper,Shoulder elevation and neck support,shrugs; upright rows; overhead press,trapezius upper back shoulders neck shrugs
+back,trapezius,Trapezius,Traps,upper,Shoulder blade movement and upper back stability,rows; deadlifts; face pulls; shrugs,trapezius back shoulder blade retraction scapula
+back,infraspinatus,Infraspinatus,Rotator Cuff,upper,External shoulder rotation and stability,external rotations; face pulls; band pull-aparts,infraspinatus rotator cuff shoulder stability external rotation
+back,teres_major,Teres Major,Lat Helper,upper,Shoulder extension and internal rotation,pull-ups; lat pulldowns; rows,teres major shoulder extension lat pulldown rows
+back,deltoid_posterior_head,Posterior Deltoid,Rear Delts,upper,Shoulder extension and external rotation,reverse flyes; face pulls; bent-over rows; rear delt raises,posterior deltoid rear delts shoulders back
+back,deltoid_middle_head,Middle Deltoid,Side Delts,upper,Shoulder abduction,lateral raises; overhead press; upright rows,middle deltoid lateral delts shoulders abduction
+back,triceps_brachii_lateral_long,Triceps Brachii (Lateral and Long Head),Triceps,upper,Elbow extension and shoulder stability,close-grip bench press; overhead extensions; dips; pushdowns,triceps arms elbow extension pressing
+back,triceps_brachii_medial,Triceps Brachii (Medial Head),Triceps Inner,upper,Elbow extension,reverse grip pushdowns; close-grip press; dips,triceps medial head arms extension
+back,extensor_carpi_ulnaris,Extensor Carpi Ulnaris,Wrist Extensor,forearm,Wrist extension and ulnar deviation,wrist extensions; reverse curls; farmer carries,forearm wrist extensor grip strength
+back,flexor_carpi_ulnaris,Flexor Carpi Ulnaris,Wrist Flexor,forearm,Wrist flexion and grip strength,wrist curls; farmer carries; dead hangs,forearm wrist flexor grip strength
+back,brachioradialis,Brachioradialis,Forearm,forearm,Elbow flexion and forearm rotation,hammer curls; reverse curls; rows,brachioradialis forearm elbow flexion grip
+back,hands,Hands,Hands and Fingers,forearm,Grip and fine motor control,grip trainers; dead hangs; farmer carries,hands fingers grip strength forearm
+back,latissimus_dorsi,Latissimus Dorsi,Lats,middle,"Shoulder adduction, extension, and internal rotation",pull-ups; chin-ups; lat pulldowns; rows; deadlifts,latissimus dorsi lats back width pull-ups rowing
+back,erector_spinae,Erector Spinae,Lower Back,lower,Spinal extension and posture maintenance,deadlifts; back extensions; good mornings; hyperextensions,erector spinae lower back spine posture deadlift
+back,gluteus_medius,Gluteus Medius,Hip Abductor,glutes,Hip abduction and pelvic stability,hip abductions; clamshells; side-lying leg raises; single-leg squats,gluteus medius glutes hip stability abduction
+back,gluteus_maximus,Gluteus Maximus,Glutes,glutes,Hip extension and external rotation,squats; deadlifts; hip thrusts; lunges; step-ups,gluteus maximus glutes hip extension squats deadlifts
+back,vastus_lateralis,Vastus Lateralis,Outer Quad,legs,Knee extension,squats; leg press; lunges; leg extensions,vastus lateralis quadriceps knee extension squats
+back,biceps_femoris,Biceps Femoris,Hamstring,legs,Knee flexion and hip extension,leg curls; Romanian deadlifts; good mornings; Nordic curls,biceps femoris hamstrings knee flexion leg curl
+back,semitendinosus,Semitendinosus,Inner Hamstring,legs,Knee flexion and hip extension,leg curls; Romanian deadlifts; glute-ham raises,semitendinosus hamstrings knee flexion hip extension
+back,adductor_magnus,Adductor Magnus,Inner Thigh,legs,Hip adduction and extension,adductor machine; sumo squats; side lunges,adductor magnus inner thigh hip adduction
+back,gracilis,Gracilis,Inner Thigh,legs,Hip adduction and knee flexion,leg curls; adductor exercises; side lunges,gracilis inner thigh hip adduction knee flexion
+back,soleus,Soleus,Lower Calf,calves,Ankle plantar flexion (bent knee),seated calf raises; calf press; walking,soleus calves ankle plantar flexion calf raises
+back,gastrocnemius,Gastrocnemius,Calf,calves,Ankle plantar flexion and knee flexion,standing calf raises; jump rope; box jumps,gastrocnemius calves ankle flexion calf raises jumping
+back,feet,Feet,Foot Muscles,feet,"Balance, stability, and propulsion",toe raises; balance exercises; barefoot training,feet foot muscles balance stability ankle

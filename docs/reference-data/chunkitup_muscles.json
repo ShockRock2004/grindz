@@ -1,0 +1,1385 @@
+{
+  "source": "https://chunkitup.com/exercises",
+  "description": "Muscle anatomy map scraped from ChunkItUp exercises page. Each entry is one SVG muscle path with its metadata.",
+  "muscle_count": 59,
+  "unique_muscle_names": 50,
+  "muscles": [
+    {
+      "view": "front",
+      "id": "head",
+      "aria_label": "Head - Head movement and facial expressions",
+      "muscle_name": "Head",
+      "common": "Head and Face",
+      "function": "Head movement and facial expressions",
+      "region": "head",
+      "exercises": [
+        "neck stretches",
+        "head rotations"
+      ],
+      "keywords": [
+        "head",
+        "face",
+        "neck",
+        "cervical",
+        "movement"
+      ],
+      "path": "M69.0925903,35c0,4.25,2.722229,8.833313,8.9074097,8.833313s8.9074097-4.583313,8.9074097-8.833313c1.333313-.083313,2.9383545-.4980469,2.944458-3.666687.005127-2.666626-1.416687-3.194397-2.666687-2.666626v-6.888916c0-4.611084-4.722229-9.222229-9.1851807-9.222229s-9.1851807,4.611145-9.1851807,9.222229v6.888916c-1.25-.527771-2.671814,0-2.666687,2.666626.0061035,3.1686401,1.611145,3.583374,2.944458,3.666687Z"
+    },
+    {
+      "view": "front",
+      "id": "sternocleidomastoid",
+      "aria_label": "Sternocleidomastoid - Head rotation and flexion",
+      "muscle_name": "Sternocleidomastoid",
+      "common": "SCM Neck Muscle",
+      "function": "Head rotation and flexion",
+      "region": "neck",
+      "exercises": [
+        "neck flexion",
+        "head rotations",
+        "neck bridges"
+      ],
+      "keywords": [
+        "sternocleidomastoid",
+        "SCM",
+        "neck",
+        "rotation",
+        "flexion"
+      ],
+      "path": "M85.666687,43.833313s-2.7037354.9259644-7.666687.9259644-7.666687-.9259644-7.666687-.9259644c0,0,3.4074097,10.2592773,7.666687,15.2963257,4.2592773-5.0370483,7.666687-15.2963257,7.666687-15.2963257Z"
+    },
+    {
+      "view": "front",
+      "id": "trapezius",
+      "aria_label": "Trapezius (Upper) - Shoulder elevation and neck support",
+      "muscle_name": "Trapezius (Upper)",
+      "common": "Upper Traps",
+      "function": "Shoulder elevation and neck support",
+      "region": "neck",
+      "exercises": [
+        "shrugs",
+        "upright rows",
+        "overhead press"
+      ],
+      "keywords": [
+        "trapezius",
+        "upper",
+        "traps",
+        "neck",
+        "shoulders",
+        "shrugs"
+      ],
+      "path": "M75.5184937,58.722229c-7.6296387-2.0370483-14.8518066-2.222229-14.8518066-2.222229,0,0,6.3703613-4.555542,10.222168-7.0370483,0,0,2.4815063,7.0370483,4.6296387,9.2592773ZM80.4815063,58.722229c7.6296387-2.0370483,14.8518066-2.222229,14.8518066-2.222229,0,0-6.3703613-4.555542-10.222168-7.0370483,0,0-2.4815063,7.0370483-4.6296387,9.2592773Z"
+    },
+    {
+      "view": "front",
+      "id": "pectoralis_major",
+      "aria_label": "Pectoralis Major - Shoulder flexion, adduction, and internal rotation",
+      "muscle_name": "Pectoralis Major",
+      "common": "Pecs",
+      "function": "Shoulder flexion, adduction, and internal rotation",
+      "region": "chest",
+      "exercises": [
+        "bench press",
+        "push-ups",
+        "chest flyes",
+        "dips"
+      ],
+      "keywords": [
+        "pectoralis",
+        "major",
+        "pecs",
+        "chest",
+        "bench",
+        "press",
+        "push-ups"
+      ],
+      "path": "M76.3148193,68.555542l-20.583374-3.916626c1.388916-6.333374,19.305603-9.083374,20.583374,3.916626ZM79.6851807,68.555542l20.583374-3.916626c-1.388916-6.333374-19.305603-9.083374-20.583374,3.916626Z"
+    },
+    {
+      "view": "front",
+      "id": "pectoralis_minor",
+      "aria_label": "Pectoralis Minor - Shoulder blade stabilization",
+      "muscle_name": "Pectoralis Minor",
+      "common": "Upper Chest",
+      "function": "Shoulder blade stabilization",
+      "region": "chest",
+      "exercises": [
+        "incline bench press",
+        "dips",
+        "chest dips"
+      ],
+      "keywords": [
+        "pectoralis",
+        "minor",
+        "upper",
+        "chest",
+        "shoulder",
+        "blade"
+      ],
+      "path": "M55.5370483,66.666687l19.5247803,3.1845093c.7224121.1178589,1.2529907.7418823,1.2529907,1.473877v8.0670776c0,.7197266-.5143433,1.3305664-1.2207031,1.4685669-9.2557373,1.8076172-21.1526489,2.0804443-19.5570679-14.1940308ZM100.4629517,66.666687l-19.5247803,3.1845093c-.7224121.1178589-1.2529907.7418823-1.2529907,1.473877v8.0670776c0,.7197266.5143433,1.3305664,1.2207031,1.4685669,9.2557373,1.8076172,21.1526489,2.0804443,19.5570679-14.1940308Z"
+    },
+    {
+      "view": "front",
+      "id": "deltoid_anterior_head",
+      "aria_label": "Anterior Deltoid - Shoulder flexion and internal rotation",
+      "muscle_name": "Anterior Deltoid",
+      "common": "Front Delts",
+      "function": "Shoulder flexion and internal rotation",
+      "region": "shoulders",
+      "exercises": [
+        "overhead press",
+        "front raises",
+        "push-ups",
+        "incline press"
+      ],
+      "keywords": [
+        "anterior",
+        "deltoid",
+        "front",
+        "delts",
+        "shoulders",
+        "press",
+        "raises"
+      ],
+      "path": "M61.2592773,58.722229c-9,1.444458-7.888916,13.555542-7.888916,13.555542,0,0-3.277771,3.055542-6.944458,5.333374-1.888855-19.166687,11.611145-22.388916,14.833374-18.888916ZM102.6296387,72.277771s3.277771,3.055542,6.944458,5.333374c1.888855-19.166687-11.611145-22.388916-14.833374-18.888916,9,1.444458,7.888916,13.555542,7.888916,13.555542Z"
+    },
+    {
+      "view": "front",
+      "id": "deltoid_middle_head",
+      "aria_label": "Middle Deltoid - Shoulder abduction",
+      "muscle_name": "Middle Deltoid",
+      "common": "Side Delts",
+      "function": "Shoulder abduction",
+      "region": "shoulders",
+      "exercises": [
+        "lateral raises",
+        "overhead press",
+        "upright rows"
+      ],
+      "keywords": [
+        "middle",
+        "deltoid",
+        "lateral",
+        "delts",
+        "side",
+        "shoulders"
+      ],
+      "path": "M44.4259033,79.666687c-2-6.5-2.388855-18.666687,7.5-21.5-8.6422119,6.111084-7.5,21.5-7.5,21.5ZM111.5740967,79.666687c2-6.5,2.388855-18.666687-7.5-21.5,8.6422119,6.111084,7.5,21.5,7.5,21.5Z"
+    },
+    {
+      "view": "front",
+      "id": "biceps_brachii_long_head",
+      "aria_label": "Biceps Brachii (Long Head) - Elbow flexion and forearm supination",
+      "muscle_name": "Biceps Brachii (Long Head)",
+      "common": "Outer Bicep",
+      "function": "Elbow flexion and forearm supination",
+      "region": "arms",
+      "exercises": [
+        "curls",
+        "chin-ups",
+        "hammer curls",
+        "preacher curls"
+      ],
+      "keywords": [
+        "biceps",
+        "long",
+        "head",
+        "arms",
+        "curls",
+        "chin-ups"
+      ],
+      "path": "M41.7036743,99.277771c-1.444397-6.666626-1.8399658-12.777771,1.5800171-16.5s9.4199829-6.944458,9.4199829-6.944458c1.111145,10.388916-2.388855,21.055603-11,23.444458ZM103.2963257,75.833313c-1.111145,10.388916,2.388855,21.055603,11,23.444458,1.444397-6.666626,1.8399658-12.777771-1.5800171-16.5s-9.4199829-6.944458-9.4199829-6.944458Z"
+    },
+    {
+      "view": "front",
+      "id": "biceps_brachii_short_head",
+      "aria_label": "Biceps Brachii (Short Head) - Elbow flexion",
+      "muscle_name": "Biceps Brachii (Short Head)",
+      "common": "Inner Bicep",
+      "function": "Elbow flexion",
+      "region": "arms",
+      "exercises": [
+        "concentration curls",
+        "close-grip curls",
+        "cable curls"
+      ],
+      "keywords": [
+        "biceps",
+        "short",
+        "head",
+        "inner",
+        "arms",
+        "curls"
+      ],
+      "path": "M54.7036743,75.833313c1.3399048,6.0458374,1,15.888916-7.444397,24.277832,7-11.277832,7.444397-24.277832,7.444397-24.277832ZM101.2963257,75.833313c-1.3399048,6.0458374-1,15.888916,7.444397,24.277832-7-11.277832-7.444397-24.277832-7.444397-24.277832Z"
+    },
+    {
+      "view": "front",
+      "id": "brachioradialis",
+      "aria_label": "Brachioradialis - Elbow flexion and forearm rotation",
+      "muscle_name": "Brachioradialis",
+      "common": "Forearm",
+      "function": "Elbow flexion and forearm rotation",
+      "region": "forearms",
+      "exercises": [
+        "hammer curls",
+        "reverse curls",
+        "rows"
+      ],
+      "keywords": [
+        "brachioradialis",
+        "forearm",
+        "elbow",
+        "flexion",
+        "grip"
+      ],
+      "path": "M25.6400757,132.4992676c-1.1851807-.4119263-2.3743286-.7174683-3.343811-.7399902,5.0370483-7.333374,6.888916-16,8.0740967-22.444458s5.777771-10.8148193,7.7036743-11.333313c1.2592773,4.5925903-.5184937,10.3703613-1.9259033,13.555542-1.2231445,2.7681274-8.597229,17.2229004-10.5080566,20.9622192ZM130.3599243,132.4992676c1.1851807-.4119263,2.3743286-.7174683,3.343811-.7399902-5.0370483-7.333374-6.888916-16-8.0740967-22.444458s-5.777771-10.8148193-7.7036743-11.333313c-1.2592773,4.5925903.5184937,10.3703613,1.9259033,13.555542,1.2231445,2.7681274,8.597229,17.2229004,10.5080566,20.9622192Z"
+    },
+    {
+      "view": "front",
+      "id": "flexor_carpi_ulnaris",
+      "aria_label": "Flexor Carpi Ulnaris - Wrist flexion and grip strength",
+      "muscle_name": "Flexor Carpi Ulnaris",
+      "common": "Wrist Flexor",
+      "function": "Wrist flexion and grip strength",
+      "region": "forearms",
+      "exercises": [
+        "wrist curls",
+        "farmer carries",
+        "dead hangs"
+      ],
+      "keywords": [
+        "flexor",
+        "carpi",
+        "ulnaris",
+        "wrist",
+        "forearm",
+        "grip"
+      ],
+      "path": "M41.8518677,110.944458c-1.5455933,2.2874756-10.1552124,17.8267822-12.9623413,22.9071045-.5664673-.2687378-1.2050781-.5559692-1.8797607-.8320312,2.0794678-4.3054199,9.8999023-20.4870605,12.1013184-24.8898926,2.5681763-5.1362915,6.2963257-5.6296387,6.2963257-5.6296387,0,0-1.7037354,5.7037354-3.555542,8.444458ZM116.888916,108.1296387c-2.5681763-5.1362915-6.2963257-5.6296387-6.2963257-5.6296387,0,0,1.7037354,5.7037354,3.555542,8.444458,1.5455933,2.2874756,10.1552124,17.8267822,12.9623413,22.9071045.5664673-.2687378,1.2050781-.5559692,1.8797607-.8320312-2.0794678-4.3054199-9.8999023-20.4870605-12.1013184-24.8898926Z"
+    },
+    {
+      "view": "front",
+      "id": "extensor_carpi_ulnaris",
+      "aria_label": "Extensor Carpi Ulnaris - Wrist extension",
+      "muscle_name": "Extensor Carpi Ulnaris",
+      "common": "Wrist Extensor",
+      "function": "Wrist extension",
+      "region": "forearms",
+      "exercises": [
+        "wrist extensions",
+        "reverse curls",
+        "farmer carries"
+      ],
+      "keywords": [
+        "extensor",
+        "carpi",
+        "ulnaris",
+        "wrist",
+        "forearm",
+        "grip"
+      ],
+      "path": "M47.555542,104.3518677c-.2962646,4.5925903-16.5184937,30.5925903-16.5184937,30.5925903,0,0-.4245605-.2363892-1.0932617-.5759277,3.3377686-5.9362793,14.857605-26.4119873,15.6488037-27.6463013.9259033-1.444458,1.9629517-2.3703613,1.9629517-2.3703613ZM108.444458,104.3518677c.2962646,4.5925903,16.5184937,30.5925903,16.5184937,30.5925903,0,0,.4245605-.2363892,1.0932617-.5759277-3.3377686-5.9362793-14.857605-26.4119873-15.6488037-27.6463013-.9259033-1.444458-1.9629517-2.3703613-1.9629517-2.3703613Z"
+    },
+    {
+      "view": "front",
+      "id": "hands",
+      "aria_label": "Hands - Grip and fine motor control",
+      "muscle_name": "Hands",
+      "common": "Hands and Fingers",
+      "function": "Grip and fine motor control",
+      "region": "hands",
+      "exercises": [
+        "grip trainers",
+        "dead hangs",
+        "farmer carries"
+      ],
+      "keywords": [
+        "hands",
+        "fingers",
+        "grip",
+        "strength"
+      ],
+      "path": "M28.222229,136.4259033c.4814453.666687.111084,4.666687-1.2124634,6.9259644s-1.6394043,7.2962646-1.6764526,10c-.0370483,2.7036743-1.888855,4.111084-1.8518677,2.4074097.0370483-1.7037354,0-5.111145,0-6,0-.888916-.5925903-1.2592773-1-.229187-.4074097,1.0300293-2.2314453,6.5740356-2.9351196,8.055481-.7037354,1.4815063-2.4641113,1.1428833-2.0197144-.7089844.444458-1.8518677,1.621521-5.1543579,2.1400757-6.5988159.5184937-1.444458.2592163-2.1481323-.5185547-1.111084s-3,5.4814453-3.9629517,6.888855-3,1.0370483-2-.9259033,2.5184937-5.888916,2.9259033-7.1851807c.4074097-1.2963257.0740967-2-.555542-1.0740967-.6296387.9259644-2.5184937,3.333374-3.7036743,5.0740967s-2.888916.4814453-2.1481934-.777771c.7407837-1.2592773,4.2963257-7.6296387,5.1851807-8.8518677.888916-1.222229.2823486-2.5348511-1.4814453-1.222229-3.1851807,2.3703613-4.2592773,1.4815063-3,.1481323,1.2592773-1.333313,3.4074097-3.666626,5.2592773-4.5184937,1.8518066-.8518677,4.444397-1.777771,5.777771-3.0740967,0,0,3.2962646-.555542,6.777771,2.777771ZM146.2963257,151.166687c-.7407837-1.2592773-4.2963257-7.6296387-5.1851807-8.8518677-.888916-1.222229-.2823486-2.5348511,1.4814453-1.222229,3.1851807,2.3703613,4.2592773,1.4815063,3,.1481323-1.2592773-1.333313-3.4074097-3.666626-5.2592773-4.5184937-1.8518066-.8518677-4.444397-1.777771-5.777771-3.0740967,0,0-3.2962646-.555542-6.777771,2.777771-.4814453.666687-.111084,4.666687,1.2124634,6.9259644s1.6394043,7.2962646,1.6764526,10c.0370483,2.7036743,1.888855,4.111084,1.8518677,2.4074097-.0370483-1.7037354,0-5.111145,0-6,0-.888916.5925903-1.2592773,1-.229187.4074097,1.0300293,2.2314453,6.5740356,2.9351196,8.055481.7037354,1.4815063,2.4641113,1.1428833,2.0197144-.7089844-.444458-1.8518677-1.621521-5.1543579-2.1400757-6.5988159-.5184937-1.444458-.2592163-2.1481323.5185547-1.111084s3,5.4814453,3.9629517,6.888855,3,1.0370483,2-.9259033-2.5184937-5.888916-2.9259033-7.1851807c-.4074097-1.2963257-.0740967-2,.555542-1.0740967.6296387.9259644,2.5184937,3.333374,3.7036743,5.0740967s2.888916.4814453,2.1481934-.777771Z"
+    },
+    {
+      "view": "front",
+      "id": "serratus_anterior",
+      "aria_label": "Serratus Anterior - Shoulder blade protraction",
+      "muscle_name": "Serratus Anterior",
+      "common": "Boxer's Muscle",
+      "function": "Shoulder blade protraction",
+      "region": "core",
+      "exercises": [
+        "push-ups",
+        "overhead press",
+        "pull-overs",
+        "ab rollouts"
+      ],
+      "keywords": [
+        "serratus",
+        "anterior",
+        "boxer",
+        "muscle",
+        "core",
+        "abs"
+      ],
+      "path": "M56.7592773,81.333313c1.277771,2.111145,8.666626,4.388916,8.666626,4.388916v7.222229c-5.944458-1.944458-8.9788818-7.145874-8.666626-11.611145ZM99.2407227,81.333313c-1.277771,2.111145-8.666626,4.388916-8.666626,4.388916v7.222229c5.944458-1.944458,8.9788818-7.145874,8.666626-11.611145Z"
+    },
+    {
+      "view": "front",
+      "id": "obliques_upper",
+      "aria_label": "External Obliques (Upper) - Torso rotation and side flexion",
+      "muscle_name": "External Obliques (Upper)",
+      "common": "Side Abs",
+      "function": "Torso rotation and side flexion",
+      "region": "core",
+      "exercises": [
+        "Russian twists",
+        "side planks",
+        "wood chops",
+        "oblique crunches"
+      ],
+      "keywords": [
+        "obliques",
+        "side",
+        "abs",
+        "core",
+        "rotation",
+        "twists"
+      ],
+      "path": "M55.7036743,87.972229h1.333374c3,6.194458,8.388855,6.694458,8.388855,6.694458,0,0-1.222229,12,0,18.388855-3.111084-3.166626-7.111084-5.166626-7.111084-5.166626.722229-9.555603-.9173584-13.7386475-2.9228516-18.444458.0487061-.675354.3117065-1.472229.3117065-1.472229ZM98.9629517,87.972229c-3,6.194458-8.388855,6.694458-8.388855,6.694458,0,0,1.222229,12,0,18.388855,3.111084-3.166626,7.111084-5.166626,7.111084-5.166626-.722229-9.555603.9173584-13.7386475,2.9228516-18.444458-.0487061-.675354-.3117065-1.472229-.3117065-1.472229h-1.333374Z"
+    },
+    {
+      "view": "front",
+      "id": "obliques_lower",
+      "aria_label": "External Obliques (Lower) - Hip flexion and rotation",
+      "muscle_name": "External Obliques (Lower)",
+      "common": "Lower Side Abs",
+      "function": "Hip flexion and rotation",
+      "region": "core",
+      "exercises": [
+        "hanging leg raises",
+        "bicycle crunches",
+        "side planks"
+      ],
+      "keywords": [
+        "obliques",
+        "lower",
+        "abs",
+        "core",
+        "hip",
+        "flexion"
+      ],
+      "path": "M65.222229,129.5c-3.5185547-5-7.8148193-7.3703613-7.8148193-7.3703613v-11.333313c1.222229-1.111145,2.9259033-1.0740967,7.8148193,4.6295776v14.0740967ZM98.5925903,110.7963257c-1.222229-1.111145-2.9259033-1.0740967-7.8148193,4.6295776v14.0740967c3.5185547-5,7.8148193-7.3703613,7.8148193-7.3703613v-11.333313Z"
+    },
+    {
+      "view": "front",
+      "id": "tendinous_inscriptions_upper",
+      "aria_label": "Rectus Abdominis (Upper) - Spinal flexion",
+      "muscle_name": "Rectus Abdominis (Upper)",
+      "common": "Upper Abs",
+      "function": "Spinal flexion",
+      "region": "core",
+      "exercises": [
+        "crunches",
+        "sit-ups",
+        "cable crunches"
+      ],
+      "keywords": [
+        "rectus",
+        "abdominis",
+        "upper",
+        "abs",
+        "six",
+        "pack",
+        "crunches"
+      ],
+      "path": "M76.3148193,84.833313c.8703613,1.7037354.861084,3.916687-1.0185547,5.333374-3.8950806,2.93573-7.9259033,5.1481323-7.9259033,5.1481323v-9.3703613s.888916-1.5925903,3.3703613-2.666687c2.4815063-1.0740356,4.7037354-.1481323,5.5740967,1.555542ZM88.6296387,85.944458s-.888916-1.5925903-3.3703613-2.666687c-2.4815063-1.0740356-4.7037354-.1481323-5.5740967,1.555542-.8703613,1.7037354-.861084,3.916687,1.0185547,5.333374,3.8950806,2.93573,7.9259033,5.1481323,7.9259033,5.1481323v-9.3703613Z"
+    },
+    {
+      "view": "front",
+      "id": "tendinous_inscriptions_middle",
+      "aria_label": "Rectus Abdominis (Middle) - Spinal flexion",
+      "muscle_name": "Rectus Abdominis (Middle)",
+      "common": "Middle Abs",
+      "function": "Spinal flexion",
+      "region": "core",
+      "exercises": [
+        "crunches",
+        "planks",
+        "leg raises"
+      ],
+      "keywords": [
+        "rectus",
+        "abdominis",
+        "middle",
+        "abs",
+        "core",
+        "six",
+        "pack"
+      ],
+      "path": "M77.333313,96.722229c0,4.9259033-6.0740356,6.666687-9.9629517,6v-4.7407227s3.5184937-3.4815063,5.777771-5.0370483,4.1851807.3703613,4.1851807,3.777771ZM88.6296387,97.9815063s-3.5184937-3.4815063-5.777771-5.0370483-4.1851807.3703613-4.1851807,3.777771c0,4.9259033,6.0740356,6.666687,9.9629517,6v-4.7407227Z"
+    },
+    {
+      "view": "front",
+      "id": "tendinous_inscriptions_lower",
+      "aria_label": "Rectus Abdominis (Lower) - Hip flexion and spinal stabilization",
+      "muscle_name": "Rectus Abdominis (Lower)",
+      "common": "Lower Abs",
+      "function": "Hip flexion and spinal stabilization",
+      "region": "core",
+      "exercises": [
+        "leg raises",
+        "reverse crunches",
+        "mountain climbers"
+      ],
+      "keywords": [
+        "rectus",
+        "abdominis",
+        "lower",
+        "abs",
+        "core",
+        "leg",
+        "raises"
+      ],
+      "path": "M67.3703613,111.6851807v-6.333313c5.8518677-3.0370483,9.9629517-1.4815063,9.9629517,1.111084,0,5.9259644-3.7036743,7.4074097-9.9629517,5.222229ZM78.666687,106.4629517c0,5.9259644,3.7036743,7.4074097,9.9629517,5.222229v-6.333313c-5.8518677-3.0370483-9.9629517-1.4815063-9.9629517,1.111084Z"
+    },
+    {
+      "view": "front",
+      "id": "rectus_abdominis",
+      "aria_label": "Rectus Abdominis - Spinal flexion and core stability",
+      "muscle_name": "Rectus Abdominis",
+      "common": "Six Pack",
+      "function": "Spinal flexion and core stability",
+      "region": "core",
+      "exercises": [
+        "crunches",
+        "planks",
+        "leg raises",
+        "sit-ups"
+      ],
+      "keywords": [
+        "rectus",
+        "abdominis",
+        "six",
+        "pack",
+        "abs",
+        "core",
+        "crunches"
+      ],
+      "path": "M88.7407227,118.833313c-.111084-3.916626-2.444397-4.805542-4.5369873-4.805542-3.2592773,0-3.9074097,2.694458-6.2037354,2.694458s-2.944458-2.694458-6.2037354-2.694458c-2.0925903,0-4.4259033.888916-4.5369873,4.805542-.111145,3.916687,2.222229,27.111145,10.7407227,27.111145s10.8518677-23.194458,10.7407227-27.111145Z"
+    },
+    {
+      "view": "front",
+      "id": "tensor_fasciae_latae",
+      "aria_label": "Tensor Fasciae Latae - Hip flexion and abduction",
+      "muscle_name": "Tensor Fasciae Latae",
+      "common": "TFL Hip Muscle",
+      "function": "Hip flexion and abduction",
+      "region": "legs",
+      "exercises": [
+        "leg raises",
+        "lunges",
+        "squats",
+        "hip abduction"
+      ],
+      "keywords": [
+        "tensor",
+        "fasciae",
+        "latae",
+        "TFL",
+        "hip",
+        "flexion",
+        "IT",
+        "band"
+      ],
+      "path": "M53.7592773,137.888916c.5-5.666687,2.333313-13.277771,2.333313-13.277771l1.666687.5s-2.222229,8.666626-4,12.777771ZM102.2407227,137.888916c-.5-5.666687-2.333313-13.277771-2.333313-13.277771l-1.666687.5s2.222229,8.666626,4,12.777771Z"
+    },
+    {
+      "view": "front",
+      "id": "pectineus",
+      "aria_label": "Pectineus - Hip flexion and adduction",
+      "muscle_name": "Pectineus",
+      "common": "Hip Adductor",
+      "function": "Hip flexion and adduction",
+      "region": "legs",
+      "exercises": [
+        "adductor machine",
+        "squats",
+        "lunges"
+      ],
+      "keywords": [
+        "pectineus",
+        "hip",
+        "adductor",
+        "inner",
+        "thigh"
+      ],
+      "path": "M62.4814453,130.6851807c2.2592773.7037354,1.444458,3.1663818,1.444458,3.1663818-1.888855-.5737915-1.444458-3.1663818-1.444458-3.1663818ZM92.0740967,133.8515625c1.888855-.5737915,1.444458-3.1663818,1.444458-3.1663818-2.2592773.7037354-1.444458,3.1663818-1.444458,3.1663818Z"
+    },
+    {
+      "view": "front",
+      "id": "adductor_longus",
+      "aria_label": "Adductor Longus - Hip adduction",
+      "muscle_name": "Adductor Longus",
+      "common": "Inner Thigh",
+      "function": "Hip adduction",
+      "region": "legs",
+      "exercises": [
+        "adductor machine",
+        "side lunges",
+        "sumo squats"
+      ],
+      "keywords": [
+        "adductor",
+        "longus",
+        "inner",
+        "thigh",
+        "hip",
+        "adduction"
+      ],
+      "path": "M65.222229,140.277771c-.777771-1.333313-1.1481934-4.4814453-.7407837-5.555542,2.111145.333313,3.5185547,2.666687,3.1852417,4.444458-.333374,1.777771-1.666687,2.444458-2.444458,1.111084ZM88.333313,139.166687c.333374,1.777771,1.666687,2.444458,2.444458,1.111084.777771-1.333313,1.1481934-4.4814453.7407837-5.555542-2.111145.333313-3.5185547,2.666687-3.1852417,4.444458Z"
+    },
+    {
+      "view": "front",
+      "id": "gracilis",
+      "aria_label": "Gracilis - Hip adduction and knee flexion",
+      "muscle_name": "Gracilis",
+      "common": "Inner Thigh",
+      "function": "Hip adduction and knee flexion",
+      "region": "legs",
+      "exercises": [
+        "leg curls",
+        "adductor exercises",
+        "side lunges"
+      ],
+      "keywords": [
+        "gracilis",
+        "inner",
+        "thigh",
+        "hip",
+        "adduction"
+      ],
+      "path": "M74.666687,149.4629517c2.3703613,2.8148193,1.555542,13.7037354-1.0370483,20.444458-.5185547-8-3.6296387-17.1851807-4.5925903-20.222229-.9630127-3.0370483-1.6296387-7.1851807,0-11.1851807.7407227,4.5925903,3.2592163,8.1481323,5.6296387,10.9629517ZM86.9629517,138.5c-.7407227,4.5925903-3.2592163,8.1481323-5.6296387,10.9629517-2.3703613,2.8148193-1.555542,13.7037354,1.0370483,20.444458.5185547-8,3.6296387-17.1851807,4.5925903-20.222229.9630127-3.0370483,1.6296387-7.1851807,0-11.1851807Z"
+    },
+    {
+      "view": "front",
+      "id": "sartorius",
+      "aria_label": "Sartorius - Hip and knee flexion",
+      "muscle_name": "Sartorius",
+      "common": "Longest Muscle",
+      "function": "Hip and knee flexion",
+      "region": "legs",
+      "exercises": [
+        "lunges",
+        "leg raises",
+        "cycling"
+      ],
+      "keywords": [
+        "sartorius",
+        "hip",
+        "knee",
+        "flexion",
+        "longest",
+        "muscle"
+      ],
+      "path": "M60.5925903,130.944458c3.4763794,16.666687,13.555542,22.555542,9.888855,50.666687.222229-18.777832-13.0740356-38.333374-9.888855-50.666687ZM95.4074097,130.944458c-3.4763794,16.666687-13.555542,22.555542-9.888855,50.666687-.222229-18.777832,13.0740356-38.333374,9.888855-50.666687Z"
+    },
+    {
+      "view": "front",
+      "id": "rectus_femoris",
+      "aria_label": "Rectus Femoris - Knee extension and hip flexion",
+      "muscle_name": "Rectus Femoris",
+      "common": "Quad",
+      "function": "Knee extension and hip flexion",
+      "region": "legs",
+      "exercises": [
+        "squats",
+        "leg press",
+        "lunges",
+        "leg extensions"
+      ],
+      "keywords": [
+        "rectus",
+        "femoris",
+        "quadriceps",
+        "quads",
+        "knee",
+        "extension"
+      ],
+      "path": "M58.3703613,131.25c-.611084,17.638916,8.5925903,26.2129517,6.8148193,41.9907227-1.5111694,13.4118042-2.4815063,16.1481934-5.7037354,10.0370483-3.222168-6.111084-10.111084-32.4629517-1.111084-52.027771ZM96.5185547,183.277771c3.222168-6.111084,10.111084-32.4629517,1.111084-52.027771.611084,17.638916-8.5925903,26.2129517-6.8148193,41.9907227,1.5111694,13.4118042,2.4815063,16.1481934,5.7037354,10.0370483Z"
+    },
+    {
+      "view": "front",
+      "id": "vastus_lateralis",
+      "aria_label": "Vastus Lateralis - Knee extension",
+      "muscle_name": "Vastus Lateralis",
+      "common": "Outer Quad",
+      "function": "Knee extension",
+      "region": "legs",
+      "exercises": [
+        "squats",
+        "leg press",
+        "lunges",
+        "leg extensions"
+      ],
+      "keywords": [
+        "vastus",
+        "lateralis",
+        "quadriceps",
+        "outer",
+        "quad",
+        "knee"
+      ],
+      "path": "M53.9147949,188.222229c-1.862915-5.6851807-3.4703369-19.6481323-1.7666626-31.944458,1.4815063,13.1851807,4.333313,23.888916,6.333313,28.888916s-2.7792358,8.5101929-4.5666504,3.055542ZM102.0852051,188.222229c1.862915-5.6851807,3.4703369-19.6481323,1.7666626-31.944458-1.4815063,13.1851807-4.333313,23.888916-6.333313,28.888916s2.7792358,8.5101929,4.5666504,3.055542Z"
+    },
+    {
+      "view": "front",
+      "id": "vastus_medialis",
+      "aria_label": "Vastus Medialis - Knee extension and stability",
+      "muscle_name": "Vastus Medialis",
+      "common": "Inner Quad (Teardrop)",
+      "function": "Knee extension and stability",
+      "region": "legs",
+      "exercises": [
+        "squats",
+        "leg extensions",
+        "lunges",
+        "step-ups"
+      ],
+      "keywords": [
+        "vastus",
+        "medialis",
+        "quadriceps",
+        "inner",
+        "quad",
+        "teardrop",
+        "VMO"
+      ],
+      "path": "M66.8703613,172.055542c1.944458,5.277771,4.666687,19.666687,0,19.666687-4.333313,0-.333313-14.111084,0-19.666687ZM89.1296387,191.722229c4.333313,0,.333313-14.111084,0-19.666687-1.944458,5.277771-4.666687,19.666687,0,19.666687Z"
+    },
+    {
+      "view": "front",
+      "id": "knees",
+      "aria_label": "Knees - Leg flexion and extension",
+      "muscle_name": "Knees",
+      "common": "Knee Joint",
+      "function": "Leg flexion and extension",
+      "region": "legs",
+      "exercises": [
+        "squats",
+        "lunges",
+        "leg curls",
+        "leg extensions"
+      ],
+      "keywords": [
+        "knees",
+        "knee",
+        "joint",
+        "leg",
+        "movement"
+      ],
+      "path": "M63.3981323,187.888916h-3.055542c-1.555542,6.194397-4.583313,7.722229-6.4277954,2.972229,0,0-1.9333496,3.75-1.3777466,9.805542,1.4259033.166626,1.6851807-1.333374,3.055542-1.333374,2.055542,0,1.222229,9.833374,3.3692017,14.111145,0,0,1.3530273-2.166687,3.6863403-4.388916s6.444458-7.277771,6.7989502-15.4046021c-3.9232788.4286499-6.2434082-.8731689-6.0489502-5.7620239ZM63.2593384,194.333374c-1.211853-1.2525024-3.0291748-.7454834-4.2975464.27771.3464355-1.9772949,3.9766235-2.4949951,4.2975464-.27771ZM61.6650391,203.5916748c-1.1741943.5441284-2.8933105-.0274658-3.0169067-1.4249878,1.5964355,2.1131592,3.9620361.2197876,5.3887939-1.222229-.3482666,1.1278076-1.1749878,2.1685181-2.3718872,2.6472168ZM100.4074097,199.333313c1.3703613,0,1.6296387,1.5,3.055542,1.333374.555603-6.055542-1.3777466-9.805542-1.3777466-9.805542-1.8444824,4.75-4.8722534,3.222168-6.4277954-2.972229h-3.055542c.194458,4.888855-2.1256714,6.1906738-6.0489502,5.7620239.3544922,8.1268311,4.4656372,13.182373,6.7989502,15.4046021s3.6863403,4.388916,3.6863403,4.388916c2.1469727-4.277771,1.3136597-14.111145,3.3692017-14.111145ZM97.038208,194.611084c-1.2683716-1.0231934-3.0856934-1.5302124-4.2975464-.27771.3209229-2.2172852,3.9511108-1.699585,4.2975464.27771ZM94.3349609,203.5916748c-1.1968994-.4786987-2.0236206-1.5194092-2.3718872-2.6472168,1.4267578,1.4420166,3.7923584,3.3353882,5.3887939,1.222229-.1235962,1.397522-1.8427124,1.9691162-3.0169067,1.4249878Z"
+    },
+    {
+      "view": "front",
+      "id": "peroneus_longus",
+      "aria_label": "Peroneus Longus - Ankle eversion and plantar flexion",
+      "muscle_name": "Peroneus Longus",
+      "common": "Lateral Calf",
+      "function": "Ankle eversion and plantar flexion",
+      "region": "calves",
+      "exercises": [
+        "calf raises",
+        "ankle circles",
+        "balance work"
+      ],
+      "keywords": [
+        "peroneus",
+        "longus",
+        "lateral",
+        "calf",
+        "ankle",
+        "eversion"
+      ],
+      "path": "M53.3703613,201.5c-2.222229,7-3.333313,19.055542-2.722229,27.722229-3.833313-9.166687-2.333313-20.166687,2.722229-27.722229ZM102.6296387,201.5c2.222229,7,3.333313,19.055542,2.722229,27.722229,3.833313-9.166687,2.333313-20.166687-2.722229-27.722229Z"
+    },
+    {
+      "view": "front",
+      "id": "gastrocnemius",
+      "aria_label": "Gastrocnemius - Ankle plantar flexion and knee flexion",
+      "muscle_name": "Gastrocnemius",
+      "common": "Calf",
+      "function": "Ankle plantar flexion and knee flexion",
+      "region": "calves",
+      "exercises": [
+        "standing calf raises",
+        "jump rope",
+        "box jumps"
+      ],
+      "keywords": [
+        "gastrocnemius",
+        "calves",
+        "calf",
+        "raises",
+        "jumping"
+      ],
+      "path": "M64.4259033,209.666687c-1,6.611084,1.888916,20.777771-4.833313,27.444458.666687-9.055603-.166687-17.388916,0-20.111145s2.611084-5.666687,4.833313-7.333313ZM96.4074097,217c-.166687-2.722229-2.611084-5.666687-4.833313-7.333313,1,6.611084-1.888916,20.777771,4.833313,27.444458-.666687-9.055603.166687-17.388916,0-20.111145Z"
+    },
+    {
+      "view": "front",
+      "id": "tibialis_anterior",
+      "aria_label": "Tibialis Anterior - Ankle dorsiflexion",
+      "muscle_name": "Tibialis Anterior",
+      "common": "Shin",
+      "function": "Ankle dorsiflexion",
+      "region": "calves",
+      "exercises": [
+        "toe raises",
+        "ankle dorsiflexion",
+        "heel walks"
+      ],
+      "keywords": [
+        "tibialis",
+        "anterior",
+        "shin",
+        "ankle",
+        "dorsiflexion"
+      ],
+      "path": "M54.9814453,202.666687c.1004639,14.222229,3.277832,18.0925903,3.277832,37.5,0,8.8973999-2.277832,10.7851562-3.7407837,10.777771,0,0,.3703613-10.666687-1.777771-21.722229s.2963257-22.444458,2.2407227-26.555542ZM101.4815063,250.944458s-.3703613-10.666687,1.777771-21.722229-.2963257-22.444458-2.2407227-26.555542c-.1004639,14.222229-3.277832,18.0925903-3.277832,37.5,0,8.8973999,2.277832,10.7851562,3.7407837,10.777771Z"
+    },
+    {
+      "view": "front",
+      "id": "extensor_digitorum_longus",
+      "aria_label": "Extensor Digitorum Longus - Toe extension and ankle dorsiflexion",
+      "muscle_name": "Extensor Digitorum Longus",
+      "common": "Toe Extensor",
+      "function": "Toe extension and ankle dorsiflexion",
+      "region": "calves",
+      "exercises": [
+        "toe raises",
+        "ankle exercises",
+        "barefoot walking"
+      ],
+      "keywords": [
+        "extensor",
+        "digitorum",
+        "longus",
+        "toe",
+        "extension",
+        "ankle"
+      ],
+      "path": "M50.3148193,250.666687s.222229-11.388916,0-19.111145c3.722229,3.055603,2.333313,19.111145,2.333313,19.111145h-2.333313ZM103.3518677,250.666687h2.333313s-.222229-11.388916,0-19.111145c-3.722229,3.055603-2.333313,19.111145-2.333313,19.111145Z"
+    },
+    {
+      "view": "front",
+      "id": "feet",
+      "aria_label": "Feet - Balance, stability, and propulsion",
+      "muscle_name": "Feet",
+      "common": "Foot Muscles",
+      "function": "Balance, stability, and propulsion",
+      "region": "feet",
+      "exercises": [
+        "toe raises",
+        "balance exercises",
+        "barefoot training"
+      ],
+      "keywords": [
+        "feet",
+        "foot",
+        "muscles",
+        "balance",
+        "stability"
+      ],
+      "path": "M57.8703613,252.722229c1,3.666687-.333313,12.5-.444458,15.611084-.111084,3.111145.888916,7.111145-6.333313,7.111145s-9.222229-3.111145-6-7.166687,4.333313-7.777771,4.333313-15.555542h8.444458ZM106.5740967,252.722229h-8.444458c-1,3.666687.333313,12.5.444458,15.611084.111084,3.111145-.888916,7.111145,6.333313,7.111145s9.222229-3.111145,6-7.166687-4.333313-7.777771-4.333313-15.555542Z"
+    },
+    {
+      "view": "back",
+      "id": "head",
+      "aria_label": "Head and Neck - Head movement and stability",
+      "muscle_name": "Head and Neck",
+      "common": "Head",
+      "function": "Head movement and stability",
+      "region": "upper",
+      "exercises": [
+        "neck stretches",
+        "head rotations"
+      ],
+      "keywords": [
+        "head",
+        "neck",
+        "cervical",
+        "spine",
+        "movement"
+      ],
+      "path": "M68.4259033,35.7684937s.166687,2.777771.7963257,6.5c.6295776,3.722229,4.3703613,3.944458,8.777771,3.944458s8.1481934-.222229,8.777771-3.944458c.6296387-3.722229.7963257-6.5.7963257-6.5,1.666687-1.277771,2.722229-3.888855,3-6.5.277771-2.611084-1.166687-2.666626-2.333313-.944397.722229-4.5.3518066-15.611145-10.2407837-15.611145s-10.9630127,11.111145-10.2407837,15.611145c-1.166626-1.722229-2.611084-1.666687-2.333313.944397.277771,2.611145,1.333313,5.222229,3,6.5Z"
+    },
+    {
+      "view": "back",
+      "id": "trapezius_upper",
+      "aria_label": "Upper Trapezius - Shoulder elevation and neck support",
+      "muscle_name": "Upper Trapezius",
+      "common": "Upper Traps",
+      "function": "Shoulder elevation and neck support",
+      "region": "upper",
+      "exercises": [
+        "shrugs",
+        "upright rows",
+        "overhead press"
+      ],
+      "keywords": [
+        "trapezius",
+        "upper",
+        "back",
+        "shoulders",
+        "neck",
+        "shrugs"
+      ],
+      "path": "M95.555603,54.027771c-2.5185547-2.5184937-9.1851807-7.333313-9.1851807-7.333313,0,0-4.9630127,1.0370483-8.3704224,1.0370483s-8.3704224-1.0370483-8.3704224-1.0370483c0,0-6.666626,4.8148193-9.1851807,7.333313,12.3704224.0740967,17.555603,2.9629517,17.555603,2.9629517,0,0,5.1851807-2.888855,17.555603-2.9629517Z"
+    },
+    {
+      "view": "back",
+      "id": "trapezius",
+      "aria_label": "Trapezius - Shoulder blade movement and upper back stability",
+      "muscle_name": "Trapezius",
+      "common": "Traps",
+      "function": "Shoulder blade movement and upper back stability",
+      "region": "upper",
+      "exercises": [
+        "rows",
+        "deadlifts",
+        "face pulls",
+        "shrugs"
+      ],
+      "keywords": [
+        "trapezius",
+        "back",
+        "shoulder",
+        "blade",
+        "retraction",
+        "scapula"
+      ],
+      "path": "M76.8148193,58.7129517v34c-9.944458-14-10.611145-33.333313-14.722229-36.944458,0,0,10.166626-.611084,14.722229,2.944458ZM79.1851807,58.7129517v34c9.944458-14,10.611145-33.333313,14.722229-36.944458,0,0-10.166626-.611084-14.722229,2.944458Z"
+    },
+    {
+      "view": "back",
+      "id": "infraspinatus",
+      "aria_label": "Infraspinatus - External shoulder rotation and stability",
+      "muscle_name": "Infraspinatus",
+      "common": "Rotator Cuff",
+      "function": "External shoulder rotation and stability",
+      "region": "upper",
+      "exercises": [
+        "external rotations",
+        "face pulls",
+        "band pull-aparts"
+      ],
+      "keywords": [
+        "infraspinatus",
+        "rotator",
+        "cuff",
+        "shoulder",
+        "stability",
+        "external",
+        "rotation"
+      ],
+      "path": "M60.0369873,57.6018677c4.111145,3.5,3.25,7.555542,6.5,16.944397-2.1087036-.5601196-11-3.833313-13.777771-11.222168,1.833374-3.833374,7.277771-5.722229,7.277771-5.722229ZM89.4630127,74.5462646c2.1087036-.5601196,11-3.833313,13.777771-11.222168-1.833374-3.833374-7.277771-5.722229-7.277771-5.722229-4.111145,3.5-3.25,7.555542-6.5,16.944397Z"
+    },
+    {
+      "view": "back",
+      "id": "teres_major",
+      "aria_label": "Teres Major - Shoulder extension and internal rotation",
+      "muscle_name": "Teres Major",
+      "common": "Lat Helper",
+      "function": "Shoulder extension and internal rotation",
+      "region": "upper",
+      "exercises": [
+        "pull-ups",
+        "lat pulldowns",
+        "rows"
+      ],
+      "keywords": [
+        "teres",
+        "major",
+        "shoulder",
+        "extension",
+        "lat",
+        "pulldown",
+        "rows"
+      ],
+      "path": "M52.7592163,75.5092773s-.4259033-4.8148193-.388855-7.444458c0,0,4.8518677,5.6296387,11.4814453,7.2962646,0,0-5.666626,1.888916-11.0925903.1481934ZM92.1481934,75.361084s5.666626,1.888916,11.0925903.1481934c0,0,.4259033-4.8148193.388855-7.444458,0,0-4.8518677,5.6296387-11.4814453,7.2962646Z"
+    },
+    {
+      "view": "back",
+      "id": "deltoid_posterior_head",
+      "aria_label": "Posterior Deltoid - Shoulder extension and external rotation",
+      "muscle_name": "Posterior Deltoid",
+      "common": "Rear Delts",
+      "function": "Shoulder extension and external rotation",
+      "region": "upper",
+      "exercises": [
+        "reverse flyes",
+        "face pulls",
+        "bent-over rows",
+        "rear delt raises"
+      ],
+      "keywords": [
+        "posterior",
+        "deltoid",
+        "rear",
+        "delts",
+        "shoulders",
+        "back"
+      ],
+      "path": "M58.4814453,55.7285156c-8.5,3.682251-7.9259033,11.5585327-7.9259033,11.5585327,0,0-4.5740967,5.0925903-7.9629517,7.2592163-.611145-8.388855,5.722229-19.388855,15.888855-18.817749ZM105.444458,67.2870483s4.5740967,5.0925903,7.9629517,7.2592163c.611145-8.388855-5.722229-19.388855-15.888855-18.817749,8.5,3.682251,7.9259033,11.5585327,7.9259033,11.5585327Z"
+    },
+    {
+      "view": "back",
+      "id": "deltoid_middle_head",
+      "aria_label": "Middle Deltoid - Shoulder abduction",
+      "muscle_name": "Middle Deltoid",
+      "common": "Side Delts",
+      "function": "Shoulder abduction",
+      "region": "upper",
+      "exercises": [
+        "lateral raises",
+        "overhead press",
+        "upright rows"
+      ],
+      "keywords": [
+        "middle",
+        "deltoid",
+        "lateral",
+        "delts",
+        "shoulders",
+        "abduction"
+      ],
+      "path": "M40.7592163,77.6574097c-3.611084-7-1.333313-19,10.111145-21.555542-9.388916,4.944397-9.222229,14.722229-10.111145,21.555542ZM115.2407837,77.6574097c3.611084-7,1.333313-19-10.111145-21.555542,9.388916,4.944397,9.222229,14.722229,10.111145,21.555542Z"
+    },
+    {
+      "view": "back",
+      "id": "triceps_brachii_lateral_long",
+      "aria_label": "Triceps Brachii (Lateral and Long Head) - Elbow extension and shoulder stability",
+      "muscle_name": "Triceps Brachii (Lateral and Long Head)",
+      "common": "Triceps",
+      "function": "Elbow extension and shoulder stability",
+      "region": "upper",
+      "exercises": [
+        "close-grip bench press",
+        "overhead extensions",
+        "dips",
+        "pushdowns"
+      ],
+      "keywords": [
+        "triceps",
+        "arms",
+        "elbow",
+        "extension",
+        "pressing"
+      ],
+      "path": "M34.8518066,97.583313c1.1481934-4.2407227,2.2963257-10.2592163,4.0185547-15.8703613l11.6463623-11.388855s.3536377,7.388855,1.2424927,14.555542c-4,4.611084-6.2036743,14.777771-7.3518066,16.6296387-1.1481934,1.8518066-4.2963257,3.2962646-3.888916,1.6295776.4074097-1.666626,1.7407227-6.555542,2.333313-8.2592163.5925903-1.7037354,1.8518677-7.7037354-.8148193-7.9629517-2.666626-.2592773-4.9629517,9.5925903-5.5925903,11.1851807-.6295776,1.5925903-2.003418.9990234-1.5925903-.5185547ZM104.2407837,84.8796387c4,4.611084,6.2036743,14.777771,7.3518066,16.6296387,1.1481934,1.8518066,4.2963257,3.2962646,3.888916,1.6295776-.4074097-1.666626-1.7407227-6.555542-2.333313-8.2592163-.5925903-1.7037354-1.8518677-7.7037354.8148193-7.9629517,2.666626-.2592773,4.9629517,9.5925903,5.5925903,11.1851807.6295776,1.5925903,2.003418.9990234,1.5925903-.5185547-1.1481934-4.2407227-2.2963257-10.2592163-4.0185547-15.8703613l-11.6463623-11.388855s-.3536377,7.388855-1.2424927,14.555542Z"
+    },
+    {
+      "view": "back",
+      "id": "triceps_brachii_medial",
+      "aria_label": "Triceps Brachii (Medial Head) - Elbow extension",
+      "muscle_name": "Triceps Brachii (Medial Head)",
+      "common": "Triceps Inner",
+      "function": "Elbow extension",
+      "region": "upper",
+      "exercises": [
+        "reverse grip pushdowns",
+        "close-grip press",
+        "dips"
+      ],
+      "keywords": [
+        "triceps",
+        "medial",
+        "head",
+        "arms",
+        "extension"
+      ],
+      "path": "M41.7183838,94.4854736c-.5702515,2.171936-2.4313965,10.28302-2.9313965,11.366394-.5,1.083313-1.0305786,1.0045776-1.25-.555603-.25-1.777771-.260376-5.8329468.592041-8.541748,2.2709961-7.2166138,3.3251953-8.5273438,3.7919922-8.6435547.0888672.0087891.1489258.0234375.2353516.1586914.6933594,1.0825195-.0141602,4.6016846-.4379883,6.2158203ZM114.0789795,88.1109619c-.0888672.0087891-.1489258.0234375-.2353516.1586914-.6933594,1.0825195.0141602,4.6016846.4379883,6.2158203.5702515,2.171936,2.4313965,10.28302,2.9313965,11.366394.5,1.083313,1.0305786,1.0045776,1.25-.555603.25-1.777771.260376-5.8329468-.592041-8.541748-2.2709961-7.2166138-3.3251953-8.5273438-3.7919922-8.6435547Z"
+    },
+    {
+      "view": "back",
+      "id": "extensor_carpi_ulnaris",
+      "aria_label": "Extensor Carpi Ulnaris - Wrist extension and ulnar deviation",
+      "muscle_name": "Extensor Carpi Ulnaris",
+      "common": "Wrist Extensor",
+      "function": "Wrist extension and ulnar deviation",
+      "region": "forearm",
+      "exercises": [
+        "wrist extensions",
+        "reverse curls",
+        "farmer carries"
+      ],
+      "keywords": [
+        "forearm",
+        "wrist",
+        "extensor",
+        "grip",
+        "strength"
+      ],
+      "path": "M33.3703613,99.1018677c1,1.2962646,2.6296387,4.4074097,3,6.888855.3703613,2.4815063-.7037354,5.7407837-2.6296387,6.888916-.111145,0,.222229-10.888916-.3703613-13.777771ZM119.6296387,105.9907227c-.3703613,2.4815063.7037354,5.7407837,2.6296387,6.888916.111145,0-.222229-10.888916.3703613-13.777771-1,1.2962646-2.6296387,4.4074097-3,6.888855Z"
+    },
+    {
+      "view": "back",
+      "id": "flexor_carpi_ulnaris",
+      "aria_label": "Flexor Carpi Ulnaris - Wrist flexion and grip strength",
+      "muscle_name": "Flexor Carpi Ulnaris",
+      "common": "Wrist Flexor",
+      "function": "Wrist flexion and grip strength",
+      "region": "forearm",
+      "exercises": [
+        "wrist curls",
+        "farmer carries",
+        "dead hangs"
+      ],
+      "keywords": [
+        "forearm",
+        "wrist",
+        "flexor",
+        "grip",
+        "strength"
+      ],
+      "path": "M19.333313,132.3981323c3.8518677-7.5370483,9.2592773-28,10.222229-30.7407227s2.444458-1.7037354,2.7407227,0c.2963257,1.7036743.222229,7.7407227.2963257,11.8148193,0,0-9.7037354,19.1481323-10.888916,21.2592773-1.1851807,2.111084-4.041687.9369507-2.3703613-2.333374ZM136.666687,132.3981323c-3.8518677-7.5370483-9.2592773-28-10.222229-30.7407227s-2.444458-1.7037354-2.7407227,0c-.2963257,1.7036743-.222229,7.7407227-.2963257,11.8148193,0,0,9.7037354,19.1481323,10.888916,21.2592773,1.1851807,2.111084,4.041687.9369507,2.3703613-2.333374Z"
+    },
+    {
+      "view": "back",
+      "id": "brachioradialis",
+      "aria_label": "Brachioradialis - Elbow flexion and forearm rotation",
+      "muscle_name": "Brachioradialis",
+      "common": "Forearm",
+      "function": "Elbow flexion and forearm rotation",
+      "region": "forearm",
+      "exercises": [
+        "hammer curls",
+        "reverse curls",
+        "rows"
+      ],
+      "keywords": [
+        "brachioradialis",
+        "forearm",
+        "elbow",
+        "flexion",
+        "grip"
+      ],
+      "path": "M42.6295776,108.5092773c-1.333313,2.666626-13.1481323,20.5925903-14.4814453,23.3148193-1.333313,2.722168-1.277771,2.666626-1.333313,4.055542-.055603,1.388855-.888916,2.722229-2.388916,2.722229s-2.388916-2.555603-.277771-6.611145c2.111084-4.055542,13.5184937-22.3703613,17.0370483-25.9629517,2.1806641-2.2266235,2.777771-.1851807,1.444397,2.4815063ZM131.5740967,138.6018677c1.5,0,2.388916-2.555603.277771-6.611145-2.111084-4.055542-13.5184937-22.3703613-17.0370483-25.9629517-2.1806641-2.2266235-2.777771-.1851807-1.444397,2.4815063,1.333313,2.666626,13.1481323,20.5925903,14.4814453,23.3148193,1.333313,2.722168,1.277771,2.666626,1.333313,4.055542.055603,1.388855.888916,2.722229,2.388916,2.722229Z"
+    },
+    {
+      "view": "back",
+      "id": "hands",
+      "aria_label": "Hands - Grip and fine motor control",
+      "muscle_name": "Hands",
+      "common": "Hands and Fingers",
+      "function": "Grip and fine motor control",
+      "region": "forearm",
+      "exercises": [
+        "grip trainers",
+        "dead hangs",
+        "farmer carries"
+      ],
+      "keywords": [
+        "hands",
+        "fingers",
+        "grip",
+        "strength",
+        "forearm"
+      ],
+      "path": "M25.9814453,144.2129517c-.138855,1.944458-1.583313,7.944458-1.777771,9.888916-.194458,1.944397-.2407227,4.9259033-.2407227,5.8148193,0,.888855-1.3518677,1.055542-1.3518677-.444458s-.611084-5.555542-.7592773-6.444458c-.1481323-.888916-1.2036743-.7592773-1.2036743.2592773,0,1.0184937-.333313,6.166626-.5370483,7.5184937-.2036743,1.3518677-2.0370483,1.2037354-1.9815063-.4259033.055603-1.6296387.055603-6.166687.0370483-7-.0184937-.833374-1.111084-.833374-1.222229-.0185547-.111084.8148193-.4814453,5.3518677-.6295776,6.611145-.1481934,1.2592773-1.6852417.9629517-1.666687-.4074097.0184937-1.3703613.0184937-5.722229.0184937-6.7592773s-.7592163.388916-1.0184937,1.4629517c-.2592773,1.0740967-.4815063,2.5-1.4074097,2.7963257-.9259033.2962646-.9096069-2.1933594-.1296387-4.2407227,1.0370483-2.722229,1.3292236-5.7019043,1.3292236-5.7019043-1.388916.138855-1.5328979-1.2055054-.0514526-1.612915.027771-1.527771.0092773-2.7963257.0648193-3.8240967.2232056-4.1290283,4.138916-4.305542,5.25-3.083313,1.111145,1.222229,3.166687,1.694397,5.111145,1.666626,1.944397-.027771,2.305542,2,2.166626,3.944458ZM143.888916,152.8240967c-1.0370483-2.722229-1.3292236-5.7019043-1.3292236-5.7019043,1.388916.138855,1.5328979-1.2055054.0514526-1.612915-.027771-1.527771-.0092773-2.7963257-.0648193-3.8240967-.2232056-4.1290283-4.138916-4.305542-5.25-3.083313-1.111145,1.222229-3.166687,1.694397-5.111145,1.666626-1.944397-.027771-2.305542,2-2.166626,3.944458.138855,1.944458,1.583313,7.944458,1.777771,9.888916.194458,1.944397.2407227,4.9259033.2407227,5.8148193,0,.888855,1.3518677,1.055542,1.3518677-.444458s.611084-5.555542.7592773-6.444458c.1481323-.888916,1.2036743-.7592773,1.2036743.2592773,0,1.0184937.333313,6.166626.5370483,7.5184937.2036743,1.3518677,2.0370483,1.2037354,1.9815063-.4259033-.055603-1.6296387-.055603-6.166687-.0370483-7,.0184937-.833374,1.111084-.833374,1.222229-.0185547.111084.8148193.4814453,5.3518677.6295776,6.611145.1481934,1.2592773,1.6852417.9629517,1.666687-.4074097-.0184937-1.3703613-.0184937-5.722229-.0184937-6.7592773s.7592163.388916,1.0184937,1.4629517c.2592773,1.0740967.4815063,2.5,1.4074097,2.7963257.9259033.2962646.9096069-2.1933594.1296387-4.2407227Z"
+    },
+    {
+      "view": "back",
+      "id": "latissimus_dorsi",
+      "aria_label": "Latissimus Dorsi - Shoulder adduction, extension, and internal rotation",
+      "muscle_name": "Latissimus Dorsi",
+      "common": "Lats",
+      "function": "Shoulder adduction, extension, and internal rotation",
+      "region": "middle",
+      "exercises": [
+        "pull-ups",
+        "chin-ups",
+        "lat pulldowns",
+        "rows",
+        "deadlifts"
+      ],
+      "keywords": [
+        "latissimus",
+        "dorsi",
+        "lats",
+        "back",
+        "width",
+        "pull-ups",
+        "rowing"
+      ],
+      "path": "M64.3703613,117.361084c-2.7407837-4.666626-6.5925903-16.888855-9.0370483-22.666626s-2.444458-11.8518677-2.222229-17.0370483c.2963257.0740967,8.333313.6592407,13.4259033-1.4111328,4.4259644,11.0407715,9.0925903,17.7814941,9.0925903,17.7814941v2.0740967s-7.111084,3.333313-11.2592163,21.2592163ZM100.666687,94.694458c2.444458-5.777771,2.444458-11.8518677,2.222229-17.0370483-.2963257.0740967-8.333313.6592407-13.4259033-1.4111328-4.4259644,11.0407715-9.0925903,17.7814941-9.0925903,17.7814941v2.0740967s7.111084,3.333313,11.2592163,21.2592163c2.7407837-4.666626,6.5925903-16.888855,9.0370483-22.666626Z"
+    },
+    {
+      "view": "back",
+      "id": "erector_spinae",
+      "aria_label": "Erector Spinae - Spinal extension and posture maintenance",
+      "muscle_name": "Erector Spinae",
+      "common": "Lower Back",
+      "function": "Spinal extension and posture maintenance",
+      "region": "lower",
+      "exercises": [
+        "deadlifts",
+        "back extensions",
+        "good mornings",
+        "hyperextensions"
+      ],
+      "keywords": [
+        "erector",
+        "spinae",
+        "lower",
+        "back",
+        "spine",
+        "posture",
+        "deadlift"
+      ],
+      "path": "M78,128.472229c4.1481934-7.777771,12.3704224-9.6296387,12.3704224-9.6296387,0,0-5.1852417-21.2592773-12.3704224-21.2592773s-12.3704224,21.2592773-12.3704224,21.2592773c0,0,8.222229,1.8518677,12.3704224,9.6296387Z"
+    },
+    {
+      "view": "back",
+      "id": "gluteus_medius",
+      "aria_label": "Gluteus Medius - Hip abduction and pelvic stability",
+      "muscle_name": "Gluteus Medius",
+      "common": "Hip Abductor",
+      "function": "Hip abduction and pelvic stability",
+      "region": "glutes",
+      "exercises": [
+        "hip abductions",
+        "clamshells",
+        "side-lying leg raises",
+        "single-leg squats"
+      ],
+      "keywords": [
+        "gluteus",
+        "medius",
+        "glutes",
+        "hip",
+        "stability",
+        "abduction"
+      ],
+      "path": "M62.0925903,118.472229s-3.5740967,2.3703613-6.0185547,2.888855c0,0-.222229-10,1.777771-15.333313,2.2963257,5.1851807,4.2407837,12.444458,4.2407837,12.444458ZM98.1481934,106.027771c-2.2963257,5.1851807-4.2407837,12.444458-4.2407837,12.444458,0,0,3.5740967,2.3703613,6.0185547,2.888855,0,0,.222229-10-1.777771-15.333313Z"
+    },
+    {
+      "view": "back",
+      "id": "gluteus_maximus",
+      "aria_label": "Gluteus Maximus - Hip extension and external rotation",
+      "muscle_name": "Gluteus Maximus",
+      "common": "Glutes",
+      "function": "Hip extension and external rotation",
+      "region": "glutes",
+      "exercises": [
+        "squats",
+        "deadlifts",
+        "hip thrusts",
+        "lunges",
+        "step-ups"
+      ],
+      "keywords": [
+        "gluteus",
+        "maximus",
+        "glutes",
+        "hip",
+        "extension",
+        "squats",
+        "deadlifts"
+      ],
+      "path": "M95.777771,121.8398438c-9.333313-1.0027466-16.6821899,4.8375244-17.777771,11.2249756-1.0955811-6.3874512-8.444458-12.2277222-17.777771-11.2249756-5.333374,9.2249756-6.9630127,35.8175659,5.4073486,35.8175659,7.0740967,0,12.3704224-7,12.3704224-7,0,0,5.2963257,7,12.3704224,7,12.3703613,0,10.7407227-26.5925903,5.4073486-35.8175659Z"
+    },
+    {
+      "view": "back",
+      "id": "vastus_lateralis",
+      "aria_label": "Vastus Lateralis - Knee extension",
+      "muscle_name": "Vastus Lateralis",
+      "common": "Outer Quad",
+      "function": "Knee extension",
+      "region": "legs",
+      "exercises": [
+        "squats",
+        "leg press",
+        "lunges",
+        "leg extensions"
+      ],
+      "keywords": [
+        "vastus",
+        "lateralis",
+        "quadriceps",
+        "knee",
+        "extension",
+        "squats"
+      ],
+      "path": "M52.1203613,150.5462646s1.25,5.444458,2.138855,12.944458c-1.888855,4.166687-4.277771,14.444458-4.277771,14.444458-1.055542-18.0925903,2.138916-27.388916,2.138916-27.388916ZM106.0185547,177.9351807c1.055542-18.0925903-2.138916-27.388916-2.138916-27.388916,0,0-1.25,5.444458-2.138855,12.944458,1.888855,4.166687,4.277771,14.444458,4.277771,14.444458Z"
+    },
+    {
+      "view": "back",
+      "id": "biceps_femoris",
+      "aria_label": "Biceps Femoris - Knee flexion and hip extension",
+      "muscle_name": "Biceps Femoris",
+      "common": "Hamstring",
+      "function": "Knee flexion and hip extension",
+      "region": "legs",
+      "exercises": [
+        "leg curls",
+        "Romanian deadlifts",
+        "good mornings",
+        "Nordic curls"
+      ],
+      "keywords": [
+        "biceps",
+        "femoris",
+        "hamstrings",
+        "knee",
+        "flexion",
+        "leg",
+        "curl"
+      ],
+      "path": "M62.2556152,160.5460815c-1.4671631,4.1851196-5.7353516,17.5557251-5.3667603,30.5187378-4.666626,5.4074097-8.0740356,10.888855-8.0740356,10.888855,2.5925903-8.9629517,1.2860718-19.111084,3.1986084-27.333313,1.4943848-6.4248657,4.489624-13.1663818,5.7276611-15.8066406.3095093-.6600952,1.0657959-.9776001,1.7538452-.7367554l1.8898315.661438c.7409668.2593384,1.1305542,1.0668335.8708496,1.8076782ZM107.1851807,201.9536743c-2.5925903-8.9629517-1.2860718-19.111084-3.1986084-27.333313-1.4943848-6.4248657-4.489624-13.1663818-5.7276611-15.8066406-.3095093-.6600952-1.0657959-.9776001-1.7538452-.7367554l-1.8898315.661438c-.7409668.2593384-1.1305542,1.0668335-.8708496,1.8076782,1.4671631,4.1851196,5.7353516,17.5557251,5.3667603,30.5187378,4.666626,5.4074097,8.0740356,10.888855,8.0740356,10.888855Z"
+    },
+    {
+      "view": "back",
+      "id": "semitendinosus",
+      "aria_label": "Semitendinosus - Knee flexion and hip extension",
+      "muscle_name": "Semitendinosus",
+      "common": "Inner Hamstring",
+      "function": "Knee flexion and hip extension",
+      "region": "legs",
+      "exercises": [
+        "leg curls",
+        "Romanian deadlifts",
+        "glute-ham raises"
+      ],
+      "keywords": [
+        "semitendinosus",
+        "hamstrings",
+        "knee",
+        "flexion",
+        "hip",
+        "extension"
+      ],
+      "path": "M67.2592163,162.694458c.5185547,3.1851807-.444397,11.7036743-2.111084,16.222229-1.666687,4.5184937-4.333313,13.555542-3.2963257,28.3703613-3.9259033-8.1481934-4.5925903-30.4653931,1.1851807-45.56604,1.1124268-2.9073486,3.7037354-2.211731,4.222229.9734497ZM92.9630127,161.7210083c-1.1124268-2.9073486-3.7037354-2.211731-4.222229.9734497-.5185547,3.1851807.444397,11.7036743,2.111084,16.222229,1.666687,4.5184937,4.333313,13.555542,3.2963257,28.3703613,3.9259033-8.1481934,4.5925903-30.4653931-1.1851807-45.56604Z"
+    },
+    {
+      "view": "back",
+      "id": "adductor_magnus",
+      "aria_label": "Adductor Magnus - Hip adduction and extension",
+      "muscle_name": "Adductor Magnus",
+      "common": "Inner Thigh",
+      "function": "Hip adduction and extension",
+      "region": "legs",
+      "exercises": [
+        "adductor machine",
+        "sumo squats",
+        "side lunges"
+      ],
+      "keywords": [
+        "adductor",
+        "magnus",
+        "inner",
+        "thigh",
+        "hip",
+        "adduction"
+      ],
+      "path": "M67.3998413,159.361084s6.0075684-.888855,8.748291-2.9629517c-.2935791,4.0027466-3.4074097,20.7407227-8.748291,29.333374,1.9334717-9.6296387,1.637146-23.333374,0-26.3704224ZM79.8518677,156.3981323c.2935791,4.0027466,3.4074097,20.7407227,8.748291,29.333374-1.9334717-9.6296387-1.637146-23.333374,0-26.3704224,0,0-6.0075684-.888855-8.748291-2.9629517Z"
+    },
+    {
+      "view": "back",
+      "id": "gracilis",
+      "aria_label": "Gracilis - Hip adduction and knee flexion",
+      "muscle_name": "Gracilis",
+      "common": "Inner Thigh",
+      "function": "Hip adduction and knee flexion",
+      "region": "legs",
+      "exercises": [
+        "leg curls",
+        "adductor exercises",
+        "side lunges"
+      ],
+      "keywords": [
+        "gracilis",
+        "inner",
+        "thigh",
+        "hip",
+        "adduction",
+        "knee",
+        "flexion"
+      ],
+      "path": "M66.5925903,179.9752197c.1343994,6.0644531.3703613,17.3118286-2.888916,24.4229126-1.111084-8.7407227.444458-20,2.888916-24.4229126ZM92.2963257,204.3981323c1.111084-8.7407227-.444458-20-2.888916-24.4229126-.1343994,6.0644531-.3703613,17.3118286,2.888916,24.4229126Z"
+    },
+    {
+      "view": "back",
+      "id": "soleus",
+      "aria_label": "Soleus - Ankle plantar flexion (bent knee)",
+      "muscle_name": "Soleus",
+      "common": "Lower Calf",
+      "function": "Ankle plantar flexion (bent knee)",
+      "region": "calves",
+      "exercises": [
+        "seated calf raises",
+        "calf press",
+        "walking"
+      ],
+      "keywords": [
+        "soleus",
+        "calves",
+        "ankle",
+        "plantar",
+        "flexion",
+        "calf",
+        "raises"
+      ],
+      "path": "M54.2592163,197.2129517c1.222229,5.555542-5.2962646,18.7407227-4.9259033,30.5185547-2.0740967,3.333313-6.666687,4.1481323-6.666687,4.1481323-.444397-9.7037354.756958-21.3620605,11.5925903-34.666687ZM113.333374,231.8796387c.444397-9.7037354-.756958-21.3620605-11.5925903-34.666687-1.222229,5.555542,5.2962646,18.7407227,4.9259033,30.5185547,2.0740967,3.333313,6.666687,4.1481323,6.666687,4.1481323Z"
+    },
+    {
+      "view": "back",
+      "id": "gastrocnemius",
+      "aria_label": "Gastrocnemius - Ankle plantar flexion and knee flexion",
+      "muscle_name": "Gastrocnemius",
+      "common": "Calf",
+      "function": "Ankle plantar flexion and knee flexion",
+      "region": "calves",
+      "exercises": [
+        "standing calf raises",
+        "jump rope",
+        "box jumps"
+      ],
+      "keywords": [
+        "gastrocnemius",
+        "calves",
+        "ankle",
+        "flexion",
+        "calf",
+        "raises",
+        "jumping"
+      ],
+      "path": "M59.7036743,209.0648193c.5185547,2.888855.1726685,13.111084-.2962646,18.7407227-.3320923,3.9862061-1.111145,8.444458-4,8.222229-2.888916-.222229-4.8148193-5.4815063-3.7037354-15.111084,1.111145-9.6296387,4.0740967-17.7037354,6-21.0370483-.0740967.222229,1.4815063,6.2962646,2,9.1851807ZM104.2963257,220.916687c-1.111145-9.6296387-4.0740967-17.7037354-6-21.0370483.0740967.222229-1.4815063,6.2962646-2,9.1851807-.5185547,2.888855-.1726685,13.111084.2962646,18.7407227.3320923,3.9862061,1.111145,8.444458,4,8.222229,2.888916-.222229,4.8148193-5.4815063,3.7037354-15.111084Z"
+    },
+    {
+      "view": "back",
+      "id": "feet",
+      "aria_label": "Feet - Balance, stability, and propulsion",
+      "muscle_name": "Feet",
+      "common": "Foot Muscles",
+      "function": "Balance, stability, and propulsion",
+      "region": "feet",
+      "exercises": [
+        "toe raises",
+        "balance exercises",
+        "barefoot training"
+      ],
+      "keywords": [
+        "feet",
+        "foot",
+        "muscles",
+        "balance",
+        "stability",
+        "ankle"
+      ],
+      "path": "M54.7407227,239.0648193s-4.8518677,11.4074097-4.2963257,15.555542c.555603,4.1481323,1.111145,10.0740967.5185547,13.1851807-.5925903,3.111145-2.5925903,7.4815063-6.0740967,7.4815063-3.4814453,0-5.0740356-2.6851807-5.5740356-4.8518677s-.611145-4.166687.611084-6.555542c1.222229-2.388916,2.6621094-8.222229,2.6643677-12.333374.0023193-4.111084,0-17.5184937,0-17.5184937,0,0,3.0393066.3703613,6.2245483-2.666687,1.6295776,5.4074097,5.9259033,7.7037354,5.9259033,7.7037354ZM113.409729,251.5462646c-.0023193-4.111084,0-17.5184937,0-17.5184937,0,0-3.0393066.3703613-6.2245483-2.666687-1.6295776,5.4074097-5.9259033,7.7037354-5.9259033,7.7037354,0,0,4.8518677,11.4074097,4.2963257,15.555542-.555603,4.1481323-1.111145,10.0740967-.5185547,13.1851807.5925903,3.111145,2.5925903,7.4815063,6.0740967,7.4815063,3.4814453,0,5.0740356-2.6851807,5.5740356-4.8518677s.611145-4.166687-.611084-6.555542c-1.222229-2.388916-2.6621094-8.222229-2.6643677-12.333374Z"
+    }
+  ]
+}
