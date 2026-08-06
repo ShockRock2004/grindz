@@ -21,6 +21,7 @@ import { Home } from './src/screens/Home'
 import { Category } from './src/screens/Category'
 import { Session } from './src/screens/Session'
 import { Planner } from './src/screens/Planner'
+import { BuildWorkout } from './src/screens/BuildWorkout'
 import { Progress } from './src/screens/Progress'
 import { History } from './src/screens/History'
 import { SessionDetail } from './src/screens/SessionDetail'
@@ -30,6 +31,8 @@ type Tab = 'train' | 'plan' | 'progress' | 'history'
 type Overlay =
   | { kind: 'none' }
   | { kind: 'category'; key: string }
+  // the session builder: pick exercises across muscle groups, then hand off to the session
+  | { kind: 'build' }
   | { kind: 'session' }
   | { kind: 'detail'; id: string }
 
@@ -74,11 +77,12 @@ function Shell() {
   if (session === null) return <SignIn />
 
   const openCategory = (key: string) => setOverlay({ kind: 'category', key })
+  const openBuild = () => setOverlay({ kind: 'build' })
   const openSession = () => setOverlay({ kind: 'session' })
   const closeOverlay = () => setOverlay({ kind: 'none' })
 
   const initial = (profile.name || profile.email || '?').trim()[0]?.toUpperCase() ?? '?'
-  const showResume = !!active && overlay.kind !== 'session' && overlay.kind !== 'category'
+  const showResume = !!active && overlay.kind !== 'session' && overlay.kind !== 'category' && overlay.kind !== 'build'
 
   // the live workout is full-screen with no shell chrome — same as web's /session
   if (overlay.kind === 'session') {
@@ -141,10 +145,12 @@ function Shell() {
         <View style={[s.stageInner, { maxWidth: L.content }]}>
         {overlay.kind === 'category' ? (
           <Category categoryKey={overlay.key} onBack={closeOverlay} onStarted={openSession} />
+        ) : overlay.kind === 'build' ? (
+          <BuildWorkout onClose={closeOverlay} onStarted={openSession} />
         ) : overlay.kind === 'detail' ? (
           <SessionDetail id={overlay.id} onBack={closeOverlay} />
         ) : tab === 'train' ? (
-          <Home onOpenCategory={openCategory} />
+          <Home onOpenCategory={openCategory} onBuildWorkout={openBuild} />
         ) : tab === 'plan' ? (
           <Planner onOpenCategory={openCategory} />
         ) : tab === 'progress' ? (
@@ -162,7 +168,13 @@ function Shell() {
         * left mounted it would sit on top of the keyboard, stealing ~72dp from exactly the
         * region the focused input needs, and swallowing the first tap aimed at an input.
         */}
-      {L.rail || keyboardUp ? null : (
+      {/*
+        The builder hides the tabs too. It carries its own fixed action bar at the bottom of
+        the screen, and the tab pill is drawn over it — leaving both mounted means the Start
+        button is behind the tabs and the session cannot be started at all. The builder is a
+        focused sub-flow with its own close button and a back gesture, so nothing is lost.
+      */}
+      {L.rail || keyboardUp || overlay.kind === 'build' ? null : (
       <View style={[s.nav, { paddingBottom: insets.bottom + 8 }]}>
         {showResume ? (
           <View style={s.resumeWrap}>

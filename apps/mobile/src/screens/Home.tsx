@@ -4,7 +4,7 @@ import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
 import { C, R, alpha } from '../theme'
 import { T, Ring, CountUp } from '../components/ui'
-import { CategoryThumb, IconCheck, IconClock, IconDumbbell, IconFlame } from '../components/Icons'
+import { CategoryThumb, IconCheck, IconClock, IconDumbbell, IconFlame, IconPlay } from '../components/Icons'
 import { CATALOG, categoryOf } from '../data/catalog'
 import { heroSource } from '../data/images'
 import { useData, usePrefs } from '../lib/app-context'
@@ -27,7 +27,7 @@ const CAT_GROUP: Record<string, string> = {
   back: 'pull', biceps: 'pull', legs: 'legs', abs: 'core', cardio: 'cardio',
 }
 
-export function Home({ onOpenCategory }: { onOpenCategory: (key: string) => void }) {
+export function Home({ onOpenCategory, onBuildWorkout }: { onOpenCategory: (key: string) => void; onBuildWorkout: () => void }) {
   const L = useLayout()
   const refresher = usePullToRefresh()
   const { sessions, sets, custom, plan, loading } = useData()
@@ -43,13 +43,17 @@ export function Home({ onOpenCategory }: { onOpenCategory: (key: string) => void
     return Object.values(by).reduce((a, n) => a + n, 0)
   }, [sets, custom])
 
-  /** categories already trained today, so a finished plan row stops saying "Start" */
+  /**
+   * Categories already trained today. Read from the sets, not the sessions: a session that
+   * spans groups is filed as 'mixed', so asking the session would mark nothing done after a
+   * chest+triceps workout and invent a 'mixed' group instead.
+   */
   const doneToday = useMemo(() => {
     const today = dateKey()
     const out = new Set<string>()
-    for (const x of sessions) if (dateKey(new Date(x.started_at)) === today) out.add(x.category_key)
+    for (const st of sets) if (st.category_key && dateKey(new Date(st.performed_at)) === today) out.add(st.category_key)
     return out
-  }, [sessions])
+  }, [sets])
   const plannedDays = new Set(plan.map((p) => p.day)).size
   const goal = Math.max(plannedDays, 3)
 
@@ -84,33 +88,36 @@ export function Home({ onOpenCategory }: { onOpenCategory: (key: string) => void
       {todaysPlan.length > 0 && (
         <View>
           <T style={s.sectionLabel}>Today · {todayName}</T>
-          <View style={{ gap: 8 }}>
-            {todaysPlan.map((c, i) => {
-              const done = doneToday.has(c!.key)
-              return (
-                <Pressable
-                  key={i}
-                  onPress={() => go(c!.key)}
-                  accessibilityRole="button"
-                  accessibilityLabel={done ? `${c!.title}, done today. Train it again` : `Start ${c!.title}`}
-                  style={({ pressed }) => [s.planRow, done && s.planRowDone, pressed && s.cardPressed]}
-                >
-                  <CategoryThumb icon={c!.key} size={44} />
-                  <View style={{ flex: 1 }}>
-                    <T style={[s.planTitle, done && { color: C.muted2 }]}>{c!.title}</T>
-                    <T style={s.planSub}>{done ? 'Done today' : c!.subtitle}</T>
+          {/*
+            One entry point, not one per planned group.
+            A day planned as chest and triceps used to render two "Start" rows, which
+            describes the plan but misdescribes the session: those are one trip to the gym,
+            and starting the first meant finishing it and starting the second to log the
+            second half. The plan is shown as a list of what today covers; the button opens a
+            picker across all of it.
+          */}
+          <View style={{ gap: 10 }}>
+            <View style={s.planChips}>
+              {todaysPlan.map((c, i) => {
+                const done = doneToday.has(c!.key)
+                return (
+                  <View key={i} style={[s.planChip, done && s.planChipDone]}>
+                    <CategoryThumb icon={c!.key} size={18} color={done ? C.muted2 : C.cyan} />
+                    <T style={[s.planChipText, done && { color: C.muted2 }]}>{c!.title}</T>
+                    {done ? <IconCheck size={11} color={C.muted2} /> : null}
                   </View>
-                  {done ? (
-                    <View style={s.donePill}>
-                      <IconCheck size={14} color={C.cyan} />
-                      <T style={s.donePillText}>Again</T>
-                    </View>
-                  ) : (
-                    <View style={s.startPill}><T style={s.startPillText}>Start</T></View>
-                  )}
-                </Pressable>
-              )
-            })}
+                )
+              })}
+            </View>
+            <Pressable
+              onPress={() => { haptic.success(); onBuildWorkout() }}
+              accessibilityRole="button"
+              accessibilityLabel="Start today's workout — choose exercises"
+              style={({ pressed }) => [s.startWorkout, pressed && { opacity: 0.85 }]}
+            >
+              <IconPlay size={15} color={C.cyanInk} />
+              <T style={s.startWorkoutText}>Start workout</T>
+            </Pressable>
           </View>
         </View>
       )}
@@ -222,6 +229,12 @@ const s = StyleSheet.create({
   tileLabel: { marginTop: 6, fontSize: 10, fontWeight: '600', letterSpacing: 0.6, color: C.muted, textTransform: 'uppercase' },
   sectionLabel: { marginBottom: 12, fontSize: 12, fontWeight: '700', letterSpacing: 1.6, color: C.muted, textTransform: 'uppercase' },
   planRow: { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: R.xl, backgroundColor: C.cyanWash2, borderWidth: 1, borderColor: alpha(C.cyan, 0.25), padding: 10 },
+  planChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  planChip: { flexDirection: 'row', alignItems: 'center', gap: 6, borderRadius: R.pill, borderWidth: 1, borderColor: alpha(C.cyan, 0.25), backgroundColor: C.cyanWash2, paddingLeft: 6, paddingRight: 11, paddingVertical: 5 },
+  planChipDone: { borderColor: C.line, backgroundColor: C.white5 },
+  planChipText: { fontSize: 12, fontWeight: '800', color: C.cyan },
+  startWorkout: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: R.lg, backgroundColor: C.cyan, paddingVertical: 13 },
+  startWorkoutText: { fontSize: 14, fontWeight: '800', color: C.cyanInk },
   planTitle: { fontSize: 15, fontWeight: '800' },
   planSub: { fontSize: 12, color: C.muted2 },
   startPill: { backgroundColor: C.cyan, borderRadius: R.sm, paddingHorizontal: 12, paddingVertical: 6 },
