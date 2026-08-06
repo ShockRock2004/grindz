@@ -57,7 +57,7 @@ export async function saveSession(s: ActiveSession, endedAt = Date.now()): Promi
       setRows.push({
         user_id: user,
         exercise: ex.exercise,
-        category_key: s.categoryKey,
+        category_key: ex.categoryKey ?? s.categoryKey,
         set_index: i,
         weight_kg: w,
         reps,

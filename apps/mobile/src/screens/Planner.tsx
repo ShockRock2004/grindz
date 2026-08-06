@@ -13,7 +13,28 @@ import { usePullToRefresh } from '../components/Refresh'
 
 type Grid = Record<string, Record<number, string>>
 type Rect = { x: number; y: number; w: number; h: number }
-const SLOTS = [1, 2]
+/**
+ * A day holds up to three blocks and shows what it has plus one landing space while you
+ * are carrying one. It used to render a fixed pair of slots, so an unplanned day advertised
+ * two holes and no day could ever hold a third session.
+ */
+const MAX_BLOCKS = 3
+
+/** The blocks on a day, in order, with any gaps closed up. */
+function blocksOf(grid: Grid, day: string): string[] {
+  const d = grid[day]
+  if (!d) return []
+  const out: string[] = []
+  for (let s = 1; s <= MAX_BLOCKS; s++) if (d[s]) out.push(d[s])
+  return out
+}
+
+/** Rebuild a day from an ordered list, so slots stay contiguous after a removal. */
+function withBlocks(grid: Grid, day: string, keys: string[]): Grid {
+  const d: Record<number, string> = {}
+  keys.slice(0, MAX_BLOCKS).forEach((k, i) => (d[i + 1] = k))
+  return { ...grid, [day]: d }
+}
 
 const TEMPLATES: { name: string; plan: Record<string, string[]> }[] = [
   { name: 'Push / Pull / Legs', plan: { Monday: ['chest', 'triceps'], Tuesday: ['back', 'biceps'], Wednesday: ['legs'], Thursday: ['shoulders'], Friday: ['abs', 'cardio'] } },
@@ -111,43 +132,88 @@ export function Planner({ onOpenCategory }: { onOpenCategory: (key: string) => v
   }
   popRef.current = playPop
 
-  // assign() is called from a PanResponder created once on mount, so the handler
+  // addBlock() is called from a PanResponder created once on mount, so the handler
   // reads it through a ref instead of closing over a stale first-render copy
-  const assignRef = useRef<(day: string, slot: number, key: string) => void>(() => {})
+  const assignRef = useRef<(day: string, key: string) => void>(() => {})
+  // ...and for the same reason the block list has to be read from a ref, not from the
+  // `grid` state variable captured when the responder was built
+  const gridRef = useRef<Grid>({})
+
+  /*
+   * Writes are queued, and server snapshots are ignored while any write is in flight.
+   *
+   * Deleting two blocks quickly used to make the second one come back, disappear, and come
+   * back again. Every edit is optimistic and then persisted, but this effect applied each
+   * server snapshot wholesale: the first delete's refresh() returned state captured before
+   * the second delete, so it resurrected the block until its own response landed. Adds
+   * flickered the same way.
+   *
+   * `inflight` counts unfinished writes; the effect only re-hydrates at zero, when the
+   * server and the screen describe the same moment. The queue serialises the writes, so an
+   * add and a delete on one slot can never be applied out of order. Nothing awaits before
+   * the UI updates, so a drop lands instantly regardless of the network.
+   */
+  const inflight = useRef(0)
+  const queue = useRef<Promise<unknown>>(Promise.resolve())
+
+  const enqueue = (op: () => Promise<unknown>) => {
+    inflight.current += 1
+    queue.current = queue.current
+      .then(op)
+      .catch(() => { /* keep the optimistic state; the next refresh reconciles */ })
+      .finally(() => {
+        inflight.current -= 1
+        if (inflight.current === 0) refresh()
+      })
+  }
 
   useEffect(() => {
+    if (inflight.current > 0) return
     const g: Grid = {}
     for (const p of plan) (g[p.day] ??= {})[p.slot] = p.category_key
     setGrid(g)
   }, [plan])
 
+  gridRef.current = grid
+
   const todayName = WEEKDAYS[(new Date().getDay() + 6) % 7]
 
-  const assign = async (day: string, slot: number, key: string) => {
-    haptic.drop()
-    setGrid((g) => ({ ...g, [day]: { ...g[day], [slot]: key } }))
-    setSelected(null)
-    await setPlanSlot(day, slot, key)
-    refresh()
-  }
-  assignRef.current = assign
+  /** Persist a day as an ordered list, clearing whatever the shorter list leaves behind. */
+  const writeDay = (day: string, keys: string[], prevLen: number) =>
+    enqueue(async () => {
+      for (let i = 0; i < keys.length; i++) await setPlanSlot(day, i + 1, keys[i])
+      for (let s = keys.length + 1; s <= prevLen; s++) await clearPlanSlot(day, s)
+    })
 
-  const clear = async (day: string, slot: number) => {
-    haptic.toggleOff()
-    setGrid((g) => { const d = { ...g[day] }; delete d[slot]; return { ...g, [day]: d } })
-    await clearPlanSlot(day, slot)
-    refresh()
+  /** Append a block to a day. Nothing happens once the day is full. */
+  const addBlock = (day: string, key: string) => {
+    const prev = blocksOf(gridRef.current, day)
+    if (prev.length >= MAX_BLOCKS) { haptic.toggleOff(); return }
+    const next = [...prev, key]
+    haptic.drop()
+    setGrid((g) => withBlocks(g, day, next))
+    setSelected(null)
+    writeDay(day, next, prev.length)
   }
-  const applyTemplate = async (tpl: (typeof TEMPLATES)[number]) => {
+  assignRef.current = addBlock
+
+  const removeBlock = (day: string, index: number) => {
+    const prev = blocksOf(gridRef.current, day)
+    const next = prev.filter((_, i) => i !== index)
+    haptic.toggleOff()
+    setGrid((g) => withBlocks(g, day, next))
+    writeDay(day, next, prev.length)
+  }
+
+  const applyTemplate = (tpl: (typeof TEMPLATES)[number]) => {
     haptic.success()
     setPendingTpl(null)
     const entries: { day: string; slot: number; category_key: string }[] = []
-    for (const [day, keys] of Object.entries(tpl.plan)) keys.slice(0, 2).forEach((key, i) => entries.push({ day, slot: i + 1, category_key: key }))
+    for (const [day, keys] of Object.entries(tpl.plan)) keys.slice(0, MAX_BLOCKS).forEach((key, i) => entries.push({ day, slot: i + 1, category_key: key }))
     const g: Grid = {}
     entries.forEach((e) => ((g[e.day] ??= {})[e.slot] = e.category_key))
     setGrid(g)
-    await replacePlan(entries)
-    refresh()
+    enqueue(() => replacePlan(entries))
   }
 
   const measureSlots = () => {
@@ -199,9 +265,16 @@ export function Planner({ onOpenCategory }: { onOpenCategory: (key: string) => v
 
   useEffect(() => () => { stopAutoScroll(); if (longPress.current) clearTimeout(longPress.current) }, [])
 
+  /**
+   * Which day is under the point, ignoring anything the pinned palette covers.
+   *
+   * The whole day card is the target now, not an individual slot. Aiming at one of two
+   * fixed holes meant the drop point moved depending on what was already planned, and it is
+   * what made a third block impossible to express.
+   */
   const hitTest = (px: number, py: number): string | null => {
     // anything at or above the pinned palette's bottom edge is hidden behind it
-    // (or behind the header) - a slot there is not something the user can see,
+    // (or behind the header) - a day there is not something the user can see,
     // so releasing over it must cancel rather than silently overwrite a day
     const pal = paletteRect.current
     if (pal && py <= pal.y + pal.h) return null
@@ -274,11 +347,10 @@ export function Planner({ onOpenCategory }: { onOpenCategory: (key: string) => v
           setSelected((x) => (x === key ? null : key))
         } else {
           const a = aim(e.nativeEvent.pageX, e.nativeEvent.pageY)
-          const k = hitTest(a.x, a.y)
-          if (k) {
-            const [day, slot] = k.split(':')
-            assignRef.current(day, Number(slot), key)
-            popRef.current(k)
+          const day = hitTest(a.x, a.y)
+          if (day) {
+            assignRef.current(day, key)
+            popRef.current(day)
           }
         }
         endDrag()
@@ -378,77 +450,86 @@ export function Planner({ onOpenCategory }: { onOpenCategory: (key: string) => v
         </View>
 
         <View style={[{ gap: 8 }, L.columns > 1 && { flexDirection: 'row', flexWrap: 'wrap' }]}>
-          {WEEKDAYS.map((day) => (
-            <View
-              key={day}
-              style={[s.dayCard, L.columns > 1 && { width: '49%' }, day === todayName && s.dayCardToday]}
-            >
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                <T style={s.dayName}>{day}</T>
-                {day === todayName ? <View style={s.todayTag}><T style={s.todayTagText}>TODAY</T></View> : null}
-              </View>
-              <View style={{ flexDirection: 'row', gap: 8 }}>
-                {SLOTS.map((slot) => {
-                  const key = grid[day]?.[slot]
-                  const cat = key ? CATALOG.find((c) => c.key === key) : undefined
-                  const k = slotKey(day, slot)
-                  const isHover = hover === k
-                  return (
-                    <View
-                      key={slot}
-                      ref={(r) => { slotRefs.current[k] = r }}
-                      collapsable={false}
-                      style={{ flex: 1 }}
+          {WEEKDAYS.map((day) => {
+            const blocks = blocksOf(grid, day)
+            const armed = !!dragKey || !!selected
+            const isHover = hover === day
+            const full = blocks.length >= MAX_BLOCKS
+            // the landing space exists only while carrying, and only if there is room —
+            // its appearance is what squeezes the existing blocks to show they will fit
+            const showGhost = armed && !full
+            return (
+              <View
+                key={day}
+                ref={(r) => { slotRefs.current[day] = r }}
+                collapsable={false}
+                style={[
+                  s.dayCard,
+                  L.columns > 1 && { width: '49%' },
+                  day === todayName && s.dayCardToday,
+                  isHover && (full ? s.dayCardFull : s.dayCardHover),
+                ]}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <T style={s.dayName}>{day}</T>
+                  {day === todayName ? <View style={s.todayTag}><T style={s.todayTagText}>TODAY</T></View> : null}
+                  {isHover && full ? <T style={s.fullTag}>DAY IS FULL</T> : null}
+                </View>
+
+                <Animated.View
+                  style={[
+                    { flexDirection: 'row', gap: 8 },
+                    popKey === day ? { transform: [{ scale: pop.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }) }] } : undefined,
+                  ]}
+                >
+                  {blocks.map((key, i) => {
+                    const cat = CATALOG.find((c) => c.key === key)
+                    return (
+                      <View key={`${key}-${i}`} style={[s.slot, s.slotFilled]}>
+                        <CategoryThumb icon={key} size={20} />
+                        <T style={s.slotText} numberOfLines={1}>{cat?.title ?? key}</T>
+                        <Pressable
+                          onPress={() => removeBlock(day, i)}
+                          hitSlop={10}
+                          accessibilityRole="button"
+                          accessibilityLabel={`Remove ${cat?.title ?? 'workout'} from ${day}`}
+                        >
+                          <IconClose size={14} color={C.muted2} />
+                        </Pressable>
+                      </View>
+                    )
+                  })}
+
+                  {showGhost ? (
+                    <Pressable
+                      onPress={() => { if (selected) addBlock(day, selected) }}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Add to ${day}`}
+                      style={[s.slot, isHover ? s.slotHover : s.slotArmed]}
                     >
-                      <Animated.View
-                        style={popKey === k ? {
-                          transform: [{ scale: pop.interpolate({ inputRange: [0, 1], outputRange: [0.82, 1] }) }],
-                        } : undefined}
-                      >
-                      {popKey === k ? (
-                        <Animated.View
-                          pointerEvents="none"
-                          style={[
-                            s.bloom,
-                            { opacity: pop.interpolate({ inputRange: [0, 0.4, 1], outputRange: [0.85, 0.5, 0] }) },
-                          ]}
-                        />
-                      ) : null}
-                      <Pressable
-                        onPress={() => { if (selected) assign(day, slot, selected) }}
-                        accessibilityRole="button"
-                        accessibilityLabel={cat ? `${day} slot ${slot}: ${cat.title}` : `${day} slot ${slot}: empty`}
-                        style={[
-                          s.slot,
-                          cat ? s.slotFilled : selected || dragKey ? s.slotArmed : s.slotEmpty,
-                          isHover && s.slotHover,
-                        ]}
-                      >
-                        {cat ? (
-                          <>
-                            <CategoryThumb icon={cat.key} size={22} />
-                            <T style={s.slotText} numberOfLines={1}>{cat.title}</T>
-                            <Pressable onPress={() => clear(day, slot)} hitSlop={10} accessibilityLabel={`Clear ${day} slot ${slot}`}>
-                              <IconClose size={14} color={C.muted2} />
-                            </Pressable>
-                          </>
-                        ) : (
-                          <T style={s.slotEmptyText}>{dragKey ? 'Drop here' : selected ? 'Tap to add' : 'Empty'}</T>
-                        )}
-                      </Pressable>
-                      </Animated.View>
+                      <T style={s.slotEmptyText}>{isHover ? 'Drop here' : 'Tap to add'}</T>
+                    </Pressable>
+                  ) : null}
+
+                  {!blocks.length && !showGhost ? (
+                    <View style={[s.slot, s.slotEmpty]}>
+                      <T style={s.slotEmptyText}>Rest day</T>
                     </View>
-                  )
-                })}
+                  ) : null}
+                </Animated.View>
+
+                {blocks.length ? (
+                  <Pressable onPress={() => onOpenCategory(blocks[0])} style={s.startRow}>
+                    <IconPlay size={13} color={C.cyanSoft} />
+                    <T style={s.startText}>
+                      Start {CATALOG.find((c) => c.key === blocks[0])?.title}
+                      {blocks.length > 1 ? ` +${blocks.length - 1}` : ''}
+                    </T>
+                  </Pressable>
+                ) : null}
               </View>
-              {grid[day]?.[1] ? (
-                <Pressable onPress={() => onOpenCategory(grid[day][1])} style={s.startRow}>
-                  <IconPlay size={13} color={C.cyanSoft} />
-                  <T style={s.startText}>Start {CATALOG.find((c) => c.key === grid[day][1])?.title}</T>
-                </Pressable>
-              ) : null}
-            </View>
-          ))}
+            )
+          })}
         </View>
 
         <Modal open={!!pendingTpl} onClose={() => setPendingTpl(null)} title={pendingTpl?.name ?? ''}>
@@ -560,14 +641,28 @@ const s = StyleSheet.create({
   palText: { fontSize: 9, fontWeight: '800', letterSpacing: -0.1, color: C.muted2, textAlign: 'center' },
   dayCard: { borderRadius: R.xl, borderWidth: 1, borderColor: C.line, padding: 12 },
   dayCardToday: { borderColor: alpha(C.cyan, 0.3), backgroundColor: alpha(C.cyan, 0.04) },
+  // the whole card is the drop target, so the whole card is what lights up
+  dayCardHover: { borderColor: C.cyan, backgroundColor: alpha(C.cyan, 0.1) },
+  dayCardFull: { borderColor: alpha(C.warn, 0.6), backgroundColor: alpha(C.warn, 0.06) },
+  fullTag: { marginLeft: 'auto', fontSize: 10, fontWeight: '800', color: C.warn },
   dayName: { fontSize: 14, fontWeight: '800' },
   todayTag: { borderRadius: 4, backgroundColor: alpha(C.cyan, 0.15), paddingHorizontal: 6, paddingVertical: 2 },
   todayTagText: { fontSize: 10, fontWeight: '800', color: C.cyan },
-  slot: { flex: 1, minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 6, borderRadius: R.md, paddingHorizontal: 12, paddingVertical: 8 },
-  slotFilled: { backgroundColor: C.cyanWash2, borderWidth: 1, borderColor: alpha(C.cyan, 0.25) },
-  slotArmed: { borderWidth: 1, borderStyle: 'dashed', borderColor: alpha(C.cyan, 0.4) },
-  slotEmpty: { borderWidth: 1, borderStyle: 'dashed', borderColor: C.line2 },
-  slotHover: { borderStyle: 'solid', borderColor: C.cyan, backgroundColor: alpha(C.cyan, 0.18) },
+  /*
+   * Every border here is solid, and none of them ever changes style.
+   *
+   * The empty and armed states used to be `borderStyle: 'dashed'`, with the hover state
+   * overriding it back to 'solid'. On Android that override does not take: React Native
+   * does not repaint an existing view's border when only its style changes, so a slot the
+   * user was dragging onto kept drawing dashes and the drop target looked provisional at
+   * the exact moment it was confirmed. Distinguishing the states by colour and fill instead
+   * of by dash pattern removes the repaint from the equation entirely.
+   */
+  slot: { flex: 1, minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 6, borderRadius: R.md, paddingHorizontal: 10, paddingVertical: 8, borderWidth: 1 },
+  slotFilled: { backgroundColor: C.cyanWash2, borderColor: alpha(C.cyan, 0.25) },
+  slotArmed: { borderColor: alpha(C.cyan, 0.45), backgroundColor: alpha(C.cyan, 0.05) },
+  slotEmpty: { borderColor: C.line2 },
+  slotHover: { borderColor: C.cyan, backgroundColor: alpha(C.cyan, 0.18) },
   slotText: { flex: 1, fontSize: 13, fontWeight: '800' },
   slotEmptyText: { flex: 1, textAlign: 'center', fontSize: 12, color: C.muted },
   startRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 8, borderRadius: R.md, backgroundColor: C.white5, paddingVertical: 8 },

@@ -54,6 +54,19 @@ export interface SessionExercise {
   sets: SetEntry[]
   note?: string
   /**
+   * The muscle category this exercise belongs to.
+   *
+   * A session can now span several categories, and its own `categoryKey` is then 'mixed'.
+   * Every set used to inherit the session's key, so in a mixed session every set would be
+   * filed under 'mixed' and the muscle heat map, the per-category hard-set counts and the
+   * progress charts would all lose the only field they group by. The set keeps the truth
+   * about which muscle it trained; the session keeps the truth about what it was.
+   *
+   * Undefined on sessions created before this existed — `saveSession` falls back to the
+   * session's key, which is correct for the single-category sessions those all were.
+   */
+  categoryKey?: string
+  /**
    * Per-session override of the catalog's logging mode. Abs work is the case
    * that needs it — a plank is timed, crunches are reps, and plenty of people
    * do either for the same movement — so those exercises expose a reps/time
