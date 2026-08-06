@@ -35,6 +35,23 @@ export async function signOut(): Promise<void> {
    * becomes unreachable for the one person who just said they were done.
    */
   setSignedInHint(false)
+  /*
+   * Put the URL back to the root before the session drops.
+   *
+   * Signing out does not navigate: App.tsx swaps the whole <Routes> tree for <Landing /> the
+   * moment `session` becomes null, so the router's location is never touched and the address
+   * bar keeps whatever route you were on. Sign out from /planner and the bar reads /planner
+   * while a sign-in page renders — a URL describing a page that is not on screen.
+   *
+   * replaceState rather than a router navigate: at this moment no route is rendering, so
+   * there is nothing to navigate. And replace rather than push, so Back does not return to a
+   * signed-out /planner.
+   */
+  try {
+    if (window.location.pathname !== '/') history.replaceState(null, '', '/')
+  } catch {
+    /* history is unavailable in some embedded webviews; the URL is cosmetic here */
+  }
   if (DEV_BYPASS) {
     // no real session to end — wipe the local mock so you get a clean slate
     try {
