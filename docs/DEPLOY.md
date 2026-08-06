@@ -177,6 +177,16 @@ To see which stage of the DNS/domain setup you are at:
 node scripts/check-domains.mjs
 ```
 
+To check that the landing page still satisfies Google's OAuth brand verification — the thing
+that keeps the consent screen saying "Grindz" rather than the Supabase project hostname:
+
+```bash
+node scripts/check-oauth-compliance.mjs
+```
+
+It reads the homepage as served, with no JavaScript executed, because that is what Google's
+verifier sees. Full context in [OAUTH-VERIFICATION.md](OAUTH-VERIFICATION.md).
+
 It checks delegation, the CDN Custom Domain and both Vercel hosts against a public resolver,
 and prints the next action. See [DOMAINS.md](DOMAINS.md).
 
