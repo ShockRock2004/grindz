@@ -54,10 +54,67 @@
         background: #050505;
         color: #fff;
       }
+
+      /*
+        Styling for the static shell below. Deliberately inline and tiny: it has to be
+        readable from the HTML alone, before any stylesheet or bundle has loaded.
+      */
+      .shell {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 64px 24px;
+        font-family: 'Inter', system-ui, sans-serif;
+        line-height: 1.7;
+        color: #a7a7b0;
+      }
+      .shell h1 {
+        font-family: 'Poppins', system-ui, sans-serif;
+        font-size: 34px;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        color: #fff;
+        margin: 0 0 16px;
+      }
+      .shell a {
+        color: #00c6ff;
+      }
     </style>
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      The div is not empty on purpose.
+
+      This page is client-rendered, so without this the served HTML contains no text at all —
+      2.6 KB of tags and a script. That is invisible to anything that does not execute
+      JavaScript, which includes Google's OAuth brand-verification checker: it fetched this
+      page, found no copy, and rejected the app twice — once for "your homepage does not
+      explain the purpose of your app", once for "the app name does not match the app name on
+      your homepage". Both were true of the HTML, and neither was true of the page.
+
+      It is also what a reader with JavaScript disabled was getting: a black screen.
+
+      React's createRoot() replaces these children wholesale on mount, so this is what the
+      document says before the bundle arrives and nothing after. Keep the wording in step with
+      src/Landing.tsx — a verifier comparing the two should find the same product described.
+    -->
+    <div id="root">
+      <div class="shell">
+        <h1>Grindz — train on purpose, know what you trained</h1>
+        <p>
+          Grindz is a training log. Record every set as you lift it, watch a muscle heat map fill
+          in across your week, and see progression on the exercises you actually repeat. It is
+          free, carries no advertising, and shows no ads or trackers.
+        </p>
+        <p>
+          It runs as an installable web app and as an Android app, sharing one account, so a
+          workout logged on a phone at the gym is on the laptop by the time you get home.
+        </p>
+        <p>
+          <a href="https://app.grindz.dev">Open the app</a> ·
+          <a href="/privacy/">Privacy policy</a>
+        </p>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
