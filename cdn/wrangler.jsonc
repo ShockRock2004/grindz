@@ -1,0 +1,18 @@
+{
+  // Static-assets-only Worker: no `main`, no script — Cloudflare serves ./public directly.
+  //
+  // This file is what the deploy was missing. The Cloudflare project was created as a Worker
+  // rather than a Pages project, so its build runs `npx wrangler deploy`, and without an
+  // `assets` block wrangler has no idea what to publish — it failed with "Could not detect a
+  // directory containing static files".
+  //
+  // Assets live under ./public rather than at the repo root so that only images are ever
+  // served. With `directory: "."` the README and this config would be public URLs too.
+  // Paths inside ./public are preserved, so the served URLs stay /images/<cat>/<file>.png
+  // and /hero/<cat>.png — matching src/data/assetCdn.ts in the app.
+  "name": "grindz-cdn",
+  "compatibility_date": "2026-08-01",
+  "assets": {
+    "directory": "./public"
+  }
+}

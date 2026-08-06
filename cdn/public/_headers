@@ -1,0 +1,20 @@
+# Cloudflare Pages response headers.
+#
+# These files are content-addressed by name and never mutate: an exercise photo keeps its
+# filename for the life of the app, and a changed photo ships under a new name. That makes
+# them safe to cache immutably, which is the whole point of moving them off-device — the
+# app downloads each image once, ever, and updating the APK does not re-download anything.
+#
+# max-age=31536000 is one year, the maximum browsers honour. `immutable` tells the browser
+# not to send a revalidation request even on a hard reload, which matters on a gym network.
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+/hero/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+# CORS is open because the assets are fetched from more than one origin for the same public,
+# non-sensitive images: the web app on grindz.dev and app.grindz.dev, any Vercel preview
+# deployment, localhost during development, and the React Native image loader.
