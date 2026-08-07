@@ -3,9 +3,12 @@
  *
  * Structured as three acts down a scrolling left column, with the door held open on the right:
  *
- *   ACT 1  the hook   — what this is in one line, plus the muscle map as the hero visual
- *   ACT 2  the proof  — screenshots and the three features that actually carry the product
+ *   ACT 1  the hook   — the name, what this is in one line, and the numbers
+ *   ACT 2  the proof  — screenshots, the muscle map, and the three features that carry it
  *   ACT 3  the close  — one account across devices, and what happens to your data
+ *
+ * The screenshots come before the muscle map: they show the product, and the map is a detail
+ * of it. The h1 is the app name — see the note above it before changing that.
  *
  * The right pane is `position: sticky`, which is the point of the split: the left side can be
  * as long as it needs to be to earn the click, and the click is never more than a glance away.
@@ -152,52 +155,9 @@ export function Landing() {
           </h2>
 
           <p className="mt-6 max-w-[54ch] text-[17px] leading-relaxed text-muted2">
-            Grindz is a training log that is honest about your week. Log every set as you lift,
-            watch the muscle map fill in, and see progression where you actually need it — on the
-            bar you are about to load.
+            Grindz is a training log. Record each set as you lift it, see which muscles you have
+            worked this week, and check what you lifted last time before you load the bar.
           </p>
-
-          {/*
-            What Google asks for, and why — kept in the first screenful on purpose.
-
-            This is a verification requirement, not decoration: the homepage must "explain with
-            transparency the purpose for which your app requests user data" and describe how the
-            app uses it. Saying "sign in with Google" is not that — it names the mechanism and
-            leaves the reason unstated.
-
-            It sat below the fold in Act 3 and the app was rejected for "your homepage does not
-            explain the purpose of your app" anyway, so it now runs directly under the hook where
-            a rendered screenshot of the page will contain it. Placement is part of the fix.
-
-            Keep this in step with the same section in index.html and with docs at /privacy/.
-          */}
-          <div className="mt-9 rounded-3xl border border-line bg-white/[0.02] p-7">
-            <h2 className="font-heading text-xl font-extrabold tracking-tight">
-              What Grindz asks Google for
-            </h2>
-            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
-              Signing in with Google gives Grindz three things: your <strong>email address</strong>,
-              your <strong>name</strong> and your <strong>profile picture</strong>. The email
-              identifies your account so your training history follows you between the browser and
-              the phone. The name and picture are only shown back to you, so you can see which
-              account you are signed in as.
-            </p>
-            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
-              That is the whole list. Grindz cannot read your Gmail, your Drive, your Contacts or
-              your Calendar — it never asks for them, and no permission it holds would allow it.
-              Nothing from your Google account is sold, shared or used for advertising.
-            </p>
-            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted">
-              Full detail in the{' '}
-              <a
-                href="/privacy/"
-                className="text-cyan underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
-              >
-                privacy policy
-              </a>
-              .
-            </p>
-          </div>
 
           <dl className="mt-9 flex flex-wrap gap-x-10 gap-y-4">
             {STATS.map((s) => (
@@ -211,8 +171,31 @@ export function Landing() {
             ))}
           </dl>
 
-          {/* hero visual — the real component, not a screenshot of it */}
-          <div className="mt-12 rounded-3xl border border-line bg-white/[0.02] p-6">
+          {/* ───────────────────────────── ACT 2 — THE PROOF ─────────────────────────── */}
+          <h2 className="mt-14 font-heading text-sm font-bold uppercase tracking-[0.14em] text-muted">
+            What it looks like
+          </h2>
+
+          <div className="relative mt-6 flex items-end gap-4 sm:gap-6">
+            <img
+              src="/showcase/phone-progress.png"
+              alt="The Grindz muscle heat map, showing which muscles were trained this week"
+              className="w-[30%] max-w-[220px] rounded-[1.6rem] border border-line2 shadow-card"
+            />
+            <img
+              src="/showcase/phone-home.png"
+              alt="The Grindz home screen, showing the week ring, streak and workout categories"
+              className="-mb-6 w-[34%] max-w-[250px] rounded-[1.8rem] border border-line2 shadow-card"
+            />
+            <img
+              src="/showcase/phone-session.png"
+              alt="Logging a live workout in Grindz, with sets, RPE and a rest timer"
+              className="w-[30%] max-w-[220px] rounded-[1.6rem] border border-line2 shadow-card"
+            />
+          </div>
+
+          {/* the real component, not a screenshot of it */}
+          <div className="mt-16 rounded-3xl border border-line bg-white/[0.02] p-6">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">
               A week of training, mapped
             </p>
@@ -232,30 +215,6 @@ export function Landing() {
             </div>
           </div>
 
-          {/* ───────────────────────────── ACT 2 — THE PROOF ─────────────────────────── */}
-          <h2 className="mt-20 font-heading text-sm font-bold uppercase tracking-[0.14em] text-muted">
-            What it looks like
-          </h2>
-
-          <div className="relative mt-6 flex items-end gap-4 sm:gap-6">
-            <img
-              src="/showcase/phone-progress.png"
-              alt="The Grindz muscle heat map, showing which muscles were trained this week"
-              className="w-[30%] max-w-[220px] rounded-[1.6rem] border border-line2 shadow-card"
-              loading="lazy"
-            />
-            <img
-              src="/showcase/phone-home.png"
-              alt="The Grindz home screen, showing the week ring, streak and workout categories"
-              className="-mb-6 w-[34%] max-w-[250px] rounded-[1.8rem] border border-line2 shadow-card"
-            />
-            <img
-              src="/showcase/phone-session.png"
-              alt="Logging a live workout in Grindz, with sets, RPE and a rest timer"
-              className="w-[30%] max-w-[220px] rounded-[1.6rem] border border-line2 shadow-card"
-              loading="lazy"
-            />
-          </div>
 
           <ul className="mt-14 flex flex-col gap-4">
             {FEATURES.map(({ Icon, title, body }) => (
@@ -287,6 +246,50 @@ export function Landing() {
               Everything syncs to your Google account, so a session logged in the browser is on your
               phone before you have racked the bar. The web app needs nothing installed — open it and
               add it to your home screen. The Android app is a free download.
+            </p>
+          </div>
+
+          {/*
+            What Google asks for, and why.
+
+            This is a verification requirement, not decoration: the homepage must "explain with
+            transparency the purpose for which your app requests user data" and describe how the
+            app uses it. Saying "sign in with Google" is not that — it names the mechanism and
+            leaves the reason unstated.
+
+            It lives at the end of the pitch on purpose. It was briefly moved up under the hook
+            on the theory that the verifier wanted it above the fold, but that was a guess and it
+            put a block of consent-screen prose in front of the product. The evidence does not
+            support the guess: this copy was already present in Google's rendered capture of the
+            page while it sat down here. What was actually missing was the app name in the h1.
+
+            Keep this in step with the same section in index.html and with docs at /privacy/.
+          */}
+          <div className="mt-8 rounded-3xl border border-line bg-white/[0.02] p-7">
+            <h2 className="font-heading text-xl font-extrabold tracking-tight">
+              What Grindz asks Google for
+            </h2>
+            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
+              Signing in with Google gives Grindz three things: your <strong>email address</strong>,
+              your <strong>name</strong> and your <strong>profile picture</strong>. The email
+              identifies your account so your training history follows you between the browser and
+              the phone. The name and picture are only shown back to you, so you can see which
+              account you are signed in as.
+            </p>
+            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
+              That is the whole list. Grindz cannot read your Gmail, your Drive, your Contacts or
+              your Calendar — it never asks for them, and no permission it holds would allow it.
+              Nothing from your Google account is sold, shared or used for advertising.
+            </p>
+            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted">
+              Full detail in the{' '}
+              <a
+                href="/privacy/"
+                className="text-cyan underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+              >
+                privacy policy
+              </a>
+              .
             </p>
           </div>
 
@@ -355,7 +358,7 @@ export function Landing() {
               href="https://github.com/ShockRock2004/grindz/releases/latest"
               target="_blank"
               rel="noreferrer"
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-line2 px-4 py-2.5 font-heading text-[13px] font-bold text-cyan transition hover:border-cyan/50 hover:bg-cyan/[0.08] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan px-4 py-3 font-heading text-[13.5px] font-bold text-white shadow-card transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
             >
               Get the APK
             </a>
