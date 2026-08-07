@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="460" height="96" viewBox="0 0 460 96" role="img" aria-label="Big Blue Button — download the APK">
-  <title>Big Blue Button — download the APK</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="96" viewBox="0 0 460 96" role="img" aria-label="Get the APK — download the Grindz Android app">
+  <title>Get the APK — download the Grindz Android app</title>
   <defs>
     <linearGradient id="grindzCyan" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00c6ff"/>
@@ -16,5 +16,5 @@
     font-weight="bold"
     letter-spacing="0.3"
     fill="#ffffff"
-  >Big Blue Button</text>
+  >Get the APK</text>
 </svg>
