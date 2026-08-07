@@ -687,12 +687,20 @@ function ExercisePicker({ open, onClose, onPick, custom, sets, favorites, catego
   const cats = mergeCustom(custom)
   const query = q.trim().toLowerCase()
 
+  /*
+   * A session that spans several muscle groups is filed as 'mixed', which is not a key in
+   * the catalog. Narrowing "recent" and "favourites" to that key would return nothing and
+   * leave the add-exercise sheet looking broken on exactly the sessions most likely to need
+   * it. A mixed session is not about one group, so neither list is narrowed.
+   */
+  const spansAll = !CATALOG_BY_KEY[categoryKey]
+
   // last 5 unique exercises logged in this category, newest first
   const recent = (() => {
     const seen = new Set<string>()
     const out: string[] = []
     for (const st of sets) {
-      if (st.category_key !== categoryKey || seen.has(st.exercise)) continue
+      if ((!spansAll && st.category_key !== categoryKey) || seen.has(st.exercise)) continue
       seen.add(st.exercise)
       out.push(st.exercise)
       if (out.length >= 5) break
@@ -701,6 +709,7 @@ function ExercisePicker({ open, onClose, onPick, custom, sets, favorites, catego
   })()
   // favorited exercises that belong to this category
   const favInCat = (() => {
+    if (spansAll) return favorites
     const cat = CATALOG_BY_KEY[categoryKey]
     const names = new Set<string>([
       ...(cat?.exercises.map((e) => e.name) ?? []),

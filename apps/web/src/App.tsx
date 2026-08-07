@@ -4,6 +4,7 @@ import { DesktopShell } from './components/DesktopShell'
 import { Landing } from './pages/Landing'
 import { Home } from './pages/Home'
 import { Category } from './pages/Category'
+import { NewWorkout } from './pages/NewWorkout'
 import { Session } from './pages/Session'
 import { History } from './pages/History'
 import { SessionDetail } from './pages/SessionDetail'
@@ -36,6 +37,8 @@ export default function App() {
       <Route element={<DesktopShell />}>
         <Route index element={<Home />} />
         <Route path="category/:key" element={<Category />} />
+        {/* the session builder — picks exercises across muscle groups, then hands off to /session */}
+        <Route path="workout/new" element={<NewWorkout />} />
         <Route path="planner" element={<Planner />} />
         <Route path="progress" element={<Progress />} />
         <Route path="history" element={<History />} />

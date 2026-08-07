@@ -103,7 +103,7 @@ export async function saveSession(s: ActiveSession, endedAt = Date.now()): Promi
         session_id: sessionId,
         user_id: DEV_USER_ID,
         exercise: ex.exercise,
-        category_key: s.categoryKey,
+        category_key: ex.categoryKey ?? s.categoryKey,
         set_index: i,
         weight_kg: w,
         reps,

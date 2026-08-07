@@ -12,7 +12,7 @@
  * Below `lg` the panes stack with sign-in FIRST, so a phone visitor lands on the button instead
  * of scrolling to find it.
  */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { signInWithGoogle } from '../lib/auth'
 import { BodyMap } from '../components/BodyMap'
 import {
@@ -108,6 +108,32 @@ const HERO_TRAINED = new Map<string, 'primary' | 'secondary'>([
 export function Landing() {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
+
+  /*
+   * Un-stick the button when the visitor comes back without having signed in.
+   *
+   * `busy` is set on click and deliberately never cleared on success, because success
+   * navigates the tab to Google and this component dies. But abandoning the consent screen
+   * and pressing Back does NOT re-run the module: browsers restore the page from the
+   * back/forward cache with its JavaScript state intact, so `busy` is still true, the button
+   * is still disabled, and it still reads "Redirecting to Google…". Sign-in is then
+   * impossible without a manual reload — on the app's own front door.
+   *
+   * `pageshow` with `persisted` is the bfcache restore itself. `visibilitychange` covers the
+   * providers and browsers that background the tab instead, and resetting there is harmless:
+   * a visible landing page should always have a live button.
+   */
+  useEffect(() => {
+    const wake = () => setBusy(false)
+    const onPageShow = (e: PageTransitionEvent) => { if (e.persisted) wake() }
+    const onVisible = () => { if (document.visibilityState === 'visible') wake() }
+    window.addEventListener('pageshow', onPageShow)
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      window.removeEventListener('pageshow', onPageShow)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [])
 
   const go = () => {
     setBusy(true)
