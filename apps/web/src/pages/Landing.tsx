@@ -1,33 +1,33 @@
 /**
- * Public landing page — the only thing a signed-out visitor sees.
+ * The app's front door — the only thing a signed out visitor sees on app.grindz.dev.
  *
- * Structured as three acts down a scrolling left column, with the door held open on the right:
+ * **Deliberately identical to grindz.dev.** A person crosses between these two origins in the
+ * middle of signing in, so a page that changed under them would read as having landed
+ * somewhere else. Same hero, same muscle map, same features, same footer, same copy. The only
+ * difference is the one that has to exist: over there the Google control is a link that hands
+ * the person across, and here it is a real button that asks Google, because this is the origin
+ * whose localStorage will hold the session.
  *
- *   ACT 1  the hook   — what this is in one line, plus the muscle map as the hero visual
- *   ACT 2  the proof  — screenshots and the three features that actually carry the product
- *   ACT 3  the close  — one account across devices, and what happens to your data
+ * Keep this in step with apps/landing/src/Landing.tsx. If you change one, change both.
  *
- * The right pane is `position: sticky`, which is the point of the split: the left side can be
- * as long as it needs to be to earn the click, and the click is never more than a glance away.
- * Below `lg` the panes stack with sign-in FIRST, so a phone visitor lands on the button instead
- * of scrolling to find it.
+ * The `?signin=1` handover is NOT handled here. It runs in src/lib/signin-handover.ts before
+ * React mounts. Waiting for this component to render was what made the redirect visibly slow,
+ * because it put this very page on screen for a couple of seconds first.
+ *
+ * Copy rule for this file: short sentences, no hyphens.
  */
 import { useEffect, useState } from 'react'
 import { signInWithGoogle } from '../lib/auth'
+import { SITE_ORIGIN } from '../lib/domains'
 import { BodyMap } from '../components/BodyMap'
-import {
-  IconDumbbell,
-  IconCalendar,
-  IconChart,
-  IconClock,
-  IconTrophy,
-  IconHistory,
-  IconScale,
-} from '../components/Icons'
+import { IconDumbbell, IconTrophy, IconCalendar } from '../components/Icons'
 
-function GoogleG() {
+const REPO = 'https://github.com/ShockRock2004/grindz'
+const RELEASES = `${REPO}/releases/latest`
+
+function GoogleG({ size = 20 }: { size?: number }) {
   return (
-    <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden>
       <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.4 5.4 2.5 13.3l7.8 6.1C12.2 13.2 17.6 9.5 24 9.5z" />
       <path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.7 7l7.2 5.6c4.2-3.9 6.6-9.6 6.6-16.1z" />
       <path fill="#FBBC05" d="M10.3 28.5c-.5-1.4-.8-3-.8-4.5s.3-3.1.8-4.5l-7.8-6.1C.9 16.5 0 20.1 0 24s.9 7.5 2.5 10.6l7.8-6.1z" />
@@ -36,7 +36,16 @@ function GoogleG() {
   )
 }
 
-/** The Grindz mark, matching the app icon and the in-app header. */
+/** Inline rather than a lucide re export: lucide has deprecated its brand glyphs. */
+function GithubMark({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M12 .5C5.73.5.99 5.24.99 11.51c0 4.86 3.15 8.98 7.52 10.44.55.1.75-.24.75-.53v-1.9c-3.06.67-3.71-1.3-3.71-1.3-.5-1.28-1.23-1.62-1.23-1.62-1-.68.08-.67.08-.67 1.1.08 1.69 1.14 1.69 1.14.99 1.69 2.59 1.2 3.22.92.1-.72.39-1.2.7-1.48-2.44-.28-5.01-1.22-5.01-5.45 0-1.2.43-2.19 1.13-2.96-.11-.28-.49-1.4.11-2.92 0 0 .93-.3 3.04 1.13a10.5 10.5 0 0 1 5.54 0c2.11-1.43 3.03-1.13 3.03-1.13.6 1.52.22 2.64.11 2.92.71.77 1.13 1.76 1.13 2.96 0 4.24-2.58 5.17-5.03 5.44.4.34.75 1.01.75 2.04v3.03c0 .29.2.64.76.53a11.02 11.02 0 0 0 7.51-10.44C23.01 5.24 18.27.5 12 .5z" />
+    </svg>
+  )
+}
+
+/** The Grindz mark, matching the app icon and the in app header. */
 function Mark({ size = 40 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
@@ -59,43 +68,42 @@ function Mark({ size = 40 }: { size?: number }) {
 
 const STATS = [
   { value: '8', label: 'muscle groups' },
-  { value: '42', label: 'exercises, illustrated' },
-  { value: '∞', label: 'custom lifts' },
+  { value: '42', label: 'exercises' },
+  { value: 'Free', label: 'no ads, ever' },
 ]
 
-/** Act 2 — the three that actually carry the product. */
+/**
+ * Each feature owns a screenshot of itself. Hovering the card brings that shot to the front
+ * of the gallery, which is the point of pairing them: the claim and the proof are the same
+ * gesture rather than two things to read separately.
+ */
 const FEATURES = [
   {
     Icon: IconDumbbell,
     title: 'Log as you lift',
-    body: 'Weight × reps, ticked off one set at a time, with RPE captured on the set you just finished — while it is still honest. The rest timer starts itself and the screen stays awake.',
+    body: 'Weight and reps, one set at a time. The rest timer starts itself.',
+    shot: '/showcase/phone-session.png',
+    alt: 'Logging a chest session in Grindz, set by set',
   },
   {
     Icon: IconTrophy,
-    title: 'Progression where you need it',
-    body: 'Every exercise shows what you did last time and your best, right where you are about to type the next number. PRs — top set and estimated 1RM — are caught as they happen.',
+    title: 'Progression in view',
+    body: 'Last time and your best, where you type the next number.',
+    shot: '/showcase/phone-history.png',
+    alt: 'Grindz history, showing a 16 week training heatmap',
   },
   {
-    Icon: IconChart,
-    title: 'A muscle map that means something',
-    body: 'Not decoration: traced anatomy where every muscle is individually shaded by what you actually trained this week, so a neglected group is impossible to miss.',
+    Icon: IconCalendar,
+    title: 'Plan the week',
+    body: 'Drag a split onto any day, up to three blocks.',
+    shot: '/showcase/phone-planner.png',
+    alt: 'The Grindz weekly planner with a split dropped onto it',
   },
 ]
 
-const ALSO = [
-  { Icon: IconCalendar, t: 'Weekly planner with splits' },
-  { Icon: IconHistory, t: '16-week training heatmap' },
-  { Icon: IconClock, t: 'Automatic rest timer' },
-  { Icon: IconScale, t: 'Bodyweight tracking' },
-]
-
-const PROMISES = ['Your sets, plan and PRs on every device', 'Works offline once loaded', 'Free, and free of ads']
-
 /*
- * A representative week for the hero body map. Static sample data on purpose: nobody is signed
- * in yet, so there is nothing real to draw, and an empty figure would sell the feature short.
- * A Map rather than a Set because TrainedInput uses the map form to express intensity — chest
- * and shoulders worked, the muscles that assist those shaded lighter.
+ * A representative week for the muscle map. Static sample data on purpose: nobody is signed in
+ * yet, so there is nothing real to draw, and an empty figure would sell the feature short.
  */
 const HERO_TRAINED = new Map<string, 'primary' | 'secondary'>([
   ['chest', 'primary'],
@@ -105,9 +113,22 @@ const HERO_TRAINED = new Map<string, 'primary' | 'secondary'>([
   ['biceps', 'secondary'],
 ])
 
+const BTN =
+  'flex items-center justify-center gap-3 rounded-2xl font-heading font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan active:scale-[0.985] disabled:cursor-not-allowed disabled:opacity-70'
+const GOOGLE_SKIN = 'bg-white text-[#111] hover:bg-white/90'
+const APK_SKIN = 'bg-cyan text-white shadow-card hover:brightness-110'
+const SIZE_LG = 'px-6 py-3.5 text-[14.5px]'
+const SIZE_SM = 'px-5 py-3 text-[13.5px]'
+const GHOST =
+  'flex items-center gap-3 rounded-2xl border border-line text-muted2 transition hover:border-line2 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan'
+
 export function Landing() {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
+
+  /** Which feature is being pointed at. Defaults to the first, so the gallery is never limp. */
+  const [hovered, setHovered] = useState<number | null>(null)
+  const active = hovered ?? 0
 
   /*
    * Un-stick the button when the visitor comes back without having signed in.
@@ -116,8 +137,8 @@ export function Landing() {
    * navigates the tab to Google and this component dies. But abandoning the consent screen
    * and pressing Back does NOT re-run the module: browsers restore the page from the
    * back/forward cache with its JavaScript state intact, so `busy` is still true, the button
-   * is still disabled, and it still reads "Redirecting to Google…". Sign-in is then
-   * impossible without a manual reload — on the app's own front door.
+   * is still disabled, and it still reads "Redirecting to Google…". Sign in is then impossible
+   * without a manual reload, on the app's own front door.
    *
    * `pageshow` with `persisted` is the bfcache restore itself. `visibilitychange` covers the
    * providers and browsers that background the tab instead, and resetting there is harmless:
@@ -145,244 +166,251 @@ export function Landing() {
     })
   }
 
-  /*
-   * The handover from grindz.dev.
-   *
-   * The marketing site cannot run OAuth — `localStorage` is per-origin, so a session minted
-   * there would be invisible here. Its "Continue with Google" is therefore a link to this
-   * origin, and it arrives carrying `?signin=1` to say what the person actually asked for.
-   * Without acting on it they land on this page and have to press a second Google button to
-   * get what the first one promised, which is what they reported: "it goes to app.grindz.dev
-   * instead of signing in".
-   *
-   * This component only mounts when `session === null` (see App.tsx), so an already-signed-in
-   * visitor never reaches here and cannot be bounced into a needless consent screen.
-   *
-   * The flag is stripped **before** starting sign-in, and that ordering carries the whole
-   * safety argument:
-   *
-   *   - abandoning the consent screen and pressing Back restores this page from bfcache with
-   *     a clean URL, so it does not immediately fire again and trap the person in a loop
-   *   - a reload, a bookmark or a shared link cannot re-trigger it either
-   *   - StrictMode's double-mount in development sees no flag on the second pass
-   *
-   * `replaceState` rather than `pushState`: it rewrites this entry instead of adding one, so
-   * Back still leaves the app rather than stepping through a URL we have already handled.
-   * `redirectTo` is `window.location.origin`, which has no query, so the return trip is
-   * unaffected either way.
-   */
-  useEffect(() => {
-    const url = new URL(window.location.href)
-    if (url.searchParams.get('signin') !== '1') return
-    url.searchParams.delete('signin')
-    window.history.replaceState({}, '', url.pathname + url.search + url.hash)
-    go()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  /** The one control that differs from grindz.dev: a real button, not a link across. */
+  const signInButton = (size: string, iconSize: number) => (
+    <button type="button" onClick={go} disabled={busy} className={`${BTN} ${GOOGLE_SKIN} ${size}`}>
+      <GoogleG size={iconSize} />
+      {busy ? 'Redirecting to Google…' : 'Continue with Google'}
+    </button>
+  )
 
   return (
-    <div data-testid="landing" className="min-h-full lg:grid lg:h-full lg:grid-cols-[1.25fr_minmax(400px,0.75fr)]">
-      {/* ═════════════════════════════ LEFT — the pitch, in three acts ═════════════════ */}
-      <section className="relative order-2 overflow-hidden px-6 py-14 lg:order-1 lg:h-full lg:overflow-y-auto lg:px-14 lg:py-16">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              'radial-gradient(1100px 620px at 12% -10%, rgba(0,114,255,0.20) 0%, transparent 62%), radial-gradient(760px 520px at 88% 6%, rgba(0,198,255,0.09) 0%, transparent 58%)',
-          }}
-        />
+    <div data-testid="landing" className="min-h-full">
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10"
+        style={{
+          background:
+            'radial-gradient(1300px 760px at 12% -12%, rgba(0,114,255,0.22) 0%, transparent 62%), radial-gradient(900px 600px at 90% 2%, rgba(0,198,255,0.10) 0%, transparent 58%)',
+        }}
+      />
 
-        <div className="mx-auto max-w-3xl">
-          {/* ───────────────────────────── ACT 1 — THE HOOK ──────────────────────────── */}
-          <div className="flex items-center gap-3">
+      <main className="mx-auto w-full max-w-[1560px] px-6 pb-20 pt-12 sm:px-10 lg:pt-16">
+        {/* ══════════════════ 1 · THE PRODUCT, BESIDE A PICTURE OF IT ══════════════════ */}
+        <section className="grid items-center gap-12 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-16">
+          <div>
             <Mark size={44} />
-            <span className="font-heading text-2xl font-extrabold tracking-tight">Grindz</span>
-          </div>
 
-          <h1 className="mt-10 font-heading text-[clamp(2.25rem,4.6vw,3.75rem)] font-extrabold leading-[1.04] tracking-tight">
-            Train on purpose.
-            <br />
-            <span className="bg-cyan bg-clip-text text-transparent">Know what you trained.</span>
-          </h1>
+            <h1 className="mt-6 font-heading text-[clamp(3rem,6vw,5rem)] font-extrabold leading-[1] tracking-tight">
+              Grindz
+            </h1>
 
-          <p className="mt-6 max-w-[54ch] text-[17px] leading-relaxed text-muted2">
-            A training log that is honest about your week. Log every set as you lift, watch the
-            muscle map fill in, and see progression where you actually need it — on the bar you are
-            about to load.
-          </p>
+            <h2 className="mt-4 max-w-[16ch] font-heading text-[clamp(1.6rem,3vw,2.6rem)] font-extrabold leading-[1.12] tracking-tight">
+              Log every set.{' '}
+              <span className="bg-cyan bg-clip-text text-transparent">See every muscle.</span>
+            </h2>
 
-          <dl className="mt-9 flex flex-wrap gap-x-10 gap-y-4">
-            {STATS.map((s) => (
-              <div key={s.label}>
-                <dt className="sr-only">{s.label}</dt>
-                <dd>
-                  <div className="tnum font-heading text-3xl font-extrabold">{s.value}</div>
-                  <div className="mt-0.5 text-[13px] text-muted">{s.label}</div>
-                </dd>
-              </div>
-            ))}
-          </dl>
-
-          {/* hero visual — the real component, not a screenshot of it */}
-          <div className="mt-12 rounded-3xl border border-line bg-white/[0.02] p-6">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">
-              A week of training, mapped
+            <p className="mt-5 max-w-[42ch] text-[16.5px] leading-relaxed text-muted2">
+              A training log with a muscle map that shows exactly what you worked this week.
+              Free, with no ads.
             </p>
-            <div className="mx-auto mt-4 max-w-[430px]">
-              <BodyMap trained={HERO_TRAINED} onPick={() => {}} />
-            </div>
-            <div className="mt-4 flex items-center justify-center gap-5 text-[11px] text-muted">
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm bg-cyan" /> Worked
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm bg-cyan/25" /> Assisting
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm bg-white/10" /> Not yet
-              </span>
-            </div>
-          </div>
 
-          {/* ───────────────────────────── ACT 2 — THE PROOF ─────────────────────────── */}
-          <h2 className="mt-20 font-heading text-sm font-bold uppercase tracking-[0.14em] text-muted">
-            What it looks like
-          </h2>
-
-          <div className="relative mt-6 flex items-end gap-4 sm:gap-6">
-            <img
-              src="/showcase/phone-progress.png"
-              alt="The Grindz muscle heat map, showing which muscles were trained this week"
-              className="w-[30%] max-w-[220px] rounded-[1.6rem] border border-line2 shadow-card"
-              loading="lazy"
-            />
-            <img
-              src="/showcase/phone-home.png"
-              alt="The Grindz home screen, showing the week ring, streak and workout categories"
-              className="-mb-6 w-[34%] max-w-[250px] rounded-[1.8rem] border border-line2 shadow-card"
-            />
-            <img
-              src="/showcase/phone-session.png"
-              alt="Logging a live workout in Grindz, with sets, RPE and a rest timer"
-              className="w-[30%] max-w-[220px] rounded-[1.6rem] border border-line2 shadow-card"
-              loading="lazy"
-            />
-          </div>
-
-          <ul className="mt-14 flex flex-col gap-4">
-            {FEATURES.map(({ Icon, title, body }) => (
-              <li key={title} className="flex gap-4 rounded-2xl border border-line bg-white/[0.02] p-5">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-cyan/10 text-cyan">
-                  <Icon size={21} />
-                </span>
-                <div>
-                  <h3 className="font-heading text-[15px] font-bold">{title}</h3>
-                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted">{body}</p>
+            <dl className="mt-8 flex flex-wrap gap-x-9 gap-y-4">
+              {STATS.map((s) => (
+                <div key={s.label}>
+                  <dt className="sr-only">{s.label}</dt>
+                  <dd>
+                    <div className="tnum font-heading text-2xl font-extrabold">{s.value}</div>
+                    <div className="mt-0.5 text-[12.5px] text-muted">{s.label}</div>
+                  </dd>
                 </div>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </dl>
 
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[13px] text-muted">
-            {ALSO.map(({ Icon, t }) => (
-              <span key={t} className="flex items-center gap-2">
-                <Icon size={15} className="text-cyan-soft" />
-                {t}
-              </span>
-            ))}
+            <div className="mt-8 max-w-[348px] rounded-3xl border border-line bg-white/[0.02] p-4">
+              <div className="flex flex-col gap-2.5">
+                {signInButton(SIZE_LG, 18)}
+                <a
+                  href={RELEASES}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`${BTN} ${APK_SKIN} ${SIZE_LG}`}
+                >
+                  Get the APK
+                </a>
+                <a href={REPO} target="_blank" rel="noreferrer" className={`${GHOST} px-4 py-2.5 text-[12.5px]`}>
+                  <GithubMark size={15} />
+                  <span>
+                    Open source. <span className="text-cyan">Star it on GitHub</span>
+                  </span>
+                </a>
+              </div>
+              {err && (
+                <p role="alert" className="mt-3 text-[12.5px] leading-relaxed text-bad">
+                  {err}
+                </p>
+              )}
+            </div>
           </div>
-
-          {/* ───────────────────────────── ACT 3 — THE CLOSE ─────────────────────────── */}
-          <div className="mt-20 rounded-3xl border border-cyan/20 bg-cyan/[0.04] p-7">
-            <h2 className="font-heading text-xl font-extrabold tracking-tight">One account, every screen</h2>
-            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
-              Everything syncs to your Google account, so a session logged in the browser is on your
-              phone before you have racked the bar. The web app needs nothing installed — open it and
-              add it to your home screen. The Android app is a free download.
-            </p>
-          </div>
-
-          <p className="mt-8 pb-4 text-xs leading-relaxed text-muted">
-            Your training data is private to your account and is never shared with other users. No
-            ads, no trackers, nothing sold on.
-          </p>
-        </div>
-      </section>
-
-      {/* ═════════════════════════════ RIGHT — the door, held open ═════════════════════ */}
-      <aside className="relative order-1 border-line px-6 py-14 lg:order-2 lg:h-full lg:overflow-y-auto lg:border-l lg:py-0">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 -z-10 hidden lg:block"
-          style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 42%)' }}
-        />
-        <div className="mx-auto flex w-full max-w-sm animate-fadeUp flex-col justify-center lg:min-h-screen lg:py-14">
-          <div className="mb-7 hidden lg:block">
-            <Mark size={36} />
-          </div>
-
-          <h2 className="font-heading text-[28px] font-extrabold leading-tight tracking-tight">Start your log</h2>
-          <p className="mt-3 text-[15px] leading-relaxed text-muted">
-            Sign in with Google. No password to invent, no account to confirm — your history is
-            waiting on the other side.
-          </p>
 
           {/*
-            This is the origin whose localStorage will hold the session, which is exactly why
-            the button lives here and not on grindz.dev. Running the OAuth round-trip on the
-            marketing origin would deposit the session there, where this app cannot read it.
+            The tablet is held to 85% of its column so the pair does not dominate the fold, and
+            the phone hangs off the right edge rather than sitting on top of it.
           */}
-          <button
-            onClick={go}
-            disabled={busy}
-            className="mt-7 flex w-full items-center justify-center gap-3 rounded-2xl bg-white px-6 py-4 font-heading text-[15px] font-bold text-[#111] transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan active:scale-[0.985] disabled:opacity-60"
-          >
-            <GoogleG />
-            {busy ? 'Redirecting to Google…' : 'Continue with Google'}
-          </button>
+          <div className="relative">
+            <div className="relative mx-auto w-full sm:w-[85%]">
+              <img
+                src="/showcase/tablet-home.png"
+                alt="Grindz on a tablet, showing the week's numbers and the muscle groups to train"
+                className="w-full rounded-2xl border border-line2 shadow-raise"
+                width={2304}
+                height={1440}
+              />
+              <img
+                src="/showcase/phone-session.png"
+                alt="Logging a workout in Grindz on a phone"
+                className="absolute -bottom-6 right-0 w-[26%] rounded-[1.1rem] border border-line2 shadow-raise sm:-bottom-10 sm:-right-[13%] sm:w-[26%]"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </section>
 
-          {err && (
-            <p role="alert" className="mt-3 text-[13px] text-bad">
-              {err}
-            </p>
-          )}
-
-          <div className="mt-7 space-y-3 border-t border-line pt-7">
-            {PROMISES.map((t) => (
-              <div key={t} className="flex items-start gap-3 text-[13.5px] text-muted2">
-                <span className="mt-[3px] grid h-4 w-4 shrink-0 place-items-center rounded-full bg-cyan/15 text-cyan">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+        {/* ══════════════════ 2 · THE MUSCLE MAP ══════════════════════════════════════ */}
+        <section className="mt-20 sm:mt-24">
+          <div className="grid items-center gap-10 rounded-3xl border border-line bg-white/[0.02] p-7 sm:p-10 lg:grid-cols-[0.85fr_1.15fr]">
+            <div>
+              <p className="font-heading text-[11px] font-bold uppercase tracking-[0.16em] text-cyan">
+                Why Grindz
+              </p>
+              <h2 className="mt-3 font-heading text-[clamp(1.5rem,2.4vw,2rem)] font-extrabold leading-tight tracking-tight">
+                A muscle map that means something
+              </h2>
+              <p className="mt-4 max-w-[44ch] text-[15.5px] leading-relaxed text-muted2">
+                Every muscle is drawn separately and shaded by what you actually trained. Bright
+                for worked, faint for assisting, flat for untouched. A group you keep skipping is
+                impossible to miss.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-5 text-[12.5px] text-muted">
+                <span className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-sm bg-cyan" /> Worked
                 </span>
-                {t}
+                <span className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-sm bg-cyan/25" /> Assisting
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-sm bg-white/10" /> Not yet
+                </span>
               </div>
-            ))}
+            </div>
+            <div className="mx-auto w-full max-w-[460px]">
+              <BodyMap trained={HERO_TRAINED} onPick={() => {}} />
+            </div>
           </div>
+        </section>
 
-          {/* the second door, for people who would rather have the app */}
-          <div className="mt-7 rounded-2xl border border-line bg-white/[0.02] p-4">
-            <p className="font-heading text-[13px] font-bold">Also on Android</p>
-            <p className="mt-1 text-[12.5px] leading-relaxed text-muted">
-              Sideload the APK — same account, same data.
-            </p>
-            <a
-              href="https://github.com/ShockRock2004/grindz/releases/latest"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-line2 px-4 py-2.5 font-heading text-[13px] font-bold text-cyan transition hover:border-cyan/50 hover:bg-cyan/[0.08] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
-            >
-              Get the APK
-            </a>
+        {/* ══════════════════ 3 · FEATURES, EACH WIRED TO ITS OWN SCREENSHOT ══════════ */}
+        <section className="mt-24 sm:mt-28">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start lg:gap-14">
+            <div className="flex flex-col gap-3">
+              {FEATURES.map(({ Icon, title, body }, i) => (
+                <button
+                  key={title}
+                  type="button"
+                  onMouseEnter={() => setHovered(i)}
+                  onMouseLeave={() => setHovered(null)}
+                  onFocus={() => setHovered(i)}
+                  onBlur={() => setHovered(null)}
+                  aria-pressed={active === i}
+                  className={`rounded-2xl border p-5 text-left transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan ${
+                    active === i
+                      ? 'border-cyan/40 bg-cyan/[0.06]'
+                      : 'border-line bg-white/[0.02] hover:border-line2'
+                  }`}
+                >
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-cyan/10 text-cyan">
+                    <Icon size={19} />
+                  </span>
+                  <h3 className="mt-3 font-heading text-[16px] font-extrabold tracking-tight">{title}</h3>
+                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted2">{body}</p>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-end justify-center gap-3 sm:gap-5 lg:justify-start">
+              {FEATURES.map(({ shot, alt }, i) => (
+                <img
+                  key={shot}
+                  src={shot}
+                  alt={alt}
+                  loading="lazy"
+                  onMouseEnter={() => setHovered(i)}
+                  onMouseLeave={() => setHovered(null)}
+                  className={`w-1/3 rounded-[1.2rem] border transition duration-300 ${
+                    active === i
+                      ? 'z-10 -translate-y-2 scale-[1.06] border-cyan/40 opacity-100 shadow-raise'
+                      : 'border-line2 opacity-45 grayscale-[35%]'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
+        </section>
 
-          <p className="mt-6 text-xs leading-relaxed text-muted">
-            By continuing you agree that Grindz may store the training data you enter, so it can be
-            shown back to you across your devices.
-          </p>
-        </div>
-      </aside>
+        {/* ══════════════════ 4 · FOOTER ══════════════════════════════════════════════ */}
+        <footer className="mt-20 border-t border-line pt-10 sm:mt-24">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] lg:gap-16">
+            <div>
+              <h2 className="font-heading text-[13px] font-bold uppercase tracking-[0.14em] text-muted">
+                Data and privacy
+              </h2>
+              <p className="mt-3 max-w-[62ch] text-[12.5px] leading-relaxed text-muted">
+                Signing in shares your email address, name and profile picture, so your training
+                follows you between devices. Grindz cannot read your Gmail, Drive, Contacts or
+                Calendar. Nothing is sold or shared.
+              </p>
+              <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-muted">
+                <a
+                  href={`${SITE_ORIGIN}/privacy/`}
+                  className="text-cyan underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+                >
+                  Privacy policy
+                </a>
+                <a
+                  href={SITE_ORIGIN}
+                  className="hover:text-muted2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+                >
+                  About Grindz
+                </a>
+                <a
+                  href={REPO}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-muted2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+                >
+                  GitHub
+                </a>
+                <span className="text-line2">© {new Date().getFullYear()} Grindz</span>
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
+              <h2 className="font-heading text-[17px] font-extrabold tracking-tight">Start your log</h2>
+              <p className="mt-2 text-[12.5px] leading-relaxed text-muted2">
+                Free, and free of ads. Your sets on every device.
+              </p>
+
+              <div className="mt-4 flex flex-col gap-2.5">
+                {signInButton(SIZE_SM, 16)}
+                <a
+                  href={RELEASES}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`${BTN} ${APK_SKIN} ${SIZE_SM}`}
+                >
+                  Get the APK
+                </a>
+                <a href={REPO} target="_blank" rel="noreferrer" className={`${GHOST} px-4 py-2.5 text-[12.5px]`}>
+                  <GithubMark size={15} />
+                  <span>
+                    Open source. <span className="text-cyan">Star it on GitHub</span>
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </main>
     </div>
   )
 }

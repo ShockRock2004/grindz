@@ -79,9 +79,18 @@ async function visit(path, { expectSignIn }) {
   const url = page.url()
   console.log(`\n${path}`)
 
+  const ready = await page.evaluate(() => document.documentElement.classList.contains('app-ready'))
+
   if (expectSignIn) {
     check('goes straight to Google', hops.length > 0, `no authorize hop; still sitting on ${url}`)
     check('strips the flag from the URL', !url.includes('signin='), `url is still ${url}`)
+    /*
+     * The regression this exists to catch. Sign-in used to start from an effect on the landing
+     * page, so the page had to render before the tab could leave — about two seconds of the
+     * app's own front door, the one thing the person had just declined. The splash is held
+     * down for the whole handover now, so `app-ready` must never be set.
+     */
+    check('never flashes the sign-in page', !ready, 'app-ready was set — the splash lifted and the landing painted')
   } else {
     check('does not start sign-in', hops.length === 0, `unexpected authorize hop: ${hops[0]}`)
     check(
@@ -89,6 +98,7 @@ async function visit(path, { expectSignIn }) {
       (await page.locator('[data-testid="landing"]').count()) > 0,
       'no [data-testid="landing"] in the DOM',
     )
+    check('lifts the boot splash', ready, 'app-ready was never set — an ordinary visit would sit on the splash')
   }
 
   await ctx.close()

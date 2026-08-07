@@ -5,9 +5,20 @@ import { AppProviders } from './lib/app-context'
 import App from './App'
 import './index.css'
 import { installKeyboardHandling } from './lib/keyboard'
+import { startSignInHandover } from './lib/signin-handover'
 
 // keyboard-aware scrolling for every text field in the app; see src/lib/keyboard.ts
 installKeyboardHandling()
+
+const reveal = () => document.documentElement.classList.add('app-ready')
+
+/*
+ * Someone arriving from grindz.dev's "Continue with Google" is sent onward before anything
+ * renders. Running this here rather than in a landing-page effect is the point: it does not
+ * wait for the bundle to finish, for the session fetch, or for a page the person has already
+ * said they do not want. See src/lib/signin-handover.ts.
+ */
+const handingOver = startSignInHandover(reveal)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -35,7 +46,11 @@ createRoot(document.getElementById('root')!).render(
  *
  * Two nested frames rather than one: the first fires after React commits, the second after the
  * browser has actually painted that commit, so the splash never lifts onto a blank screen.
+ *
+ * Held down during a sign-in handover. The tab is on its way to Google, so lifting the splash
+ * would flash the sign-in page for the moment before it leaves — which is the whole thing this
+ * is meant to avoid. `startSignInHandover` reveals on failure.
  */
-requestAnimationFrame(() =>
-  requestAnimationFrame(() => document.documentElement.classList.add('app-ready')),
-)
+if (!handingOver) {
+  requestAnimationFrame(() => requestAnimationFrame(reveal))
+}
