@@ -102,6 +102,42 @@ So after any change to invariants 1-3:
 
 Submitting before the recrawl re-checks the old copy and burns an attempt.
 
+### The verifier runs JavaScript — the static shell is not what gets read
+
+This one cost two rejections on its own, and it quietly invalidates the obvious reading of
+the section above.
+
+`index.html` carries a static shell so the page says something before the bundle loads. That
+shell contains `<h1>Grindz</h1>`. It is **not** what Google checks. Google *renders* the page
+first, and `createRoot()` replaces the shell wholesale on mount — so what the verifier reads
+is `src/Landing.tsx`, where the `<h1>` used to be the tagline and the app name was a `<span>`.
+
+Confirmed from Search Console → URL inspection → **VIEW CRAWLED PAGE** → HTML, which is the
+DOM Google actually holds:
+
+```html
+<h1 class="mt-10 font-heading text-[clamp(2.25rem,4.6vw,3.75rem)] ...">
+  Train on purpose.Know what you trained.
+```
+
+That class attribute is `Landing.tsx`'s. The shell's heading is nowhere in the capture. The
+rejection that follows is *"the app name 'Grindz' configured for your OAuth consent screen
+does not match the app name on your homepage"* — accurate, and impossible to diagnose from
+`curl` output, which shows the shell and looks perfect.
+
+**The trap this laid for us:** `scripts/check-oauth-compliance.mjs` fetches without executing
+JavaScript, so it asserted the shell's `<h1>` and reported 13/13 green through both
+rejections. A guard that reads a different document from the verifier is worse than no guard
+— it manufactures confidence. It now also asserts the `<h1>` inside `Landing.tsx`.
+
+Rules that follow:
+
+- **Both copies must independently satisfy every content invariant.** The shell is for
+  no-JavaScript readers; the component is for Google. Neither is a fallback for the other.
+- **Verify against the rendered capture, never `curl`.** `curl` cannot see what Google sees.
+- Prefer **VIEW CRAWLED PAGE** (what Google holds) over **TEST LIVE URL** (what it would get
+  now) when asking why a *past* attempt failed.
+
 ### Preconditions, in order
 
 Each depends on the one before it:
