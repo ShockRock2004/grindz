@@ -124,22 +124,80 @@ export function Landing() {
 
         <div className="mx-auto max-w-3xl">
           {/* ───────────────────────────── ACT 1 — THE HOOK ──────────────────────────── */}
+          {/*
+            The app name is the h1, and it is the largest thing on the page.
+
+            This is not a design preference. Google renders this page before checking it —
+            createRoot() has replaced the static shell in index.html by then, so the shell's
+            heading is not what gets read; this component is. When the tagline held the
+            h1, brand verification rejected the app with "the app name 'Grindz' configured for
+            your OAuth consent screen does not match the app name on your homepage", because
+            the only heading on the rendered page was "Train on purpose. Know what you trained."
+
+            The tagline is an h2 directly under it and keeps its display size, so the pitch
+            still leads visually — but the document now says, in its own structure, that this
+            page is Grindz. Do not demote this back to a <span>.
+          */}
           <div className="flex items-center gap-3">
             <Mark size={44} />
-            <span className="font-heading text-2xl font-extrabold tracking-tight">Grindz</span>
           </div>
 
-          <h1 className="mt-10 font-heading text-[clamp(2.25rem,4.6vw,3.75rem)] font-extrabold leading-[1.04] tracking-tight">
-            Train on purpose.
-            <br />
-            <span className="bg-cyan bg-clip-text text-transparent">Know what you trained.</span>
+          <h1 className="mt-6 font-heading text-[clamp(2.75rem,5.4vw,4.25rem)] font-extrabold leading-[1.02] tracking-tight">
+            Grindz
           </h1>
 
+          <h2 className="mt-4 font-heading text-[clamp(1.5rem,2.9vw,2.25rem)] font-extrabold leading-[1.1] tracking-tight text-muted2">
+            Train on purpose.{' '}
+            <span className="bg-cyan bg-clip-text text-transparent">Know what you trained.</span>
+          </h2>
+
           <p className="mt-6 max-w-[54ch] text-[17px] leading-relaxed text-muted2">
-            A training log that is honest about your week. Log every set as you lift, watch the
-            muscle map fill in, and see progression where you actually need it — on the bar you are
-            about to load.
+            Grindz is a training log that is honest about your week. Log every set as you lift,
+            watch the muscle map fill in, and see progression where you actually need it — on the
+            bar you are about to load.
           </p>
+
+          {/*
+            What Google asks for, and why — kept in the first screenful on purpose.
+
+            This is a verification requirement, not decoration: the homepage must "explain with
+            transparency the purpose for which your app requests user data" and describe how the
+            app uses it. Saying "sign in with Google" is not that — it names the mechanism and
+            leaves the reason unstated.
+
+            It sat below the fold in Act 3 and the app was rejected for "your homepage does not
+            explain the purpose of your app" anyway, so it now runs directly under the hook where
+            a rendered screenshot of the page will contain it. Placement is part of the fix.
+
+            Keep this in step with the same section in index.html and with docs at /privacy/.
+          */}
+          <div className="mt-9 rounded-3xl border border-line bg-white/[0.02] p-7">
+            <h2 className="font-heading text-xl font-extrabold tracking-tight">
+              What Grindz asks Google for
+            </h2>
+            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
+              Signing in with Google gives Grindz three things: your <strong>email address</strong>,
+              your <strong>name</strong> and your <strong>profile picture</strong>. The email
+              identifies your account so your training history follows you between the browser and
+              the phone. The name and picture are only shown back to you, so you can see which
+              account you are signed in as.
+            </p>
+            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
+              That is the whole list. Grindz cannot read your Gmail, your Drive, your Contacts or
+              your Calendar — it never asks for them, and no permission it holds would allow it.
+              Nothing from your Google account is sold, shared or used for advertising.
+            </p>
+            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted">
+              Full detail in the{' '}
+              <a
+                href="/privacy/"
+                className="text-cyan underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+              >
+                privacy policy
+              </a>
+              .
+            </p>
+          </div>
 
           <dl className="mt-9 flex flex-wrap gap-x-10 gap-y-4">
             {STATS.map((s) => (
@@ -229,48 +287,6 @@ export function Landing() {
               Everything syncs to your Google account, so a session logged in the browser is on your
               phone before you have racked the bar. The web app needs nothing installed — open it and
               add it to your home screen. The Android app is a free download.
-            </p>
-          </div>
-
-          {/*
-            What Google asks for, and why.
-
-            This is a verification requirement, not decoration: the homepage must "explain with
-            transparency the purpose for which your app requests user data" and describe how the
-            app uses it. Saying "sign in with Google" is not that — it names the mechanism and
-            leaves the reason unstated.
-
-            It names the app in a heading too. Brand verification compares the consent screen's
-            app name against the name on the homepage, and the hero h1 is a tagline that does not
-            contain it.
-
-            Keep this in step with the same section in index.html and with docs at /privacy/.
-          */}
-          <div className="mt-8 rounded-3xl border border-line bg-white/[0.02] p-7">
-            <h2 className="font-heading text-xl font-extrabold tracking-tight">
-              What Grindz asks Google for
-            </h2>
-            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
-              Signing in with Google gives Grindz three things: your <strong>email address</strong>,
-              your <strong>name</strong> and your <strong>profile picture</strong>. The email
-              identifies your account so your training history follows you between the browser and
-              the phone. The name and picture are only shown back to you, so you can see which
-              account you are signed in as.
-            </p>
-            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted2">
-              That is the whole list. Grindz cannot read your Gmail, your Drive, your Contacts or
-              your Calendar — it never asks for them, and no permission it holds would allow it.
-              Nothing from your Google account is sold, shared or used for advertising.
-            </p>
-            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-muted">
-              Full detail in the{' '}
-              <a
-                href="/privacy/"
-                className="text-cyan underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
-              >
-                privacy policy
-              </a>
-              .
             </p>
           </div>
 

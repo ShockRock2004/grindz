@@ -166,6 +166,38 @@ try {
     inTsx,
     'the rendered page and the served HTML no longer say the same thing — see the header of this file',
   )
+
+  // ── the check that was missing, and it is the one that mattered ─────────────────────
+  //
+  // Everything above this line reads the *served* HTML, which never executes JavaScript.
+  // Google does. By the time it looks, createRoot() has thrown the shell away and this
+  // component is the document — so asserting the shell's <h1> proved nothing about the
+  // page under test. It passed 13/13 while brand verification rejected the app for
+  // "the app name 'Grindz' ... does not match the app name on your homepage", because the
+  // rendered h1 was "Train on purpose. Know what you trained."
+  //
+  // Confirmed from Search Console's own rendered capture, not inferred.
+  //
+  // There is no browser here, so this is a source-level assertion rather than a real
+  // render. It is narrow on purpose: the h1 is the single thing that was wrong, and a
+  // regex over the JSX catches it being demoted back to a <span> or handed to a tagline.
+  //
+  // Strip comments before matching. A comment explaining the rule will naturally quote the
+  // tag it is about, and the first match would then be prose rather than JSX — the check
+  // would be grading this file's own documentation. Caught exactly that way.
+  const tsxCode = tsx.replace(/\{?\/\*[\s\S]*?\*\/\}?/g, '').replace(/^\s*\/\/.*$/gm, '')
+  const tsxH1 = (tsxCode.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? '')
+    .replace(/\{[^}]*\}/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+  check(
+    `src/Landing.tsx renders <h1> as exactly "${APP_NAME}"`,
+    tsxH1 === APP_NAME,
+    tsxH1
+      ? `the rendered <h1> would read ${JSON.stringify(tsxH1)} — Google reads this one, not index.html`
+      : 'no <h1> found in Landing.tsx — the rendered page would have no heading at all',
+  )
 } catch {
   console.warn('  skipped  src/Landing.tsx not readable from here')
 }
