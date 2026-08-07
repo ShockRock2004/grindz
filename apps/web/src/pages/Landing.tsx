@@ -145,6 +145,41 @@ export function Landing() {
     })
   }
 
+  /*
+   * The handover from grindz.dev.
+   *
+   * The marketing site cannot run OAuth — `localStorage` is per-origin, so a session minted
+   * there would be invisible here. Its "Continue with Google" is therefore a link to this
+   * origin, and it arrives carrying `?signin=1` to say what the person actually asked for.
+   * Without acting on it they land on this page and have to press a second Google button to
+   * get what the first one promised, which is what they reported: "it goes to app.grindz.dev
+   * instead of signing in".
+   *
+   * This component only mounts when `session === null` (see App.tsx), so an already-signed-in
+   * visitor never reaches here and cannot be bounced into a needless consent screen.
+   *
+   * The flag is stripped **before** starting sign-in, and that ordering carries the whole
+   * safety argument:
+   *
+   *   - abandoning the consent screen and pressing Back restores this page from bfcache with
+   *     a clean URL, so it does not immediately fire again and trap the person in a loop
+   *   - a reload, a bookmark or a shared link cannot re-trigger it either
+   *   - StrictMode's double-mount in development sees no flag on the second pass
+   *
+   * `replaceState` rather than `pushState`: it rewrites this entry instead of adding one, so
+   * Back still leaves the app rather than stepping through a URL we have already handled.
+   * `redirectTo` is `window.location.origin`, which has no query, so the return trip is
+   * unaffected either way.
+   */
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    if (url.searchParams.get('signin') !== '1') return
+    url.searchParams.delete('signin')
+    window.history.replaceState({}, '', url.pathname + url.search + url.hash)
+    go()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div data-testid="landing" className="min-h-full lg:grid lg:h-full lg:grid-cols-[1.25fr_minmax(400px,0.75fr)]">
       {/* ═════════════════════════════ LEFT — the pitch, in three acts ═════════════════ */}

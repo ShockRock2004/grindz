@@ -30,6 +30,22 @@
 export const APP_ORIGIN =
   (import.meta.env.VITE_APP_ORIGIN as string | undefined) || 'https://app.grindz.dev'
 
+/**
+ * The handover: "this person came here to sign in".
+ *
+ * This page cannot run OAuth itself — `localStorage` is per-origin, so a session minted on
+ * `grindz.dev` would be invisible to the app that needs it. So the button links across, and
+ * the app asks Google.
+ *
+ * Linking to the bare origin handed over the *person* but not the *intent*: they pressed
+ * "Continue with Google", arrived at the app's own signed-out front door, and had to press a
+ * second Google button to get what the first one promised. This flag is what closes that gap.
+ * `apps/web/src/pages/Landing.tsx` reads it, strips it, and goes straight to Google.
+ *
+ * Both sides must agree on the spelling, so it is a constant on each — grep `signin=1`.
+ */
+export const APP_SIGNIN_URL = `${APP_ORIGIN}/?signin=1`
+
 const HINT = 'gz_hint'
 
 export function hasSignedInHint(): boolean {

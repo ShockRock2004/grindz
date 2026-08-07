@@ -19,7 +19,7 @@
  * a link to app.grindz.dev, which is the origin whose localStorage will hold the session. See
  * src/lib/domains.ts for why that split is not optional.
  */
-import { APP_ORIGIN } from './lib/domains'
+import { APP_SIGNIN_URL } from './lib/domains'
 import { BodyMap } from './components/BodyMap'
 import {
   IconDumbbell,
@@ -326,9 +326,14 @@ export function Landing() {
             deposit it on grindz.dev, where the app cannot read it: the user would return
             "signed in" to a page with no app on it, then be asked to sign in again the
             moment they clicked through. So this deployment's job is to hand them over.
+
+            It hands over the intent as well as the person. Linking to the bare origin landed
+            them on the app's own signed-out front door, where they had to press a second
+            Google button to get what this one promised — so the link carries `?signin=1` and
+            the app goes straight to Google. See APP_SIGNIN_URL in ./lib/domains.
           */}
           <a
-            href={APP_ORIGIN}
+            href={APP_SIGNIN_URL}
             className="mt-7 flex w-full items-center justify-center gap-3 rounded-2xl bg-white px-6 py-4 font-heading text-[15px] font-bold text-[#111] transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan active:scale-[0.985]"
           >
             <GoogleG />
