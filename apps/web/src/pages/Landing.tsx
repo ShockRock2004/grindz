@@ -120,7 +120,7 @@ const APK_SKIN = 'bg-cyan text-white shadow-card hover:brightness-110'
 const SIZE_LG = 'px-6 py-3.5 text-[14.5px]'
 const SIZE_SM = 'px-5 py-3 text-[13.5px]'
 const GHOST =
-  'flex items-center gap-3 rounded-2xl border border-line text-muted2 transition hover:border-line2 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan'
+  'flex items-center justify-center gap-3 rounded-2xl border border-line text-muted2 transition hover:border-line2 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan'
 
 export function Landing() {
   const [busy, setBusy] = useState(false)
@@ -217,7 +217,7 @@ export function Landing() {
               ))}
             </dl>
 
-            <div className="mt-8 max-w-[348px] rounded-3xl border border-line bg-white/[0.02] p-4">
+            <div className="mt-8 w-full rounded-3xl border border-line bg-white/[0.02] p-4 sm:max-w-[348px]">
               <div className="flex flex-col gap-2.5">
                 {signInButton(SIZE_LG, 18)}
                 <a
@@ -349,8 +349,14 @@ export function Landing() {
 
         {/* ══════════════════ 4 · FOOTER ══════════════════════════════════════════════ */}
         <footer className="mt-20 border-t border-line pt-10 sm:mt-24">
+          {/*
+            Order flips by breakpoint. On a wide screen the small print reads first on the left
+            and the call to action sits beside it. Stacked on a phone that order puts a
+            paragraph about Google scopes ahead of the only two buttons on the screen, so the
+            card comes first there and the small print follows it.
+          */}
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] lg:gap-16">
-            <div>
+            <div className="order-2 lg:order-1">
               <h2 className="font-heading text-[13px] font-bold uppercase tracking-[0.14em] text-muted">
                 Data and privacy
               </h2>
@@ -384,7 +390,7 @@ export function Landing() {
               </p>
             </div>
 
-            <div className="rounded-3xl border border-line bg-white/[0.02] p-5">
+            <div className="order-1 rounded-3xl border border-line bg-white/[0.02] p-5 lg:order-2">
               <h2 className="font-heading text-[17px] font-extrabold tracking-tight">Start your log</h2>
               <p className="mt-2 text-[12.5px] leading-relaxed text-muted2">
                 Free, and free of ads. Your sets on every device.
