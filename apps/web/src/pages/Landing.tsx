@@ -146,39 +146,11 @@ export function Landing() {
   }
 
   /*
-   * The handover from grindz.dev.
-   *
-   * The marketing site cannot run OAuth — `localStorage` is per-origin, so a session minted
-   * there would be invisible here. Its "Continue with Google" is therefore a link to this
-   * origin, and it arrives carrying `?signin=1` to say what the person actually asked for.
-   * Without acting on it they land on this page and have to press a second Google button to
-   * get what the first one promised, which is what they reported: "it goes to app.grindz.dev
-   * instead of signing in".
-   *
-   * This component only mounts when `session === null` (see App.tsx), so an already-signed-in
-   * visitor never reaches here and cannot be bounced into a needless consent screen.
-   *
-   * The flag is stripped **before** starting sign-in, and that ordering carries the whole
-   * safety argument:
-   *
-   *   - abandoning the consent screen and pressing Back restores this page from bfcache with
-   *     a clean URL, so it does not immediately fire again and trap the person in a loop
-   *   - a reload, a bookmark or a shared link cannot re-trigger it either
-   *   - StrictMode's double-mount in development sees no flag on the second pass
-   *
-   * `replaceState` rather than `pushState`: it rewrites this entry instead of adding one, so
-   * Back still leaves the app rather than stepping through a URL we have already handled.
-   * `redirectTo` is `window.location.origin`, which has no query, so the return trip is
-   * unaffected either way.
+   * The `?signin=1` handover from grindz.dev is NOT handled here. It runs in
+   * src/lib/signin-handover.ts, before React mounts — waiting for this component to render
+   * was what made the redirect visibly slow, because it put this very page on screen for a
+   * couple of seconds first. Do not reintroduce it as an effect.
    */
-  useEffect(() => {
-    const url = new URL(window.location.href)
-    if (url.searchParams.get('signin') !== '1') return
-    url.searchParams.delete('signin')
-    window.history.replaceState({}, '', url.pathname + url.search + url.hash)
-    go()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <div data-testid="landing" className="min-h-full lg:grid lg:h-full lg:grid-cols-[1.25fr_minmax(400px,0.75fr)]">
@@ -195,21 +167,31 @@ export function Landing() {
 
         <div className="mx-auto max-w-3xl">
           {/* ───────────────────────────── ACT 1 — THE HOOK ──────────────────────────── */}
+          {/*
+            Deliberately identical to the hook on grindz.dev — same mark, same h1, same h2,
+            same opening paragraph, same sizes. Two origins serve these two pages and a person
+            crosses between them mid-sign-in; if the hero changed under them it would read as
+            having landed somewhere else. Keep this in step with apps/landing/src/Landing.tsx.
+
+            The app name is the h1 and the largest thing on the page. That is also what Google's
+            brand verification reads — see apps/landing for the full account.
+          */}
           <div className="flex items-center gap-3">
             <Mark size={44} />
-            <span className="font-heading text-2xl font-extrabold tracking-tight">Grindz</span>
           </div>
 
-          <h1 className="mt-10 font-heading text-[clamp(2.25rem,4.6vw,3.75rem)] font-extrabold leading-[1.04] tracking-tight">
-            Train on purpose.
-            <br />
-            <span className="bg-cyan bg-clip-text text-transparent">Know what you trained.</span>
+          <h1 className="mt-6 font-heading text-[clamp(2.75rem,5.4vw,4.25rem)] font-extrabold leading-[1.02] tracking-tight">
+            Grindz
           </h1>
 
+          <h2 className="mt-4 font-heading text-[clamp(1.5rem,2.9vw,2.25rem)] font-extrabold leading-[1.1] tracking-tight text-muted2">
+            Train on purpose.{' '}
+            <span className="bg-cyan bg-clip-text text-transparent">Know what you trained.</span>
+          </h2>
+
           <p className="mt-6 max-w-[54ch] text-[17px] leading-relaxed text-muted2">
-            A training log that is honest about your week. Log every set as you lift, watch the
-            muscle map fill in, and see progression where you actually need it — on the bar you are
-            about to load.
+            Grindz is a training log. Record each set as you lift it, see which muscles you have
+            worked this week, and check what you lifted last time before you load the bar.
           </p>
 
           <dl className="mt-9 flex flex-wrap gap-x-10 gap-y-4">
