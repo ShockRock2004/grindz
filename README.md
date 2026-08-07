@@ -11,7 +11,7 @@ sharing one Supabase backend, one muscle-map palette, and one image CDN.
 
 <br/>
 
-[![Download APK](https://img.shields.io/badge/Download-Grindz%20v1.2.1%20APK-00c6ff?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest)
+[![Download APK](https://img.shields.io/badge/Download-Grindz%20v1.3.0%20APK-00c6ff?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest)
 [![Install guide](https://img.shields.io/badge/How%20to%20install-555?style=for-the-badge)](docs/INSTALL.md)
 
 ![Android 7.0+](https://img.shields.io/badge/Android-7.0%2B-3ddc84?logo=android&logoColor=white)
@@ -52,6 +52,13 @@ sharing one Supabase backend, one muscle-map palette, and one image CDN.
 timer. RPE is captured on the set you just finished, so you rate it while it's still honest.
 Also handles timed holds and distance work, supersets, per-set notes and warm-up flags.
 
+**One session, however many muscle groups.** A day planned as chest and triceps is one trip to
+the gym, not two workouts. Home shows today's groups as chips under a single **Start workout**
+button, and that button opens a builder listing every exercise grouped by muscle, with today's
+groups already expanded. Pick across as many as you like and it opens as a single session.
+Every set still carries the muscle it actually trained, so the heat map and the per-group
+counts stay exact no matter how far the session wanders off the plan.
+
 **Progression memory.** Every exercise shows what you did *last time* and your best, right
 where you're about to type. PRs — both top set and estimated 1RM — are detected as they happen.
 
@@ -60,9 +67,10 @@ vector geometry with each muscle individually addressable, shaded by what you've
 trained this week. Bright for worked, a deliberately faint wash for assisting, flat for
 untouched.
 
-**Planning and review.** A weekly plan you can drag a split onto, a 16-week training heatmap,
-a streak counter, 14-day volume, per-exercise progression charts, a 30-day muscle split, and
-bodyweight trend.
+**Planning and review.** A weekly plan you can drag a split onto — any day holds up to three
+blocks, and a day only advertises a landing space while you're actually carrying one — plus a
+16-week training heatmap, a streak counter, 14-day volume, per-exercise progression charts, a
+30-day muscle split, and bodyweight trend.
 
 **An auto rest timer** that starts on each completed set, with +15s, skip, and a vibration
 when it's up — plus a wake lock so the screen doesn't die mid-set.
@@ -123,7 +131,8 @@ the width:
   whole viewport it scales to ~1400px and pushes every chart below the fold.
 - **Session** — logging forms stay a readable measure, with a sticky rail carrying running
   totals and a jump list showing sets done per exercise.
-- **Plan** — the week as columns with a palette rail, drag-and-drop intact.
+- **Plan** — a palette rail beside two columns of days, drag-and-drop intact, up to three
+  blocks a day.
 - **History** — heatmap, search and filters pinned in a rail while the list scrolls.
 
 **Keyboard is a real input.** `⌘K` / `Ctrl K` opens a command palette that reaches every
