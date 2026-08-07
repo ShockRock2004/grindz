@@ -358,7 +358,7 @@ export function Landing() {
               href="https://github.com/ShockRock2004/grindz/releases/latest"
               target="_blank"
               rel="noreferrer"
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-line2 px-4 py-2.5 font-heading text-[13px] font-bold text-cyan transition hover:border-cyan/50 hover:bg-cyan/[0.08] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan px-4 py-3 font-heading text-[13.5px] font-bold text-white shadow-card transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
             >
               Get the APK
             </a>
