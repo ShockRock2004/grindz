@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="96" viewBox="0 0 460 96" role="img" aria-label="Big Blue Button — download the APK">
+  <title>Big Blue Button — download the APK</title>
+  <defs>
+    <linearGradient id="grindzCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00c6ff"/>
+      <stop offset="100%" stop-color="#0072ff"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="456" height="92" rx="20" fill="url(#grindzCyan)"/>
+  <text
+    x="230"
+    y="58"
+    text-anchor="middle"
+    font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+    font-size="28"
+    font-weight="bold"
+    letter-spacing="0.3"
+    fill="#ffffff"
+  >Big Blue Button</text>
+</svg>
