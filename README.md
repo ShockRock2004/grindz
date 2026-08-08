@@ -37,30 +37,25 @@ Grindz is a training log, and its purpose is deliberately narrow: answer *what h
 trained this week* honestly, and make the next set easier to load. It is not a coach and it
 will not write your programme. It records what you did and shows you the shape of it.
 
-**A muscle heat map that means something.** Not decoration: the front and back figures are
-traced vector geometry with each muscle individually addressable, shaded by what you've
-actually trained this week. Bright for worked, a deliberately faint wash for assisting, flat
-for untouched. It is the fastest way to spot the group you keep skipping.
+🗺️ **Muscle map.** Traced vector geometry shades in from what you actually trained this week.
+Bright for worked, a faint wash for assisting, flat for untouched. It is the fastest way to
+spot the group you keep skipping.
 
-**Live workout logging.** Sets as kg × reps, ticked off as you go, with RPE captured on the set
-you just finished — so you rate it while it's still honest. Timed holds, supersets, notes on any
-set and warmup flags are all handled. The rest timer starts itself and holds a wake lock, so
-the screen doesn't die mid set.
+📝 **Live logging.** Record kg × reps with RPE captured right after the set, while you still
+mean it. Timed holds, supersets, notes and warm up flags are all handled. The rest timer starts
+itself and keeps the screen awake.
 
-**One session, however many muscle groups.** A day planned as chest and triceps is one trip to
-the gym, not two workouts. Every set still carries the muscle it actually trained, so the heat
-map and the counts for each group stay exact no matter how far the session wanders off the plan.
+🏋️ **One trip to the gym is one session.** Chest and triceps is a single workout, not two. Every
+set remembers the muscle it actually trained, so the map stays exact even when the session
+wanders off the plan.
 
-**Progression memory.** Every exercise shows what you did *last time* and your best, right
-where you're about to type. PRs — both top set and estimated 1RM — are detected as they happen.
-History keeps a 16 week heatmap, a streak counter and every session you've logged, searchable.
+📈 **Progression memory.** Every exercise shows what you lifted last time and your best, right
+where you type the next number. Personal records and estimated 1RM are caught as they happen,
+and history keeps a 16 week heatmap, a streak and every session you have logged.
 
-**Plan the week.** Drag a split onto any day, up to three blocks, and today's plan surfaces on
-the home screen with a Start button already on it.
-
-**42 exercises, illustrated.** Each one carries a photo, the muscles it works and a form cue.
-Add your own and, if you want it, Groq files the new exercise under the right muscle group and
-writes the cue for you — using *your own* API key, advisory only.
+📅 **Plans and exercises.** Drag a split onto any day and it surfaces on the home screen ready
+to start. 42 exercises come with photos and form cues, and you can add your own with Groq
+writing the cue if you want it.
 
 ---
 
@@ -94,9 +89,6 @@ carry on.
 Prefer nothing to install? The web app is the same product. Open
 **[app.grindz.dev](https://app.grindz.dev)** and add it to your home screen.
 
-**Yes, the APK is on GitHub**, attached to a *Release* rather than committed into the repo. A
-52 MB binary in git history is a tax every clone pays forever.
-
 ---
 
 ## Tech stack
@@ -116,7 +108,7 @@ Prefer nothing to install? The web app is the same product. Open
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/Supabase-3ecf8e?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" /></td>
-<td>Postgres for every set and session, row level security so a row is only ever yours, Google OAuth for sign in, and Storage for photos you upload.</td>
+<td>Postgres for every set and session, Google OAuth for sign in, and Storage for photos you upload.</td>
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/Cloudflare_Workers-f38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare" /></td>
@@ -143,11 +135,6 @@ grindz/
 ├── supabase/          migrations/0001_init.sql — the whole schema
 └── scripts/           check-parity · check-cdn · check-domains
 ```
-
-Two stacks, deliberately **not** a shared component library — a Tailwind `<div>` and a React
-Native `<View>` don't usefully unify. What *is* shared is everything where disagreement would
-be a bug: the CDN contract, the heat map palette, the traced muscle geometry and the PR maths.
-Five files, byte identical, enforced by `node scripts/check-parity.mjs`.
 
 → **[Build guide](docs/BUILD.md)** · **[Architecture](docs/ARCHITECTURE.md)** ·
 **[Domains](docs/DOMAINS.md)** · **[Supabase setup](docs/SUPABASE-SETUP.md)** ·
