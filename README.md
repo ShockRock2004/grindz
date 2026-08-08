@@ -33,29 +33,18 @@ sharing one Supabase backend, one muscle map palette, and one image CDN.
 
 ## What it does
 
-Grindz is a training log, and its purpose is deliberately narrow: answer *what have I actually
-trained this week* honestly, and make the next set easier to load. It is not a coach and it
-will not write your programme. It records what you did and shows you the shape of it.
+Grindz is a training log, and its purpose is deliberately narrow: WHAT HAVE I ACTUALLY TRAINED THIS WEEK ? It records what you did and shows you the shape of it.
 
-🗺️ **Muscle map.** Traced vector geometry shades in from what you actually trained this week.
-Bright for worked, a faint wash for assisting, flat for untouched. It is the fastest way to
-spot the group you keep skipping.
+🗺️ **MUSCLE MAP** - A beautiful vector muscle map shades in from what you actually trained this week. Bright for worked, a faint wash for assisting, flat for untouched. It is the fastest way to spot the group you keep skipping.
 
-📝 **Live logging.** Record kg × reps with RPE captured right after the set, while you still
-mean it. Timed holds, supersets, notes and warm up flags are all handled. The rest timer starts
-itself and keeps the screen awake.
+📝 **LIVE LOGGING** - Record kg × reps with RPE captured right after the set. Timed holds, supersets, notes and warm up flags are all handled. The rest timer starts itself and keeps the screen awake.
 
-🏋️ **One trip to the gym is one session.** Chest and triceps is a single workout, not two. Every
-set remembers the muscle it actually trained, so the map stays exact even when the session
-wanders off the plan.
+📅 **WEEKLY PLANNER** - Drag a split onto any day and it surfaces on the home screen ready to start. 42 exercises come with photos and form cues, and you can add your own exercise with Groq writing the cue if you want it.
 
-📈 **Progression memory.** Every exercise shows what you lifted last time and your best, right
-where you type the next number. Personal records and estimated 1RM are caught as they happen,
-and history keeps a 16 week heatmap, a streak and every session you have logged.
+📈 **PROGRESSION MEMORY** - See what you lifted last time and your personal best while entering your next set. Track personal records, estimated 1RM, and your workout history with a 16 week heatmap and streak tracker.
 
-📅 **Plans and exercises.** Drag a split onto any day and it surfaces on the home screen ready
-to start. 42 exercises come with photos and form cues, and you can add your own with Groq
-writing the cue if you want it.
+🏋️ **ACCURATE TRACKING** - One trip to the gym is one session. Chest and triceps is a single workout, not two. Every set remembers the muscle it actually trained, so the map stays exact even when the session wanders off the plan.
+
 
 ---
 
