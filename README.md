@@ -33,15 +33,15 @@ sharing one Supabase backend, one muscle map palette, and one image CDN.
 
 ## What it does
 
-Grindz is a training log, and its purpose is deliberately narrow: WHAT HAVE I ACTUALLY TRAINED THIS WEEK ? It records what you did and shows you the shape of it.
+Grindz is a training log with a muscle map that shows exactly what you worked this week. Every muscle is shaded by what you actually trained so a group you keep skipping is impossible to miss.
 
-🗺️ **MUSCLE MAP** - A beautiful vector muscle map shades in from what you actually trained this week. Bright for worked, a faint wash for assisting, flat for untouched. It is the fastest way to spot the group you keep skipping.
-
-📝 **LIVE LOGGING** - Record kg × reps with RPE captured right after the set. Timed holds, supersets, notes and warm up flags are all handled. The rest timer starts itself and keeps the screen awake.
+🗺️ **MUSCLE MAP** - Traced vector figures with every muscle individually addressable. Shaded by what you actually hit this week.
 
 📅 **WEEKLY PLANNER** - Drag a split onto any day and it surfaces on the home screen ready to start. 42 exercises come with photos and form cues, and you can add your own exercise with Groq writing the cue if you want it.
 
-📈 **PROGRESSION MEMORY** - See what you lifted last time and your personal best while entering your next set. Track personal records, estimated 1RM, and your workout history with a 16 week heatmap and streak tracker.
+📈 **PROGRESSION MEMORY** -  Last time and your best sit right where you are about to type. PRs get detected as they happen.
+
+📝 **LIVE LOGGING** - Record kg × reps with RPE captured right after the set. Timed holds, supersets, notes and warm up flags are all handled. The rest timer starts itself and keeps the screen awake.
 
 🏋️ **ACCURATE TRACKING** - One trip to the gym is one session. Chest and triceps is a single workout, not two. Every set remembers the muscle it actually trained, so the map stays exact even when the session wanders off the plan.
 
