@@ -7,7 +7,7 @@
 **Log lifts. Chase PRs. See exactly what you've trained.**
 
 A training tracker built twice — as a React Native Android app and as an installable web app —
-sharing one Supabase backend, one muscle-map palette, and one image CDN.
+sharing one Supabase backend, one muscle map palette, and one image CDN.
 
 <br/>
 
@@ -19,77 +19,48 @@ sharing one Supabase backend, one muscle-map palette, and one image CDN.
 ![APK 52.7 MB](https://img.shields.io/badge/APK-52.7%20MB-informational)
 ![Free](https://img.shields.io/badge/Free-no%20ads-00c6ff)
 
+<br/>
+
+<img src="docs/screenshots/phone/home.png" width="30%" alt="Home" />
+<img src="docs/screenshots/phone/progress.png" width="30%" alt="Muscle heat map" />
+<img src="docs/screenshots/phone/planner.png" width="30%" alt="Weekly planner" />
+
+<sub><b>Train</b> · today's plan and the week's numbers &nbsp;&nbsp;|&nbsp;&nbsp; <b>Progress</b> · what you actually hit this week &nbsp;&nbsp;|&nbsp;&nbsp; <b>Plan</b> · drag a split onto your week</sub>
+
 </div>
 
 ---
 
 ## What it does
 
-<table>
-<tr>
-<td width="27%"><img src="docs/screenshots/phone/progress.png" alt="Muscle heat map" /></td>
-<td>
+Grindz is a training log, and its purpose is deliberately narrow: answer *what have I actually
+trained this week* honestly, and make the next set easier to load. It is not a coach and it
+will not write your programme. It records what you did and shows you the shape of it.
 
 **A muscle heat map that means something.** Not decoration: the front and back figures are
 traced vector geometry with each muscle individually addressable, shaded by what you've
 actually trained this week. Bright for worked, a deliberately faint wash for assisting, flat
 for untouched. It is the fastest way to spot the group you keep skipping.
 
-</td>
-</tr>
-<tr>
-<td width="27%"><img src="docs/screenshots/phone/session.png" alt="Live workout" /></td>
-<td>
-
 **Live workout logging.** Sets as kg × reps, ticked off as you go, with RPE captured on the set
-you just finished — so you rate it while it's still honest. Timed holds, supersets, per-set
-notes and warm-up flags are all handled. The rest timer starts itself and holds a wake lock, so
-the screen doesn't die mid-set.
-
-</td>
-</tr>
-<tr>
-<td width="27%"><img src="docs/screenshots/phone/home.png" alt="Home" /></td>
-<td>
+you just finished — so you rate it while it's still honest. Timed holds, supersets, notes on any
+set and warmup flags are all handled. The rest timer starts itself and holds a wake lock, so
+the screen doesn't die mid set.
 
 **One session, however many muscle groups.** A day planned as chest and triceps is one trip to
-the gym, not two workouts. Today's groups appear as chips under a single **Start workout**
-button. Every set still carries the muscle it actually trained, so the heat map and the
-per-group counts stay exact no matter how far the session wanders off the plan.
-
-</td>
-</tr>
-<tr>
-<td width="27%"><img src="docs/screenshots/phone/planner.png" alt="Weekly planner" /></td>
-<td>
-
-**Plan the week.** Drag a split onto any day, up to three blocks, and today's plan surfaces on
-the home screen with a Start button already on it. A day only advertises a landing space while
-you're actually carrying a block.
-
-</td>
-</tr>
-<tr>
-<td width="27%"><img src="docs/screenshots/phone/history.png" alt="History" /></td>
-<td>
+the gym, not two workouts. Every set still carries the muscle it actually trained, so the heat
+map and the counts for each group stay exact no matter how far the session wanders off the plan.
 
 **Progression memory.** Every exercise shows what you did *last time* and your best, right
 where you're about to type. PRs — both top set and estimated 1RM — are detected as they happen.
-History keeps a 16-week heatmap, a streak counter and every session you've logged, searchable.
+History keeps a 16 week heatmap, a streak counter and every session you've logged, searchable.
 
-</td>
-</tr>
-<tr>
-<td width="27%"><img src="docs/screenshots/phone/category.png" alt="Exercise picker" /></td>
-<td>
+**Plan the week.** Drag a split onto any day, up to three blocks, and today's plan surfaces on
+the home screen with a Start button already on it.
 
 **42 exercises, illustrated.** Each one carries a photo, the muscles it works and a form cue.
 Add your own and, if you want it, Groq files the new exercise under the right muscle group and
 writes the cue for you — using *your own* API key, advisory only.
-
-</td>
-</tr>
-</table>
 
 ---
 
@@ -108,17 +79,23 @@ around what a browser actually has: a cursor, a keyboard and a viewport wider th
 
 ## Getting it on your phone
 
-Grab the APK from the **[latest release](../../releases/latest)** and install it. Android will
-ask you to allow installs from your browser the first time, and Play Protect will warn you
-because the app didn't come from the Play Store — tap **Install without scanning** and carry on.
+<div align="center">
 
-→ **[Step-by-step install guide](docs/INSTALL.md)**, including updating and `adb install`.
+<a href="../../releases/latest"><img src="docs/download-button.svg" width="320" alt="Get the APK" /></a>
 
-Prefer nothing to install? The web app is the same product — open
+</div>
+
+Android will ask you to allow installs from your browser the first time. Play Protect will warn
+you because the app did not come from the Play Store, so tap **Install without scanning** and
+carry on.
+
+→ **[Full install guide](docs/INSTALL.md)** with screenshots, plus updating and `adb install`.
+
+Prefer nothing to install? The web app is the same product. Open
 **[app.grindz.dev](https://app.grindz.dev)** and add it to your home screen.
 
-**Yes, the APK is on GitHub** — attached to a *Release*, not committed into the repo. A 52 MB
-binary in git history is a tax every clone pays forever.
+**Yes, the APK is on GitHub**, attached to a *Release* rather than committed into the repo. A
+52 MB binary in git history is a tax every clone pays forever.
 
 ---
 
@@ -127,7 +104,7 @@ binary in git history is a tax every clone pays forever.
 <table>
 <tr>
 <td width="30%"><img src="https://img.shields.io/badge/React_Native_0.86-61dafb?style=for-the-badge&logo=react&logoColor=black" alt="React Native" /><br/><img src="https://img.shields.io/badge/Expo_SDK_57-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" /></td>
-<td>Ships the Android APK, on the new architecture. Built ARM-only, which halved the download.</td>
+<td>Ships the Android APK, on the new architecture. Built ARM only, which halved the download.</td>
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/React_18-61dafb?style=for-the-badge&logo=react&logoColor=black" alt="React" /><br/><img src="https://img.shields.io/badge/Vite-646cff?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" /> <img src="https://img.shields.io/badge/Tailwind-38bdf8?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind" /></td>
@@ -139,7 +116,7 @@ binary in git history is a tax every clone pays forever.
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/Supabase-3ecf8e?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" /></td>
-<td>Postgres for every set and session, row-level security so a row is only ever yours, Google OAuth for sign-in, and Storage for photos you upload.</td>
+<td>Postgres for every set and session, row level security so a row is only ever yours, Google OAuth for sign in, and Storage for photos you upload.</td>
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/Cloudflare_Workers-f38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare" /></td>
@@ -169,8 +146,8 @@ grindz/
 
 Two stacks, deliberately **not** a shared component library — a Tailwind `<div>` and a React
 Native `<View>` don't usefully unify. What *is* shared is everything where disagreement would
-be a bug: the CDN contract, the heat-map palette, the traced muscle geometry and the PR maths.
-Five files, byte-identical, enforced by `node scripts/check-parity.mjs`.
+be a bug: the CDN contract, the heat map palette, the traced muscle geometry and the PR maths.
+Five files, byte identical, enforced by `node scripts/check-parity.mjs`.
 
 → **[Build guide](docs/BUILD.md)** · **[Architecture](docs/ARCHITECTURE.md)** ·
 **[Domains](docs/DOMAINS.md)** · **[Supabase setup](docs/SUPABASE-SETUP.md)** ·
