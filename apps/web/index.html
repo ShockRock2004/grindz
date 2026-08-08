@@ -68,27 +68,39 @@
         opacity: 0;
         animation: boot-word 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.62s both;
       }
-      /* one specular sweep once the glyph has finished drawing */
+      /*
+        One specular sweep once the glyph has finished drawing.
+
+        The element does NOT move. Moving it is what produced the reported artifact: the mask
+        travels with the element, so translating it drags the masked glyph across the screen
+        and paints a second, grey dumbbell sliding past the real one. A highlight has to stay
+        inside the shape it is highlighting.
+
+        So the element is pinned over the mark with `inset: 0` and the *gradient* is what
+        travels, via `background-position` across a background three times the width. The mask
+        never moves, which means nothing can ever be drawn outside the glyph's own bounds.
+
+        `forwards`, never `both`. With `both` the start state applies during the 0.86s delay,
+        which paints the glyph before the sweep is due. `forwards` leaves the element on its
+        own styles until then, and those styles are opacity: 0.
+      */
       #boot .sheen {
         position: absolute;
-        width: 96px;
-        height: 96px;
+        inset: 0;
         pointer-events: none;
         background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.55) 50%, transparent 60%);
+        background-size: 300% 100%;
+        background-position: 100% 0;
+        background-repeat: no-repeat;
         -webkit-mask-image: url('/grindz-mark.svg');
         mask-image: url('/grindz-mark.svg');
         -webkit-mask-size: contain;
         mask-size: contain;
         -webkit-mask-repeat: no-repeat;
         mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
         opacity: 0;
-        transform: translateX(-130%);
-        /*
-          `forwards`, never `both`. With `both` the animation's start state is applied during
-          the 0.86s delay, which parks the masked glyph off to the left of the mark and paints
-          it as a grey ghost for the whole first beat. `forwards` leaves the element on its own
-          styles until the sweep actually begins — and those styles are opacity: 0.
-        */
         animation: boot-sheen 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.86s forwards;
       }
       @keyframes boot-draw { to { stroke-dashoffset: 0; } }
@@ -97,10 +109,10 @@
         to   { opacity: 1; transform: translateY(0); }
       }
       @keyframes boot-sheen {
-        0%   { opacity: 0; transform: translateX(-130%); }
+        0%   { opacity: 0; background-position: 100% 0; }
         12%  { opacity: 1; }
         88%  { opacity: 1; }
-        100% { opacity: 0; transform: translateX(130%); }
+        100% { opacity: 0; background-position: 0% 0; }
       }
       @keyframes boot-settle {
         from { transform: scale(0.97); }
