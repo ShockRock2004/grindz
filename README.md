@@ -1,257 +1,114 @@
 <div align="center">
 
-<img src="docs/logo.png" width="112" alt="Grindz" />
+<img src="docs/logo.png" width="104" alt="Grindz" />
 
 # Grindz
 
-**Log lifts. Chase PRs. See exactly what you've trained.**
-
-A training tracker built twice — as a React Native Android app and as an installable web app —
-sharing one Supabase backend, one muscle-map palette, and one image CDN.
-
-<br/>
+**Log every set. See every muscle.**
 
 [![Download APK](https://img.shields.io/badge/Download-Grindz%20v1.3.0%20APK-00c6ff?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest)
-[![Install guide](https://img.shields.io/badge/How%20to%20install-555?style=for-the-badge)](docs/INSTALL.md)
+[![How to install](https://img.shields.io/badge/How%20to%20install-555?style=for-the-badge)](docs/INSTALL.md)
+[![Open in browser](https://img.shields.io/badge/Open%20in%20browser-0072ff?style=for-the-badge)](https://app.grindz.dev)
 
 ![Android 7.0+](https://img.shields.io/badge/Android-7.0%2B-3ddc84?logo=android&logoColor=white)
 ![APK 52.7 MB](https://img.shields.io/badge/APK-52.7%20MB-informational)
-![React Native 0.86](https://img.shields.io/badge/React%20Native-0.86-61dafb?logo=react&logoColor=white)
-![Expo SDK 57](https://img.shields.io/badge/Expo-SDK%2057-000020?logo=expo&logoColor=white)
-![React 18 + Vite](https://img.shields.io/badge/Web-React%2018%20%2B%20Vite-646cff?logo=vite&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20OAuth-3ecf8e?logo=supabase&logoColor=white)
-![Images on Cloudflare](https://img.shields.io/badge/Images-Cloudflare%20CDN-f38020?logo=cloudflare&logoColor=white)
+![Free](https://img.shields.io/badge/Free-no%20ads-00c6ff)
 
-</div>
-
----
-
-<div align="center">
+<br/>
 
 <img src="docs/screenshots/phone/home.png" width="30%" alt="Home" />
 <img src="docs/screenshots/phone/progress.png" width="30%" alt="Muscle heat map" />
 <img src="docs/screenshots/phone/session.png" width="30%" alt="Live workout" />
 
-<sub><b>Train</b> · pick a muscle group &nbsp;&nbsp;|&nbsp;&nbsp; <b>Progress</b> · what you actually hit this week &nbsp;&nbsp;|&nbsp;&nbsp; <b>Session</b> · log sets, RPE and rest</sub>
-
-<br/><br/>
-
-<img src="docs/screenshots/phone/category.png" width="30%" alt="Exercise picker" />
-<img src="docs/screenshots/phone/history.png" width="30%" alt="History" />
-<img src="docs/screenshots/phone/planner.png" width="30%" alt="Weekly planner" />
-
-<sub><b>Exercises</b> · photos stream from the CDN &nbsp;&nbsp;|&nbsp;&nbsp; <b>History</b> · 16-week heatmap and streak &nbsp;&nbsp;|&nbsp;&nbsp; <b>Plan</b> · drag a split onto your week</sub>
-
 </div>
 
 ---
 
-## What it does
+## You do not remember what you actually trained
 
-**Live workout logging.** Sets as kg × reps, ticked off as you go, with a running session
-timer. RPE is captured on the set you just finished, so you rate it while it's still honest.
-Also handles timed holds and distance work, supersets, per-set notes and warm-up flags.
+You think you hit back twice this week. You did not. You did shoulders twice and told yourself it counted.
 
-**One session, however many muscle groups.** A day planned as chest and triceps is one trip to
-the gym, not two workouts. Home shows today's groups as chips under a single **Start workout**
-button, and that button opens a builder listing every exercise grouped by muscle, with today's
-groups already expanded. Pick across as many as you like and it opens as a single session.
-Every set still carries the muscle it actually trained, so the heat map and the per-group
-counts stay exact no matter how far the session wanders off the plan.
+Grindz answers that question and nothing else. Log a set and the muscle it worked lights up. Open the map on Sunday and the gap is obvious.
 
-**Progression memory.** Every exercise shows what you did *last time* and your best, right
-where you're about to type. PRs — both top set and estimated 1RM — are detected as they happen.
-
-**A muscle heat map that means something.** Not decoration: the front/back figures are traced
-vector geometry with each muscle individually addressable, shaded by what you've actually
-trained this week. Bright for worked, a deliberately faint wash for assisting, flat for
-untouched.
-
-**Planning and review.** A weekly plan you can drag a split onto — any day holds up to three
-blocks, and a day only advertises a landing space while you're actually carrying one — plus a
-16-week training heatmap, a streak counter, 14-day volume, per-exercise progression charts, a
-30-day muscle split, and bodyweight trend.
-
-**An auto rest timer** that starts on each completed set, with +15s, skip, and a vibration
-when it's up — plus a wake lock so the screen doesn't die mid-set.
-
-**Optional AI assist.** Adding a custom exercise? Groq validates the name, files it under the
-right muscle group and writes a form cue, using *your own* API key. Advisory only — you can
-always just save what you typed.
+It is free. No ads. No trackers. No subscription waiting three screens in.
 
 ---
 
-## On a tablet
+## 🗺️ The muscle map is the point
 
-The layout isn't a stretched phone. At Material 3's `expanded` breakpoint the bottom tab bar
-becomes a side rail, card grids widen to three or four columns, and the reading column is
-capped so text never runs the full 1700dp.
+Every other log gives you a list of numbers. This one draws you.
 
-<div align="center">
-<img src="docs/screenshots/tablet/home.png" width="88%" alt="Tablet home" />
-<br/><br/>
-<img src="docs/screenshots/tablet/progress.png" width="88%" alt="Tablet muscle map" />
-</div>
+The figures are traced anatomy and every muscle is addressable on its own. Train chest and the pecs go bright. The triceps that helped go faint. Everything you skipped stays flat.
+
+That is the whole idea. A week you can read in one look.
 
 <div align="center">
-<img src="docs/screenshots/tablet/category.png" width="49%" alt="Tablet exercises" />
-<img src="docs/screenshots/tablet/planner.png" width="49%" alt="Tablet planner" />
+<img src="docs/screenshots/tablet/progress.png" width="82%" alt="The muscle map on a tablet" />
 </div>
 
 ---
 
-## In the browser
+## 🏋️ What it does
 
-The web app is **not the phone layout stretched wide**. It is rebuilt around what a browser
-actually has: a cursor, a keyboard, and a viewport wider than it is tall.
-
-A signed-out visitor gets a landing page built as three acts down a scrolling left column —
-**the hook** (what this is, plus a live muscle map as the hero), **the proof** (screenshots and
-the three features that carry the product), and **the close** (one account, and what happens to
-your data). The right pane is sticky, so sign-in and the APK link stay on screen for the whole
-scroll: the left side can be as long as it needs to be to earn the click, and the click is never
-more than a glance away.
-
-<div align="center">
-<img src="docs/screenshots/web/landing.png" width="88%" alt="Grindz landing page" />
-</div>
-
-Signed in, the bottom tab bar becomes a persistent left rail, and every screen is laid out for
-the width:
-
-<div align="center">
-<img src="docs/screenshots/web/train.png" width="49%" alt="Train" />
-<img src="docs/screenshots/web/progress.png" width="49%" alt="Progress dashboard" />
-<img src="docs/screenshots/web/session.png" width="49%" alt="Logging a session" />
-<img src="docs/screenshots/web/planner.png" width="49%" alt="Weekly planner" />
-</div>
-
-- **Train** — category grid beside a rail holding the week's numbers and today's plan.
-- **Progress** — a twelve-column dashboard. The body map is deliberately *bounded*: given the
-  whole viewport it scales to ~1400px and pushes every chart below the fold.
-- **Session** — logging forms stay a readable measure, with a sticky rail carrying running
-  totals and a jump list showing sets done per exercise.
-- **Plan** — a palette rail beside two columns of days, drag-and-drop intact, up to three
-  blocks a day.
-- **History** — heatmap, search and filters pinned in a rail while the list scrolls.
-
-**Keyboard is a real input.** `⌘K` / `Ctrl K` opens a command palette that reaches every
-section, muscle group and exercise; `1`–`4` switch sections; `N` jumps to the active workout;
-`?` lists the lot. All suppressed while typing, so logging a set never triggers navigation.
-
-Deploys to **Vercel** — set the root directory to `apps/web` and add the two Supabase
-variables. See **[docs/DEPLOY.md](docs/DEPLOY.md)**.
-
-The landing page and the app are **separate deployments** — `grindz.dev` from `apps/landing`
-and `app.grindz.dev` from `apps/web`. The marketing site ships no Supabase client, no router
-and no service worker, so a first-time visitor downloads 70 KB rather than the whole app. A
-returning user is redirected into the app by a boolean cookie on the shared parent domain.
-See **[docs/DOMAINS.md](docs/DOMAINS.md)**.
-
----
-
-## Images are served over Cloudflare
-
-Every exercise photo and category hero comes from a **Cloudflare Workers static-assets
-deployment** — they are not bundled into the apps.
-
-```
-https://cdn.grindz.dev/images/<category>/<file>.png
-https://cdn.grindz.dev/hero/<category>.png
-```
-
-The 42 photos are about **33 MB**. They used to be compiled into the APK *and* the web build,
-so every user paid that on first install **and on every update**, forever, whether or not they
-ever opened a single exercise. Now a device downloads any given photo **at most once in its
-lifetime**.
-
-What makes that stick across an app update isn't the HTTP header — it's that caching is
-explicit on both surfaces:
-
-| Layer | Mechanism |
+| | |
 |---|---|
-| CDN | `Cache-Control: public, max-age=31536000, immutable` |
-| Web / PWA | Workbox `CacheFirst`, matched on the CDN **origin** |
-| React Native | `expo-image` with `cachePolicy="memory-disk"` |
+| **Log as you lift** | Weight and reps one set at a time. RPE on the set you just finished so the number is still honest. |
+| **Rest timer** | Starts itself. Vibrates when it is up. Keeps the screen awake so it does not die mid set. |
+| **Progression** | Last time and your best sit where you type the next number. PRs get caught as they happen. |
+| **Plan the week** | Drag a split onto any day. Up to three blocks. Today shows on the home screen. |
+| **History** | A 16 week heatmap and a streak. Search every session you have logged. |
+| **Bodyweight** | Track it and watch the trend. |
+| **AI assist** | Optional. Adding a custom exercise files it under the right muscle and writes a form cue. Uses your own key. |
 
-Cache Storage and the expo-image disk cache are keyed by URL and live in app storage, so they
-survive updates. An HTTP cache alone wouldn't reliably do that.
-
-The URL contract lives in exactly one file, kept byte-identical in both apps and enforced by
-`scripts/check-parity.mjs`. Filenames are effectively content-addressed — a changed photo ships
-under a **new** name, never overwritten in place, because devices hold the old copy for a year.
-
-The trade-off, stated plainly: the first time you open a muscle group you want a connection.
-After that the photos are on disk.
-
-→ **[Full CDN notes](cdn/README.md)**
+One session can span as many muscle groups as you like. Chest and triceps is one trip to the gym and one workout.
 
 ---
 
-## Getting it on your phone
+## 📲 Get it
 
-Grab the APK from the **[latest release](../../releases/latest)** and install it — Android will
-ask you to allow installs from your browser the first time.
+**Android.** Grab the APK from the [latest release](../../releases/latest) and open it. Android will ask you to allow installs from your browser the first time. Play Protect will warn you because the app did not come from the Play Store. Tap **Install without scanning** and carry on.
 
-**Yes, the APK is on GitHub** — attached to a *Release*, not committed into the repo. That's
-deliberate: release assets don't bloat every clone the way a 55 MB binary in git history would,
-they're versioned alongside a changelog, and the download link stays stable.
+Full walkthrough with screenshots is in [docs/INSTALL.md](docs/INSTALL.md).
 
-→ **[Step-by-step install guide](docs/INSTALL.md)** — including sideloading warnings, updating,
-and `adb install`
+**Browser.** Open [app.grindz.dev](https://app.grindz.dev) and add it to your home screen. Same account. Same data. Nothing to install.
 
-Prefer nothing to install? The web app is the same product — open it and **Add to Home Screen**.
+The APK lives on a Release rather than in the repo. A 52 MB binary in git history is a tax every clone pays forever.
 
 ---
 
-## How it's built
+## 🧱 How it is built
+
+Two apps. One backend. React Native for Android and React with Vite for the web. Supabase holds the data and does Google sign in. Exercise photos come from Cloudflare so neither app ships 33 MB of images.
 
 ```
-grindz/
-├── apps/
-│   ├── landing/       The pitch → grindz.dev. No auth, no router, 70 KB gzip
-│   ├── web/           React 18 + Vite + Tailwind, installable PWA → app.grindz.dev
-│   └── mobile/        React Native 0.86 · Expo SDK 57 · new architecture  ← ships the APK
-├── cdn/               Cloudflare image delivery — the 42 PNGs, headers, wrangler config
-├── docs/              Install, build, architecture, domains, screenshots
-├── supabase/          migrations/0001_init.sql — the whole schema, from scratch
-└── scripts/           check-parity · check-cdn · check-domains
+apps/landing    grindz.dev        the pitch
+apps/web        app.grindz.dev    the installable web app
+apps/mobile     the APK
+cdn             42 exercise photos
+supabase        the whole schema
 ```
 
-Two stacks, deliberately **not** a shared component library — a Tailwind `<div>` and a React
-Native `<View>` don't usefully unify, and forcing it yields a lowest-common-denominator UI on
-both. What *is* shared is everything where disagreement would be a bug: the CDN contract, the
-heat-map palette, the traced muscle geometry, the exercise→muscle mapping, and the PR/volume
-maths. Five files, byte-identical, enforced:
+The two apps deliberately do not share a component library. A Tailwind div and a React Native View do not usefully unify. What they do share is everything a disagreement would break. The muscle geometry and the palette and the PR maths are byte identical and a script proves it.
 
 ```bash
 node scripts/check-parity.mjs
 ```
 
-→ **[Architecture](docs/ARCHITECTURE.md)** · **[Build guide](docs/BUILD.md)** ·
-**[Domains](docs/DOMAINS.md)** · **[Supabase setup](docs/SUPABASE-SETUP.md)** ·
-**[Images & CDN](docs/IMAGES.md)** · **[Deploying](docs/DEPLOY.md)**
-
 ---
 
-## Running it
+## 📚 Docs
 
-```bash
-# web
-cd apps/web && npm install && npm run dev
-
-# with demo data, no Google sign-in needed
-VITE_DEV_BYPASS_AUTH=1 VITE_DEV_SEED=1 npm run dev
-
-# android
-cd apps/mobile && npm install && npm run android
-```
-
-Both apps need a `.env` pointing at a Supabase project — see **[docs/BUILD.md](docs/BUILD.md)**.
-Neither `.env` nor any signing keystore is in this repo.
+| | |
+|---|---|
+| [Install](docs/INSTALL.md) | Getting the APK onto a phone |
+| [Build](docs/BUILD.md) | Running it and shipping a release |
+| [Architecture](docs/ARCHITECTURE.md) | How the pieces fit |
+| [Images and CDN](docs/IMAGES.md) | Why the photos are not in the app |
+| [Domains](docs/DOMAINS.md) | The two origins and why |
+| [Supabase](docs/SUPABASE-SETUP.md) | Setting up your own backend |
 
 ---
 
 <div align="center">
-<sub>Built for one lifter who wanted the log to be honest about what he'd actually trained.</sub>
+<sub>Built for one lifter who wanted the log to be honest about what he had actually trained.</sub>
 </div>
