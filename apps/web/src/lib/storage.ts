@@ -4,7 +4,7 @@
  * **Why not the Cloudflare CDN.** The exercise photo library is served from
  * the image CDN, which is a *static* Workers deploy built from a Git repository. It has no
  * upload endpoint, no write credentials, and nothing an app could POST to — adding a file
- * means committing it and redeploying. So it is the right home for the 43 curated photos that
+ * means committing it and redeploying. So it is the right home for the 35 curated photos that
  * ship with the app, and the wrong home for something a user picks on their phone.
  *
  * Supabase Storage is used instead: it is already in the stack, it authenticates with the

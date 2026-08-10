@@ -1,0 +1,49 @@
+name: Sync catalog.json
+
+# Regenerates cdn/public/catalog.json from apps/web/src/data/catalog.ts and
+# exerciseMuscles.ts whenever either changes on main, and commits the result back.
+#
+# This is what makes "add a workout on GitHub" the whole workflow — see
+# apps/web/scripts/gen-catalog-json.mts and apps/mobile/src/data/catalogSync.ts for the two
+# ends of this pipeline, and docs/CATALOG.md for the full picture. Without this job, the JSON
+# the CDN serves would only update when a developer remembered to run `npm run gen:catalog`
+# and commit the output by hand — the same class of "forgot to regenerate" drift that
+# scripts/check-parity.mjs exists to catch elsewhere in this repo, except here there is no
+# separate check that could catch it, so the fix is to never let it happen instead.
+#
+# The `paths` filter is also what stops this job from re-triggering itself: its own commit
+# only touches cdn/public/catalog.json, which isn't in the filter, so a push it makes does not
+# start another run.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/src/data/catalog.ts'
+      - 'apps/web/src/data/exerciseMuscles.ts'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # tsx only, not `npm ci` in apps/web — the generator's only runtime import outside the
+      # two data files above is assetCdn.ts, which has zero dependencies of its own. Installing
+      # the whole web app (React, Supabase, Tailwind...) here would cost minutes for a script
+      # that needs none of it.
+      - run: npx --yes tsx apps/web/scripts/gen-catalog-json.mts
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- cdn/public/catalog.json; then
+            echo "catalog.json unchanged, nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add cdn/public/catalog.json
+          git commit -m "Sync catalog.json from catalog.ts [skip ci]"
+          git push

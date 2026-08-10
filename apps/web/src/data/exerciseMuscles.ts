@@ -39,8 +39,17 @@ export interface MuscleWork {
   secondary: string[]
 }
 
-/** Keyed by the exercise name exactly as it appears in the catalogue. */
-export const EXERCISE_MUSCLES: Record<string, MuscleWork> = {
+/**
+ * Keyed by the exercise name exactly as it appears in the catalogue.
+ *
+ * A mutable binding, not a `const` — on mobile, `catalogSync.ts` replaces it at runtime with
+ * whatever `gen-catalog-json.mts` most recently generated, via `applyLiveMuscles` below, so a
+ * new exercise's muscle work shows up without a new APK. The web app never calls that setter
+ * and always reads this literal; `let` costs it nothing; see check-parity.mjs, which keeps
+ * this file byte-identical between the two apps specifically so "what muscles does X train"
+ * can never mean something different on one surface than the other.
+ */
+export let EXERCISE_MUSCLES: Record<string, MuscleWork> = {
   /* ---------------------------------------------------------------- chest */
   'Incline Bench Press': { primary: ['pectoralis_major', 'anterior_deltoid'], secondary: TRICEPS },
   'Decline Bench Press': { primary: ['pectoralis_major'], secondary: [...TRICEPS, 'anterior_deltoid'] },
@@ -139,6 +148,14 @@ export const EXERCISE_MUSCLES: Record<string, MuscleWork> = {
     primary: ['rectus_femoris', 'gluteus_maximus', ...HAMSTRINGS],
     secondary: [...CALVES, 'tibialis_anterior'],
   },
+}
+
+/**
+ * Swap in a freshly-fetched muscle map (mobile only — see the comment on EXERCISE_MUSCLES).
+ * The caller is expected to have already shape-checked `data`.
+ */
+export function applyLiveMuscles(data: Record<string, MuscleWork>): void {
+  EXERCISE_MUSCLES = data
 }
 
 /**

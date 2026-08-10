@@ -36,7 +36,7 @@ export default defineConfig({
          * CacheFirst is what makes the move worthwhile: Cache Storage is keyed by URL and lives
          * in origin storage, so a photo fetched once survives app restarts AND app updates. The
          * CDN's immutable header alone would not guarantee that. `maxEntries` is comfortably
-         * above the 43 real images so nothing is evicted in normal use.
+         * above the 35 real images so nothing is evicted in normal use.
          */
         runtimeCaching: [
           {
