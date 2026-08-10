@@ -37,7 +37,7 @@ Three hostnames, three different things serving them.
 |---|---|---|---|
 | `grindz.dev` | the landing page | Vercel project **`grindz-landing`** | `apps/landing` |
 | `app.grindz.dev` | the app | Vercel project **`grindz`** | `apps/web` |
-| `cdn.grindz.dev` | the 42 exercise photos | Cloudflare Worker | `cdn/` |
+| `cdn.grindz.dev` | the 43 exercise photos | Cloudflare Worker | `cdn/` |
 
 ```
                         ┌──────────────────────────────┐
@@ -219,7 +219,7 @@ independent of the app.
 | 1 | Create a Worker named **`grindz-cdn`** | Workers & Pages → Create |
 | 2 | Settings → Build → connect **`ShockRock2004/grindz`**, root directory **`cdn`** | |
 | 3 | Settings → Domains & Routes → Custom Domain → **`cdn.grindz.dev`** | needs step 1 done |
-| 4 | Verify | `node scripts/check-cdn.mjs` → 42/42 |
+| 4 | Verify | `node scripts/check-cdn.mjs` → 43/43 |
 
 Cloudflare creates and manages the `cdn` DNS record itself — do not add one by hand.
 

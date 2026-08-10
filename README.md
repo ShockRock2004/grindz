@@ -54,7 +54,7 @@ where you type the next number. Personal records and estimated 1RM are caught as
 and history keeps a 16 week heatmap, a streak and every session you have logged.
 
 📅 **Plans and exercises.** Drag a split onto any day and it surfaces on the home screen ready
-to start. 42 exercises come with photos and form cues, and you can add your own with Groq
+to start. 43 exercises come with photos and form cues, and you can add your own with Groq
 writing the cue if you want it.
 
 ---
@@ -112,7 +112,7 @@ Prefer nothing to install? The web app is the same product. Open
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/Cloudflare_Workers-f38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare" /></td>
-<td>Serves the 42 exercise photos. Neither app bundles them, so a device downloads a given photo at most once in its lifetime instead of paying 33 MB on every update.</td>
+<td>Serves the 43 exercise photos. Neither app bundles them, so a device downloads a given photo at most once in its lifetime instead of paying 33 MB on every update.</td>
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" /></td>
@@ -130,7 +130,7 @@ grindz/
 │   ├── landing/       The pitch → grindz.dev. No auth, no router, 70 KB gzip
 │   ├── web/           React 18 + Vite + Tailwind, installable PWA → app.grindz.dev
 │   └── mobile/        React Native 0.86 · Expo SDK 57  ← ships the APK
-├── cdn/               Cloudflare image delivery — the 42 exercise photos
+├── cdn/               Cloudflare image delivery — the 43 exercise photos
 ├── docs/              Install, build, architecture, domains, screenshots
 ├── supabase/          migrations/0001_init.sql — the whole schema
 └── scripts/           check-parity · check-cdn · check-domains

@@ -47,6 +47,7 @@ export const CATALOG: Category[] = [
       { name: 'Preacher Curl', img: 'preacher-curl.png', form: 'Armpits over the pad, full stretch.', target: 'Bicep Peak' },
       { name: 'Concentration Curl', img: 'concentration-curl.png', form: 'Elbow against inner thigh, isolation.', target: 'Short Head' },
       { name: 'Rope Hammer Curl', img: 'rope-hammer-curl.png', form: 'Neutral grip, pull towards shoulders.', target: 'Brachialis' },
+      { name: 'Wrist Curls', img: 'wrist-curls.png', form: 'Rest forearms on your thighs, curl the bar up using only your wrists.', target: 'Forearms' },
     ],
   },
   {
@@ -188,6 +189,7 @@ export const EXERCISE_TIPS: Record<string, string[]> = {
   'Preacher Curl': ['Keep your armpits pressed into the pad the whole set.', 'Don’t fully lock out at the bottom — keep tension on the biceps.', 'Resist the stretch and control the negative.'],
   'Concentration Curl': ['Brace your elbow against your inner thigh.', 'Turn the pinky slightly up to peak the biceps.', 'Pause and squeeze hard at the top.'],
   'Rope Hammer Curl': ['Keep a neutral grip and elbows fixed at your sides.', 'Curl toward your shoulders and squeeze the forearms.', 'Lower slowly — no swinging from the shoulders.'],
+  'Wrist Curls': ['Rest your forearms flat on your thighs, wrists just past your knees.', 'Curl the bar up using only your wrists — forearms stay still.', 'Lower under control for a full stretch before curling again.'],
   'Overhead Shoulder Press': ['Brace your core and glutes to avoid arching your back.', 'Press in a straight line, stacking the weight over your shoulders.', 'Keep your forearms vertical throughout.'],
   'Dumbbell Front Raise': ['Raise to about eye level, no higher.', 'Keep a slight elbow bend and control the descent.', 'Avoid using momentum from the hips.'],
   'Dumbbell Lateral Raise': ['Lead with your elbows, like pouring a pitcher.', 'Raise to shoulder height with pinkies slightly higher.', 'Keep the traps relaxed — think wide, not up.'],

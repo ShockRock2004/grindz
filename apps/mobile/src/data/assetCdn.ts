@@ -6,8 +6,8 @@
  * and a device that has already downloaded a photo in one never downloads it again in
  * the other.
  *
- * These 42 PNGs are ~32 MB. They used to be bundled into the app builds, so every user
- * paid the full 32 MB on first install AND on every update, forever, whether or not they
+ * These 43 PNGs are ~33 MB. They used to be bundled into the app builds, so every user
+ * paid the full 33 MB on first install AND on every update, forever, whether or not they
  * ever opened the exercise. Serving them from a Cloudflare static-assets Worker means a
  * device downloads an image at most once in its lifetime:
  *
