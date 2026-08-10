@@ -77,6 +77,7 @@ export const EXERCISE_MUSCLES: Record<string, MuscleWork> = {
   // brachioradialis is the point of a hammer curl, so it is primary here and must not
   // also appear in the FOREARMS spread below it
   'Rope Hammer Curl': { primary: ['biceps_brachii', 'brachioradialis'], secondary: ['wrist_flexors', 'extensor_carpi_ulnaris'] },
+  'Wrist Curls': { primary: ['wrist_flexors'], secondary: ['brachioradialis', 'extensor_carpi_ulnaris'] },
 
   /* ------------------------------------------------------------ shoulders */
   'Overhead Shoulder Press': {

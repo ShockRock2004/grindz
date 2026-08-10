@@ -21,7 +21,7 @@ Grindz is one product on two stacks, sharing one backend and one image CDN.
                                  │
                     ┌────────────▼─────────────┐
                     │  Cloudflare Worker       │
-                    │  42 exercise photos      │
+                    │  43 exercise photos      │
                     │  8 category heroes       │
                     └──────────────────────────┘
 ```
