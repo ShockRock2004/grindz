@@ -33,29 +33,17 @@ sharing one Supabase backend, one muscle map palette, and one image CDN.
 
 ## What it does
 
-Grindz is a training log, and its purpose is deliberately narrow: answer *what have I actually
-trained this week* honestly, and make the next set easier to load. It is not a coach and it
-will not write your programme. It records what you did and shows you the shape of it.
+Grindz is a training log with a muscle map that shows exactly what you worked this week. Every muscle is shaded by what you actually trained so a group you keep skipping is impossible to miss.
 
-🗺️ **Muscle map.** Traced vector geometry shades in from what you actually trained this week.
-Bright for worked, a faint wash for assisting, flat for untouched. It is the fastest way to
-spot the group you keep skipping.
+🗺️ **MUSCLE MAP** - Traced vector figures with every muscle individually addressable. Shaded by what you actually hit this week.
 
-📝 **Live logging.** Record kg × reps with RPE captured right after the set, while you still
-mean it. Timed holds, supersets, notes and warm up flags are all handled. The rest timer starts
-itself and keeps the screen awake.
+📅 **WEEKLY PLANNER** - Drag a split onto any day and it surfaces on the home screen ready to start. 43 exercises come with photos and form cues, and you can add your own exercise with Groq writing the cue if you want it.
 
-🏋️ **One trip to the gym is one session.** Chest and triceps is a single workout, not two. Every
-set remembers the muscle it actually trained, so the map stays exact even when the session
-wanders off the plan.
+📈 **PROGRESSION MEMORY** -  Last time and your best sit right where you are about to type. PRs get detected as they happen.
 
-📈 **Progression memory.** Every exercise shows what you lifted last time and your best, right
-where you type the next number. Personal records and estimated 1RM are caught as they happen,
-and history keeps a 16 week heatmap, a streak and every session you have logged.
+📝 **LIVE LOGGING** - Record kg × reps with RPE captured right after the set. Timed holds, supersets, notes and warm up flags are all handled. The rest timer starts itself and keeps the screen awake.
 
-📅 **Plans and exercises.** Drag a split onto any day and it surfaces on the home screen ready
-to start. 43 exercises come with photos and form cues, and you can add your own with Groq
-writing the cue if you want it.
+🏋️ **ACCURATE TRACKING** - One trip to the gym is one session. Chest and triceps is a single workout, not two. Every set remembers the muscle it actually trained, so the map stays exact even when the session wanders off the plan.
 
 ---
 
