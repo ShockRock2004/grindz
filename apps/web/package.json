@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "gen:catalog": "tsx scripts/gen-catalog-json.mts",
     "verify:paint": "tsx scripts/verify-paint.mts",
     "verify:web": "node scripts/verify-web.mjs",
     "verify:a11y": "node scripts/verify-a11y.mjs"

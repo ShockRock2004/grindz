@@ -22,10 +22,24 @@ import { CATALOG } from './catalog'
  * degrades to the same empty state rather than breaking layout.
  */
 
-/** Only these have a photo; anything else (custom lifts) renders without one. */
-const KNOWN_EXERCISE_IMAGES: ReadonlySet<string> = new Set(
-  CATALOG.flatMap((c) => c.exercises.filter((e) => e.img).map((e) => `${c.key}/${e.img}`)),
-)
+/*
+ * `KNOWN_EXERCISE_IMAGES` used to be a plain module-level `Set`, built once from `CATALOG` at
+ * import time. That broke the moment CATALOG became live (see data/catalog.ts): the set would
+ * still reflect whatever the bundle shipped with, so a synced-in exercise's photo would 404
+ * and silently render as "no photo" forever. Rebuilding it on every call is cheap enough
+ * (~35 entries) that memoising is only worth doing to avoid the allocation, not for
+ * correctness — done here by caching against the CATALOG *reference*, which changes exactly
+ * when `applyLiveCatalog` swaps it.
+ */
+let cachedFor: typeof CATALOG | null = null
+let cachedImages: ReadonlySet<string> = new Set()
+function knownExerciseImages(): ReadonlySet<string> {
+  if (cachedFor !== CATALOG) {
+    cachedImages = new Set(CATALOG.flatMap((c) => c.exercises.filter((e) => e.img).map((e) => `${c.key}/${e.img}`)))
+    cachedFor = CATALOG
+  }
+  return cachedImages
+}
 
 const HERO_CATEGORIES: ReadonlySet<string> = new Set(CATALOG.map((c) => c.key))
 
@@ -34,7 +48,7 @@ export function exerciseImageSource(categoryKey: string, img?: string | null): I
   if (!img) return undefined
   // guard on the catalog rather than pointing the loader at a URL that will 404 — a custom
   // lift carrying a stale filename should render as "no photo", not as a broken fetch
-  if (!KNOWN_EXERCISE_IMAGES.has(`${categoryKey}/${img}`)) return undefined
+  if (!knownExerciseImages().has(`${categoryKey}/${img}`)) return undefined
   return { uri: cdnExercise(categoryKey, img) }
 }
 

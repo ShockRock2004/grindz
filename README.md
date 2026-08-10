@@ -37,7 +37,7 @@ Grindz is a training log with a muscle map that shows exactly what you worked th
 
 🗺️ **MUSCLE MAP** - Traced vector figures with every muscle individually addressable. Shaded by what you actually hit this week.
 
-📅 **WEEKLY PLANNER** - Drag a split onto any day and it surfaces on the home screen ready to start. 43 exercises come with photos and form cues, and you can add your own exercise with Groq writing the cue if you want it.
+📅 **WEEKLY PLANNER** - Drag a split onto any day and it surfaces on the home screen ready to start. 35 exercises come with photos and form cues, and you can add your own exercise with Groq writing the cue if you want it.
 
 📈 **PROGRESSION MEMORY** -  Last time and your best sit right where you are about to type. PRs get detected as they happen.
 
@@ -100,7 +100,7 @@ Prefer nothing to install? The web app is the same product. Open
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/Cloudflare_Workers-f38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare" /></td>
-<td>Serves the 43 exercise photos. Neither app bundles them, so a device downloads a given photo at most once in its lifetime instead of paying 33 MB on every update.</td>
+<td>Serves the 35 exercise photos. Neither app bundles them, so a device downloads a given photo at most once in its lifetime instead of paying 33 MB on every update.</td>
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" /></td>
@@ -118,7 +118,7 @@ grindz/
 │   ├── landing/       The pitch → grindz.dev. No auth, no router, 70 KB gzip
 │   ├── web/           React 18 + Vite + Tailwind, installable PWA → app.grindz.dev
 │   └── mobile/        React Native 0.86 · Expo SDK 57  ← ships the APK
-├── cdn/               Cloudflare image delivery — the 43 exercise photos
+├── cdn/               Cloudflare image delivery — the 35 exercise photos
 ├── docs/              Install, build, architecture, domains, screenshots
 ├── supabase/          migrations/0001_init.sql — the whole schema
 └── scripts/           check-parity · check-cdn · check-domains
@@ -126,7 +126,7 @@ grindz/
 
 → **[Build guide](docs/BUILD.md)** · **[Architecture](docs/ARCHITECTURE.md)** ·
 **[Domains](docs/DOMAINS.md)** · **[Supabase setup](docs/SUPABASE-SETUP.md)** ·
-**[Images & CDN](docs/IMAGES.md)**
+**[Images & CDN](docs/IMAGES.md)** · **[Catalog sync](docs/CATALOG.md)**
 
 ---
 

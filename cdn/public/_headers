@@ -18,3 +18,12 @@
 # CORS is open because the assets are fetched from more than one origin for the same public,
 # non-sensitive images: the web app on grindz.dev and app.grindz.dev, any Vercel preview
 # deployment, localhost during development, and the React Native image loader.
+
+# catalog.json is the OPPOSITE of the images above: it changes every time an exercise is
+# added or edited, so it must never be cached immutably — a client that cached it for a year
+# would never see a new exercise. max-age=300 means a device re-checks at most every five
+# minutes, which is fast enough to feel "automatic" without hammering the Worker on every app
+# open. See apps/mobile/src/data/catalogSync.ts for the client side of this.
+/catalog.json
+  Cache-Control: public, max-age=300, must-revalidate
+  Access-Control-Allow-Origin: *

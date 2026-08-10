@@ -64,6 +64,13 @@ async function worker() {
       if (!res.ok) {
         failed++
         console.error(`  ✗ ${res.status}  ${path}`)
+      } else if (path === '/catalog.json') {
+        // the one deliberately mutable file — see cdn/public/_headers. Immutable here would
+        // mean a new exercise never reaches a device that already cached the old copy.
+        if (/immutable/.test(cc)) {
+          failed++
+          console.error(`  ✗ ${path} is cached immutable — it should re-check every few minutes`)
+        }
       } else if (!/immutable/.test(cc)) {
         // serving but not cached immutably: images work, and every device re-downloads
         noCache++

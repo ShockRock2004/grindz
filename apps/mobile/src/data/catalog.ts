@@ -1,7 +1,17 @@
 import type { Category, CustomExerciseRow, Exercise } from '../lib/types'
 
-/** Built-in exercise catalog (ported from the original C.FIT). Custom exercises are merged in from the DB at runtime. */
-export const CATALOG: Category[] = [
+/**
+ * Built-in exercise catalog (ported from the original C.FIT), and its offline fallback.
+ *
+ * This is what ships inside the APK, so it is what a brand-new install or a device with no
+ * signal renders immediately. `CATALOG` below starts out equal to this and is then swapped
+ * for whatever `catalogSync.ts` fetches from the CDN — see the comment on `CATALOG` for why
+ * new exercises don't need a new build. Never edit this array to add an exercise, since a
+ * bundled fallback that only some devices ever see would just be a second, silently-drifting
+ * copy — edit `apps/web/src/data/catalog.ts` instead, which is what generates the live JSON,
+ * and update this one at the same time so it isn't the version a user starts on offline.
+ */
+const BUNDLED_CATALOG: Category[] = [
   {
     key: 'chest',
     title: 'Chest',
@@ -103,7 +113,26 @@ export const CATALOG: Category[] = [
   },
 ]
 
-export const CATALOG_BY_KEY: Record<string, Category> = Object.fromEntries(CATALOG.map((c) => [c.key, c]))
+function indexByKey(categories: Category[]): Record<string, Category> {
+  return Object.fromEntries(categories.map((c) => [c.key, c]))
+}
+
+/**
+ * The live catalog and its per-exercise tips — what every screen actually reads.
+ *
+ * Exported as mutable bindings, not functions, so every existing call site
+ * (`CATALOG.find(...)`, `CATALOG_BY_KEY[key]`) keeps working unchanged: ES module bindings
+ * are live references, so a reassignment in `applyLiveCatalog` below is visible to every
+ * importer the next time they read it — no subscription needed at the data layer. Getting a
+ * *re-render* out of that reassignment is a separate problem, solved in `lib/app-context.tsx`
+ * (`CatalogCtx`), because React only re-renders components that actually consume something —
+ * mutating a module variable alone does not trigger one.
+ *
+ * Starts out equal to the bundled fallback so the app has something to show before
+ * `catalogSync.ts` has ever answered, then gets replaced once it has.
+ */
+export let CATALOG: Category[] = BUNDLED_CATALOG
+export let CATALOG_BY_KEY: Record<string, Category> = indexByKey(CATALOG)
 
 /** Built-in catalog with the user's custom exercises appended to each category. */
 export function mergeCustom(custom: CustomExerciseRow[]): Category[] {
@@ -139,8 +168,8 @@ export function exerciseMode(name: string, custom: CustomExerciseRow[] = []): 'r
   return m === 'timed' || m === 'distance' ? m : 'reps'
 }
 
-/** Coaching tips per exercise (shown in the exercise detail sheet). */
-export const EXERCISE_TIPS: Record<string, string[]> = {
+/** Coaching tips per exercise (shown in the exercise detail sheet) — the fallback half of EXERCISE_TIPS below. */
+const BUNDLED_TIPS: Record<string, string[]> = {
   'Incline Bench Press': ['Set the bench near 30° — steeper shifts the load to the front delts.', 'Lower the bar to just below your collarbone under control.', 'Keep your shoulder blades pinned back and feet planted.'],
   'Decline Bench Press': ['Lock your legs in and keep a slight arch to protect the shoulders.', 'Lower the bar to the lower-chest line, not the sternum.', 'Press up and slightly back over the shoulders.'],
   'Pec Fly': ['Keep a soft, fixed bend in the elbows — don’t press.', 'Feel a deep chest stretch at the bottom, then squeeze.', 'Stop just short of the weights touching to keep tension on the pecs.'],
@@ -178,8 +207,22 @@ export const EXERCISE_TIPS: Record<string, string[]> = {
   'Elliptical': ['Hold a steady RPM and use the handles to involve the upper body.', 'Keep your posture tall — don’t hunch on the console.', 'Vary resistance or incline for intervals to boost conditioning.'],
 }
 
+export let EXERCISE_TIPS: Record<string, string[]> = BUNDLED_TIPS
+
 export function exerciseTips(name: string): string[] {
   return EXERCISE_TIPS[name] ?? []
+}
+
+/**
+ * Swap in a freshly-fetched catalog + tips. Called only by `catalogSync.ts`, only after the
+ * fetched payload has passed its shape check — this file trusts its caller rather than
+ * re-validating, since a second, slightly-different check here would just be another place
+ * for that validation to drift from the first.
+ */
+export function applyLiveCatalog(categories: Category[], tips: Record<string, string[]>): void {
+  CATALOG = categories
+  CATALOG_BY_KEY = indexByKey(categories)
+  EXERCISE_TIPS = tips
 }
 
 /**

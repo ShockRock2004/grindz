@@ -5,7 +5,7 @@ import { KeyboardProvider, useKeyboardState } from 'react-native-keyboard-contro
 import { C, R, alpha } from './src/theme'
 import { T, Button, Modal, Select } from './src/components/ui'
 import { GrindzMark, IconCalendar, IconChart, IconDumbbell, IconHistory, IconLogout, IconPlay, IconPlus, IconTrash } from './src/components/Icons'
-import { AppProviders, useAuth, useData, usePrefs, useSession } from './src/lib/app-context'
+import { AppProviders, useAuth, useCatalog, useData, usePrefs, useSession } from './src/lib/app-context'
 import { deleteCustom } from './src/lib/db'
 import { syncGroqKey, setGroqKey, maskKey } from './src/lib/groq'
 import { testGroqKey } from './src/lib/exercise-ai'
@@ -46,6 +46,11 @@ const TABS: { key: Tab; label: string; Icon: typeof IconDumbbell }[] = [
 function Shell() {
   const { session, profile } = useAuth()
   const { active } = useSession()
+  // subscribing here is what makes a synced-in exercise appear without navigating away and
+  // back: Shell's re-render cascades to every screen below it (Home, Category, BuildWorkout,
+  // Planner...), none of which are memoized — see the comment on CatalogCtx for why a plain
+  // reassignment in data/catalog.ts isn't enough on its own. The version number itself is unused.
+  useCatalog()
   const insets = useSafeAreaInsets()
   // `isVisible` flips as the keyboard starts animating, so the bar leaves with it rather
   // than popping out after it has already settled

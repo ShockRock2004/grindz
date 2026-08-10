@@ -19,6 +19,7 @@ import type { ActiveSession, SetRow, SessionRow, CustomExerciseRow, PlanRow, Exe
 import type { WeightUnit } from './util'
 import { loadActive, saveActive, clearActive, getUnitPref, setUnitPref } from './store'
 import { VERIFY, VERIFY_SESSION, VERIFY_PROFILE, buildVerifyData } from './verify-fixture'
+import { hydrateCatalogFromCache, syncCatalogFromNetwork } from '../data/catalogSync'
 
 /* ----------------------------- auth ----------------------------- */
 interface AuthValue {
@@ -64,6 +65,18 @@ interface SessionValue {
 }
 const SessionCtx = createContext<SessionValue>({ active: null, start: () => {}, update: () => {}, finish: async () => null, discard: () => {} })
 export const useSession = () => useContext(SessionCtx)
+
+/* ---------------------------- catalog ---------------------------- */
+/*
+ * Not the data itself — that lives in data/catalog.ts as mutable module bindings, which any
+ * screen already reads directly (`CATALOG.find(...)`, etc). This context carries nothing but
+ * a version counter, whose only job is to give screens something to *subscribe* to: mutating
+ * a module variable doesn't trigger a re-render on its own, but a changing context value
+ * does, for every component that calls useCatalog() — see App.tsx's Shell, which is the one
+ * call site that needs it, since Shell's re-render cascades to every screen beneath it.
+ */
+const CatalogCtx = createContext<number>(0)
+export const useCatalog = () => useContext(CatalogCtx)
 
 export function AppProviders({ children }: { children: ReactNode }) {
   /* auth */
@@ -157,6 +170,24 @@ export function AppProviders({ children }: { children: ReactNode }) {
     return saved
   }, [active, refresh])
 
+  /*
+   * catalog — cache first (fast, works offline), then a network check behind it. Each step
+   * bumps the version only if it actually changed something, so a device that already has
+   * the latest copy re-renders zero extra times. Runs once per app launch, same as the other
+   * hydration effects above; VERIFY (screenshot/test mode) skips the network leg so a run
+   * never depends on cdn.grindz.dev being reachable.
+   */
+  const [catalogVersion, setCatalogVersion] = useState(0)
+  useEffect(() => {
+    let cancelled = false
+    hydrateCatalogFromCache()
+      .then((changed) => { if (changed && !cancelled) setCatalogVersion((v) => v + 1) })
+      .then(() => (VERIFY ? false : syncCatalogFromNetwork()))
+      .then((changed) => { if (changed && !cancelled) setCatalogVersion((v) => v + 1) })
+      .catch(() => {}) // belt and braces — catalogSync already fails soft internally
+    return () => { cancelled = true }
+  }, [])
+
   const authValue = useMemo(() => ({ session, profile, refreshProfile }), [session, profile, refreshProfile])
   const dataValue = useMemo(() => ({ ...data, refresh }), [data, refresh])
   const prefsValue = useMemo(() => ({ unit, setUnit }), [unit, setUnit])
@@ -166,7 +197,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
     <AuthCtx.Provider value={authValue}>
       <DataCtx.Provider value={dataValue}>
         <PrefsCtx.Provider value={prefsValue}>
-          <SessionCtx.Provider value={sessionValue}>{children}</SessionCtx.Provider>
+          <SessionCtx.Provider value={sessionValue}>
+            <CatalogCtx.Provider value={catalogVersion}>{children}</CatalogCtx.Provider>
+          </SessionCtx.Provider>
         </PrefsCtx.Provider>
       </DataCtx.Provider>
     </AuthCtx.Provider>
