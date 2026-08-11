@@ -11,7 +11,7 @@ sharing one Supabase backend, one muscle map palette, and one image CDN.
 
 <br/>
 
-[![Download APK](https://img.shields.io/badge/Download-Grindz%20v1.3.0%20APK-00c6ff?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest)
+[![Download APK](https://img.shields.io/badge/Download-Grindz%20v1.4.0%20APK-00c6ff?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest)
 [![Install guide](https://img.shields.io/badge/How%20to%20install-555?style=for-the-badge)](docs/INSTALL.md)
 [![Open in browser](https://img.shields.io/badge/Open%20in%20browser-0072ff?style=for-the-badge)](https://app.grindz.dev)
 
@@ -36,6 +36,8 @@ sharing one Supabase backend, one muscle map palette, and one image CDN.
 Grindz is a training log with a muscle map that shows exactly what you worked this week. Every muscle is shaded by what you actually trained so a group you keep skipping is impossible to miss.
 
 🗺️ **MUSCLE MAP** - Traced vector figures with every muscle individually addressable. Shaded by what you actually hit this week.
+
+🧍 **BODY TYPE** - Switch between a male and female muscle map and exercise photo set from Settings, on either app. The choice is saved to your account, not the device, so it's already right the next time you sign in anywhere. Switching purges the old photo cache and pulls the new set fresh from the CDN.
 
 📅 **WEEKLY PLANNER** - Drag a split onto any day and it surfaces on the home screen ready to start. 35 exercises come with photos and form cues, and you can add your own exercise with Groq writing the cue if you want it.
 
@@ -100,7 +102,7 @@ Prefer nothing to install? The web app is the same product. Open
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/Cloudflare_Workers-f38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare" /></td>
-<td>Serves the 35 exercise photos. Neither app bundles them, so a device downloads a given photo at most once in its lifetime instead of paying 33 MB on every update.</td>
+<td>Serves the 35 exercise photos, in both a male and a female set. Neither app bundles them, so a device downloads a given photo at most once in its lifetime instead of paying 33 MB on every update.</td>
 </tr>
 <tr>
 <td><img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" /></td>

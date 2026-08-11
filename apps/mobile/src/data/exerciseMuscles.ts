@@ -24,15 +24,37 @@ import type { CustomExerciseRow } from '../lib/types'
  * can carry a different group id on each: the triceps is `triceps_lateral_head` at the
  * front and `triceps_brachii` at the back. Naming one id would light half the body and
  * look like a bug, so every muscle that appears on both sheets is aliased here.
+ *
+ * The female sheet (bodyMusclesFemale.ts) adds a second reason for an alias to exist:
+ * its source art doesn't sub-divide a few regions the male sheet does (one traced
+ * forearm shape per view rather than three separate muscles, one merged back-of-thigh
+ * area rather than two). Where the female geometry stayed genuinely distinct — deltoid,
+ * quads, hamstrings — it got renamed to match the male id directly (see
+ * scripts/trace/labels-female.py) rather than aliased here, because those really are
+ * separate shapes and deserve separate ids. `forearm` and the extra `trapezius_upper`
+ * below are the two cases where female traces ONE shape for what the male sheet
+ * separates, so the alias has to point multiple male-side names at that one female id.
  */
 const TRICEPS = ['triceps_lateral_head', 'triceps_brachii']
-const FOREARMS = ['brachioradialis', 'wrist_flexors', 'extensor_carpi_ulnaris']
+const FOREARMS = ['brachioradialis', 'wrist_flexors', 'extensor_carpi_ulnaris', 'forearm']
 const CALVES = ['gastrocnemius', 'gastrocnemius_lateral', 'gastrocnemius_medial', 'soleus']
 const QUADS = ['rectus_femoris', 'vastus_lateralis', 'vastus_medialis']
 const HAMSTRINGS = ['biceps_femoris', 'semitendinosus']
 const ABS = ['rectus_abdominis_upper', 'rectus_abdominis_middle', 'rectus_abdominis_lower']
 const LATS = ['latissimus_dorsi']
-const UPPER_BACK = ['trapezius_middle_lower', 'infraspinatus_teres_major']
+// female's back sheet traces one combined trap shape (see labels-female.py) rather than
+// splitting upper from middle/lower the way the male sheet does, so 'trapezius_upper' is
+// added here too — on the male map it is a no-op (that shape already lights via its own
+// direct references elsewhere), on the female map it is what makes a row or a face pull
+// light the only back/shoulder shape that exists there.
+const UPPER_BACK = ['trapezius_middle_lower', 'infraspinatus_teres_major', 'trapezius_upper']
+// female's front sheet has no separate deltoid shape at all: the shoulder-cap linework
+// that would be it auto-folded into trapezius_upper during tracing (nothing else on that
+// side claimed it — see labels-female.py). Without this, a press/raise's anterior/lateral
+// deltoid primary has no id to match on female and the front view lights up nothing for
+// it. 'trapezius_upper' is promoted to primary (not just listed in secondary, as it
+// already was for these) so the one shape that exists there carries the highlight.
+const FRONT_DELTOID_FALLBACK = 'trapezius_upper'
 
 export interface MuscleWork {
   primary: string[]
@@ -53,12 +75,12 @@ export let EXERCISE_MUSCLES: Record<string, MuscleWork> = {
   /* ---------------------------------------------------------------- chest */
   'Incline Bench Press': { primary: ['pectoralis_major', 'anterior_deltoid'], secondary: TRICEPS },
   'Decline Bench Press': { primary: ['pectoralis_major'], secondary: [...TRICEPS, 'anterior_deltoid'] },
-  'Pec Fly': { primary: ['pectoralis_major'], secondary: ['anterior_deltoid'] },
+  'Pec Fly': { primary: ['pectoralis_major'], secondary: ['anterior_deltoid', FRONT_DELTOID_FALLBACK] },
   'Flat Bench Press': { primary: ['pectoralis_major'], secondary: [...TRICEPS, 'anterior_deltoid'] },
 
   /* -------------------------------------------------------------- triceps */
   'Seated Overhead Dumbbell Triceps Extension': { primary: TRICEPS, secondary: ['posterior_deltoid'] },
-  'Cable Pushdowns': { primary: TRICEPS, secondary: ['extensor_carpi_ulnaris'] },
+  'Cable Pushdowns': { primary: TRICEPS, secondary: ['extensor_carpi_ulnaris', 'forearm'] },
   'Overhead Cable Triceps Extension': { primary: TRICEPS, secondary: ['posterior_deltoid'] },
 
   /* ----------------------------------------------------------------- back */
@@ -82,19 +104,25 @@ export let EXERCISE_MUSCLES: Record<string, MuscleWork> = {
 
   /* --------------------------------------------------------------- biceps */
   'Preacher Curl': { primary: ['biceps_brachii'], secondary: FOREARMS },
-  'Concentration Curl': { primary: ['biceps_brachii'], secondary: ['brachioradialis'] },
-  // brachioradialis is the point of a hammer curl, so it is primary here and must not
-  // also appear in the FOREARMS spread below it
-  'Rope Hammer Curl': { primary: ['biceps_brachii', 'brachioradialis'], secondary: ['wrist_flexors', 'extensor_carpi_ulnaris'] },
-  'Wrist Curls': { primary: ['wrist_flexors'], secondary: ['brachioradialis', 'extensor_carpi_ulnaris'] },
+  'Concentration Curl': { primary: ['biceps_brachii'], secondary: ['brachioradialis', 'forearm'] },
+  // brachioradialis is the point of a hammer curl, so it (and its female id, 'forearm')
+  // are primary here and must not also appear in the FOREARMS spread below
+  'Rope Hammer Curl': { primary: ['biceps_brachii', 'brachioradialis', 'forearm'], secondary: ['wrist_flexors', 'extensor_carpi_ulnaris'] },
+  'Wrist Curls': { primary: FOREARMS, secondary: [] },
 
   /* ------------------------------------------------------------ shoulders */
   'Overhead Shoulder Press': {
-    primary: ['anterior_deltoid', 'lateral_deltoid'],
-    secondary: [...TRICEPS, 'trapezius_upper'],
+    primary: ['anterior_deltoid', 'lateral_deltoid', FRONT_DELTOID_FALLBACK],
+    secondary: TRICEPS,
   },
-  'Dumbbell Front Raise': { primary: ['anterior_deltoid'], secondary: ['lateral_deltoid'] },
-  'Dumbbell Lateral Raise': { primary: ['lateral_deltoid'], secondary: ['anterior_deltoid', 'trapezius_upper'] },
+  'Dumbbell Front Raise': {
+    primary: ['anterior_deltoid', FRONT_DELTOID_FALLBACK],
+    secondary: ['lateral_deltoid'],
+  },
+  'Dumbbell Lateral Raise': {
+    primary: ['lateral_deltoid', FRONT_DELTOID_FALLBACK],
+    secondary: ['anterior_deltoid'],
+  },
   'Shrugs': { primary: ['trapezius_upper'], secondary: ['trapezius_middle_lower', ...FOREARMS] },
   'Reverse Pec Deck': { primary: ['posterior_deltoid'], secondary: UPPER_BACK },
   'Upright Row': { primary: ['lateral_deltoid', 'trapezius_upper'], secondary: ['biceps_brachii', ...FOREARMS] },
@@ -104,19 +132,27 @@ export let EXERCISE_MUSCLES: Record<string, MuscleWork> = {
   },
 
   /* ----------------------------------------------------------------- legs */
-  'Seated Leg Curl': { primary: HAMSTRINGS, secondary: ['gastrocnemius_lateral', 'gastrocnemius_medial'] },
+  'Seated Leg Curl': { primary: HAMSTRINGS, secondary: CALVES },
   'Adductor and Abductor': {
-    primary: ['pectineus', 'tensor_fasciae_latae'],
+    // 'adductors' is the female sheet's one traced inner-thigh shape (see
+    // labels-female.py) — no equivalent to pectineus/tensor_fasciae_latae/sartorius
+    // individually, so it's the female target for this whole exercise, not just an alias
+    primary: ['pectineus', 'tensor_fasciae_latae', 'adductors'],
     secondary: ['gluteus_maximus', 'sartorius'],
   },
   'Barbell Squats': {
+    // gluteus_medius has no male-sheet equivalent (that map doesn't trace it separately)
+    // so it is only ever reached through an exercise that names it directly, not an
+    // alias — real anatomy either way, a squat's hip stabiliser
     primary: [...QUADS, 'gluteus_maximus'],
-    secondary: [...HAMSTRINGS, 'erector_spinae', ...CALVES],
+    secondary: [...HAMSTRINGS, 'erector_spinae', ...CALVES, 'gluteus_medius'],
   },
-  'Seated Leg Extension': { primary: QUADS, secondary: ['tensor_fasciae_latae'] },
+  // 'adductors' is the female id for tensor_fasciae_latae too — see the note on
+  // 'Adductor and Abductor' above
+  'Seated Leg Extension': { primary: QUADS, secondary: ['tensor_fasciae_latae', 'adductors'] },
   'Dumbbell Romanian Deadlift': {
     primary: [...HAMSTRINGS, 'gluteus_maximus'],
-    secondary: ['erector_spinae', 'trapezius_upper', ...FOREARMS],
+    secondary: ['erector_spinae', 'trapezius_upper', ...FOREARMS, 'gluteus_medius'],
   },
   'Seated Calf Raise Machine': { primary: CALVES, secondary: [] },
 

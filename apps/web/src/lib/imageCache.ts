@@ -1,3 +1,8 @@
+import { cdnHero, type Gender } from '../data/assetCdn'
+import { CATALOG } from '../data/catalog'
+
+const CATEGORY_KEYS = CATALOG.map((c) => c.key)
+
 /**
  * Purges the CDN image cache (see vite.config.ts's `exercise-images` CacheFirst rule and
  * cdn/README.md) so a gender switch re-downloads fresh instead of continuing to serve
@@ -21,5 +26,25 @@ export async function purgeExerciseImageCache(): Promise<void> {
     await caches.delete('exercise-images')
   } catch {
     /* Cache Storage unavailable or blocked — nothing to do */
+  }
+}
+
+/**
+ * Warm the cache for the gender just switched to, starting with what the person is
+ * about to see rather than the whole library: the 8 category heroes are what Home
+ * renders immediately, before anything else has had a chance to load lazily. This
+ * runs after `purgeExerciseImageCache`, so it is genuinely a fresh fetch under the
+ * new gender's URL, not a cache hit left over from before the switch.
+ *
+ * Deliberately NOT prefetching all ~35 exercise photos here — the app's own tradeoff
+ * (see cdn/README.md) is that a photo downloads on first view, not on every app open;
+ * eagerly pulling the whole library on a switch would undo that on a metered
+ * connection for exercises that may never be opened this session.
+ */
+export async function prefetchGenderHeroes(gender: Gender): Promise<void> {
+  try {
+    await Promise.all(CATEGORY_KEYS.map((key) => fetch(cdnHero(key, gender)).catch(() => {})))
+  } catch {
+    /* best-effort warm-up only — a failed prefetch just means the first view fetches it */
   }
 }
