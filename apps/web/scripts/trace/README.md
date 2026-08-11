@@ -76,104 +76,80 @@ the reference. This gives `viewBox 0 0 129 288` — aspect 0.448, matching the r
 
 ## The female variant
 
-`reference-female.png` is a different kind of source and gets a different first stage.
-The user-supplied photo had three poses (front/side/back); the side view was cropped out
-and the remaining two were composed onto one canvas, downscaled to match this pipeline's
-pixel-scale calibration (~950-990px figure height — the constants in `sil.py`'s watershed
-were tuned at that scale). It is also a soft-shaded raster (JPEG), not a flat vector, so
-`analyze.py`'s `lum > 90` split does not apply: there is no clean valley in the luminance
-histogram at any threshold, because the artwork's own airbrushed shading and its ink
-strokes occupy overlapping bands. `analyze-female.py` / `masks-female.py` split them by
-gradient magnitude instead (blur sigma 1.2, threshold 60, then a 1px morphological close)
-— thresholding *how fast* luminance changes, not its absolute value, reproduces the
-illustrator's line art almost exactly. That also means every enclosed region — muscle
-belly or extremity — is already its own connected component, so the female path skips
-`sil.py`/`silmasks.py` (the male source's solid dark ink fuses head/hands/feet into the
-separator network, which is what that watershed is for; here they are just more enclosed
-shapes).
+`reference-female.png` has gone through two different sources. The first was a
+soft-shaded photo, traced with an edge-detection hack and then patched up with
+geometry grafted in from the male dataset (thighs, traps, forearms) where the photo
+was too thin on detail -- see git history around commit `913e6e9` if that pipeline is
+ever needed again. It was replaced with a flat vector illustration (front + back only,
+no side view to crop), which traces far more directly and needs no grafting at all.
+This section describes the *current* (vector) pipeline only.
 
-`labels-female.py` replaces `labels.py`'s table for the female geometry, hand-read the
-same way, with the same two checks (bilateral symmetry, red-implies-worked-category).
-The source art does not sub-divide the arm into biceps/triceps/forearm the way the male
-reference does — front arm mass reads as biceps, back arm mass as triceps (the
-visible-muscle convention most muscle-map apps use), and the forearm+hand blob (no wrist
-crease was drawn, so it traced as one shape) is left untrainable (`kind: 'silhouette'`)
-rather than mislabelled as a specific forearm muscle. A few interior highlight patches
-trace as their own enclosed blob nested inside a bigger one (the glute's inner highlight,
-the calf's shin highlight); those get the same `group` as their parent so they always
-paint together, rather than a name of their own.
+**Palette is inverted from the male source.** `reference.png`'s muscle fill is the
+*lighter* of its two greys, with dark carrying the separator network, body and
+extremities. `reference-female.png` is the opposite: muscle fill is the *darker* grey
+(`lum < 130`), and light is the separator/body/extremity layer. `analyze-female.py` /
+`masks-female.py` are otherwise the same method as `analyze.py`/`masks.py` -- palette
+census, connected-component split into two figures, island = enclosed regions of the
+muscle-toned grey -- just with the inequality flipped.
 
-Every script in this directory that touches a reference image takes `TRACE_REF`,
-`TRACE_BUILD` and `TRACE_ISLAND_LUM` as env vars (analyze.py/masks.py), or `TRACE_BUILD`
-alone (sil.py/silmasks.py/trace.mjs), so the male pipeline is unaffected by default —
-the female run just points them at `reference-female.png` / `build-female/`. Pipeline:
+**Hair breaks the male pipeline's head-extraction watershed.** `sil.py` finds
+head/hands/feet by seeding on light-layer pixels that are far (`distance > 12px`) from
+any island, then watershedding out to the separator network. This source's hair is
+drawn in the *muscle* tone, sitting directly against the face -- so the face is never
+far from island-toned pixels, and the seed never fires. `sil-female.py` fixes this by
+excluding the largest island blob in the top 15% of the figure (i.e. hair, unambiguously
+the biggest thing up there) from the distance calculation used for seeding only; hair
+itself still traces normally as an island afterward, just labelled `kind: 'silhouette'`
+downstream so it renders in the body tone rather than the muscle-grey tone. Hands and
+feet are NOT extracted this way -- forearm/calf muscle detail sits close enough to them
+on this source that the same seed test rarely fires, and it isn't needed: `body` (the
+whole figure's ink footprint) already covers their pixels with the right shape, and
+BodyView renders every silhouette path inside one `<g opacity=...>` (see BodyMap.tsx),
+so an unextracted hand sitting inside `body`'s path looks identical to a separately
+traced one -- the group composites once, not per path, so there is no double-opacity
+risk either way.
+
+**Labelling is major-shape + auto-fold, not fully hand-enumerated.** This source has far
+more linework than either predecessor (154 island blobs across both views, most of it
+joint-crease and tendon detail rather than distinct muscles), so `labels-female.py`
+hand-names only shapes >= `MAJOR_MIN` (550px²) and auto-folds everything smaller into
+its nearest same-side named neighbour by raw centroid distance, inheriting that
+neighbour's group and category. This is a heuristic, not a guarantee: it got one back-arm
+sliver wrong on the first pass (folded into `external_oblique` by centroid distance when
+it visually sits on the triceps, at the arm/armpit junction) before being caught by
+clicking through every category live and visually auditing where the highlight landed --
+see `audit_folds.py`-style rendering (blob positions + assigned group name overlaid on
+the reference image) if you need to re-check this after a re-run. A few shapes close to
+a real anatomical boundary (e.g. joint-crease detail between adductors and the knee) are
+explicitly listed rather than left to auto-fold, because they sit almost equidistant
+between two plausible parents and the "wrong" pick would still be visually defensible,
+just not the one intended.
+
+Every script in this directory that touches a reference image takes `TRACE_REF` and
+`TRACE_BUILD` as env vars, so the male pipeline is unaffected by default -- the female
+run just points them at `reference-female.png` / `build-female/`. Pipeline:
 
 ```
-python analyze-female.py                              # census + island split (edge-based)
-python masks-female.py                                 # write each region as a 1-bit mask
-TRACE_BUILD=build-female node trace.mjs                 # potrace -> shared viewBox
-python labels-female.py                                 # blob -> muscle name/category
+python analyze-female.py                               # census + island split (flat threshold)
+python masks-female.py                                  # write body + head + every island as a 1-bit mask
+TRACE_BUILD=build-female node trace.mjs                  # potrace -> shared viewBox
+python sil-female.py                                     # head only, hair excluded from seeding (see above)
+python labels-female.py                                  # major-shape table + auto-fold, two checks
 TRACE_BUILD=build-female TRACE_OUT=traced-muscles-female.json \
   TRACE_SOURCE_NAME=reference-female.png node assemble.mjs
-node graft.mjs                                          # see "Grafts" below
 cd .. && TRACE_SRC_JSON=traced-muscles-female.json \
   TRACE_OUT_NAME=bodyMusclesFemale.ts node gen-body-muscles.mjs
 ```
 
-Known gaps, from the source art rather than the pipeline: a couple of back-view regions
-(external-oblique/hip) merge where the source's separating line was too faint for the
-edge threshold to catch, so they're labelled by whichever muscle dominates the shape
-rather than split.
+(`sil-female.py` actually needs to run before `masks-female.py`, since the latter reads
+`sil.npy`/`sil.json` to place `head`; the order above groups steps by what they explain,
+not strict execution order -- check the actual dependency by reading each script's inputs
+if reordering.)
 
-**JPEG noise holes.** A few px of skin-texture or compression noise inside an otherwise
-solid island can register as edge, cutting a tiny hole into that island's mask; potrace
-then traces the hole as its own subpath, which renders as a stray ring in the app.
-`masks-female.py` fills any such hole under 130px² (comfortably below the smallest real
-one we have -- the head's eye socket, ~220px²) before dumping the mask.
-
-**The knee blemish.** The source photo had a watermark removed from it before it reached
-this pipeline, and the removal left a faint scar (a diagonal line and a ring) across the
-back-right knee -- visible ink, not a hole, so the noise-hole fix above doesn't touch it.
-`reference-female.png` has that patch of pixels replaced with the mirror image of the
-same region on the other (clean) leg, on the assumption the body is bilaterally
-symmetric at the knee. This edits the checked-in PNG directly; if the source photo is
-ever replaced, check the new one for the same kind of scar before assuming this step is
-unnecessary. Editing the source shifts potrace's connected-component numbering for
-everything after the edit point (component IDs come from a raster scan, so any pixel
-change can renumber unrelated blobs downstream) -- `labels-female.py`'s blob IDs were
-re-verified against the patched image, not just carried over.
-
-## Grafts
-
-`graft.mjs` runs after `assemble.mjs` and replaces or augments specific female regions
-with the male dataset's geometry, for cases the photo trace alone doesn't cover well:
-
-- **Thighs** (front): the traced quad/TFL/adductor shapes were blobbier than the male
-  vector art. Replaced with the male's full front-thigh set (TFL, rectus femoris,
-  pectineus, sartorius, vastus lateralis, vastus medialis) at the male map's level of
-  detail, scaled *uniformly* (one factor, not stretched) to fit the female shapes'
-  combined bounding box, so the male proportions are preserved, not distorted onto the
-  female leg's aspect ratio.
-- **Forearms**: the source drew no wrist crease, so the whole forearm+hand traced as one
-  untrainable silhouette blob (see above). The male's forearm muscles (wrist flexors +
-  brachioradialis front, extensor carpi ulnaris + brachioradialis back) are grafted into
-  the upper ~65% of that blob's bounding box (the non-hand portion), drawn on top of the
-  silhouette rather than replacing it -- the hand itself is untouched.
-- **Trapezius, back only**: grafted the male's upper + middle/lower trap shapes onto the
-  female's (too-subtle) traced trap footprint. The male's *front* trapezius did NOT get
-  grafted -- it's a small angular chevron that reads fine against the male art's own
-  angularity but looked like a jagged zigzag against the female figure's softer style
-  when placed at the collarbone. The female's own traced front trap shape was already
-  clean, so front trap only gets a category fix (see below), not new geometry.
-
-**Category correction.** The male dataset splits `trapezius_upper` (category
-`shoulders`) from `trapezius_middle_lower` (category `back`); the female labels had put
-all trap muscle under `back`. Grafted shapes inherit the male shape's own category
-directly, and the front trapezius (not grafted) gets its category corrected to
-`shoulders` to match, so both views agree with the male convention.
-
-A graft is a similarity transform (uniform scale + translate, no stretching, no
-rotation) applied to path coordinates directly -- there is no `<g transform>` wrapper,
-because the `BodyMuscle.path` contract is geometry only (see gen-body-muscles.mjs). Male
-paths are read, never written; every graft call writes only into
-`traced-muscles-female.json`.
+**Category convention matches the male dataset exactly where the muscle sets overlap**:
+`trapezius_upper` is `shoulders`, `trapezius_middle_lower`/lats/erectors are `back`,
+every forearm muscle is `biceps` regardless of front or back view. Verify this after any
+re-run by clicking through all seven category chips in the dev preview (see
+`src/pages/DevBodyMapPreview.tsx`) and confirming the highlighted region matches the
+category by eye -- a `category: null` or a mis-folded blob will not fail validation
+(both are structurally valid `BodyMuscle` rows) and only shows up as a visual bug.
