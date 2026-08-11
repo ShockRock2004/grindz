@@ -127,8 +127,8 @@ android {
         // These are literals, not reads of app.json — `assembleRelease` does not run
         // `expo prebuild`, so bumping app.json alone ships an APK still labelled the old
         // version, and the file name on Drive stops meaning anything. Change both.
-        versionCode 18
-        versionName "1.4.0"
+        versionCode 19
+        versionName "1.5.0"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
 
