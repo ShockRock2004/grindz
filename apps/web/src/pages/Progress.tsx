@@ -8,8 +8,9 @@ import { CategoryThumb, IconTrophy, IconScale, IconChart, IconPlay, IconChevronD
 import { exerciseSeries, splitByCategory, volumeByDay } from '../lib/stats'
 import { dateKey, fmtWeight, cx, clamp, fromKg, relativeDay, toKg } from '../lib/util'
 import { Button, EmptyState, Modal, Select } from '../components/ui'
-import { BodyMap, useBodyMapVariant } from '../components/BodyMap'
+import { BodyMap, useBodyMapVariant, type BodyMapDataset } from '../components/BodyMap'
 import { legendRim, legendStops, type BodyMapVariant, type IslandLayer } from '../data/bodyMapStyle'
+import { BODY_VIEWBOX as FEMALE_VIEWBOX, FRONT_MUSCLES as FEMALE_FRONT, BACK_MUSCLES as FEMALE_BACK } from '../data/bodyMusclesFemale'
 import { musclesFromSets } from '../data/exerciseMuscles'
 import { SetsPerMuscle } from '../components/SetsPerMuscle'
 import { haptic } from '../lib/haptics'
@@ -40,9 +41,12 @@ function LegendSwatch({ variant, layer, label }: { variant: BodyMapVariant; laye
 export function Progress() {
   const nav = useNavigate()
   const { sessions, sets, prs, bodyweights, custom, refresh, loading } = useData()
-  const { unit } = usePrefs()
+  const { unit, gender } = usePrefs()
   // resolved once here so the figure and its legend cannot disagree
   const bodyMapVariant = useBodyMapVariant()
+  // BodyMap defaults to the male dataset internally; only pass one explicitly for female
+  const bodyMapDataset: BodyMapDataset | undefined =
+    gender === 'female' ? { BODY_VIEWBOX: FEMALE_VIEWBOX, FRONT_MUSCLES: FEMALE_FRONT, BACK_MUSCLES: FEMALE_BACK } : undefined
 
   /* muscles trained this (Mon-start) week -> category keys, for the body map */
   const [muscleCat, setMuscleCat] = useState<string | null>(null)
@@ -213,7 +217,7 @@ export function Progress() {
           this rebuild exists to avoid.
         */}
         <div className="mx-auto max-w-[420px]">
-          <BodyMap trained={trainedThisWeek} onPick={setMuscleCat} variant={bodyMapVariant} />
+          <BodyMap trained={trainedThisWeek} onPick={setMuscleCat} variant={bodyMapVariant} dataset={bodyMapDataset} />
         </div>
         {nothingTrainedYet ? (
           <p className="mt-3 text-center text-[11px] text-muted">

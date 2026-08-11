@@ -48,6 +48,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
  */
 const GROUPS = [
   { file: 'data/assetCdn.ts', apps: ['web', 'mobile'] },
+  { file: 'data/femaleAssets.ts', apps: ['web', 'mobile'] },
+  { file: 'data/bodyMusclesFemale.ts', apps: ['web', 'mobile'] },
   { file: 'data/exerciseMuscles.ts', apps: ['web', 'mobile'] },
   { file: 'lib/stats.ts', apps: ['web', 'mobile'] },
   { file: 'data/bodyMuscles.ts', apps: ['web', 'mobile', 'landing'] },

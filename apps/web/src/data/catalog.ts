@@ -1,5 +1,5 @@
 import type { Category, CustomExerciseRow, Exercise } from '../lib/types'
-import { cdnExercise } from './assetCdn'
+import { cdnExercise, type Gender } from './assetCdn'
 
 /** Built-in exercise catalog (ported from the original C.FIT). Custom exercises are merged in from the DB at runtime. */
 export const CATALOG: Category[] = [
@@ -106,11 +106,11 @@ export const CATALOG: Category[] = [
 
 export const CATALOG_BY_KEY: Record<string, Category> = Object.fromEntries(CATALOG.map((c) => [c.key, c]))
 
-export function imgPath(categoryKey: string, img: string): string {
+export function imgPath(categoryKey: string, img: string, gender: Gender = 'male'): string {
   // Served from the CDN, not from /public — see ./assetCdn. The transparent PNGs are used
   // as-is (they composite cleanly on a black surface); the service worker keeps each one in
   // Cache Storage after the first fetch, so this costs the network once per device.
-  return cdnExercise(categoryKey, img)
+  return cdnExercise(categoryKey, img, gender)
 }
 
 /** Built-in catalog with the user's custom exercises appended to each category. */
@@ -142,19 +142,19 @@ export function mergeCustom(custom: CustomExerciseRow[]): Category[] {
  * without it this only ever searched CATALOG and always returned null for them, which is why
  * an uploaded photo never showed up.
  */
-export function exerciseImage(name: string, custom: CustomExerciseRow[] = []): string | null {
+export function exerciseImage(name: string, custom: CustomExerciseRow[] = [], gender: Gender = 'male'): string | null {
   for (const c of CATALOG) {
     const e = c.exercises.find((x) => x.name === name)
-    if (e && e.img) return imgPath(c.key, e.img)
+    if (e && e.img) return imgPath(c.key, e.img, gender)
   }
   const own = custom.find((x) => x.name === name)
   return own?.image_url || null
 }
 
 /** Resolved image for an already-merged Exercise, preferring an uploaded photo. */
-export function exerciseSrc(categoryKey: string, e: Exercise): string | null {
+export function exerciseSrc(categoryKey: string, e: Exercise, gender: Gender = 'male'): string | null {
   if (e.imageUrl) return e.imageUrl
-  return e.img ? imgPath(categoryKey, e.img) : null
+  return e.img ? imgPath(categoryKey, e.img, gender) : null
 }
 
 /** YouTube demo attached to an exercise, built-in or custom. */

@@ -20,6 +20,9 @@ import type { WeightUnit } from './util'
 import { DEV_BYPASS, devSession } from './dev-auth'
 import { setSignedInHint } from './domains'
 import { loadActive, saveActive, clearActive, getUnitPref, setUnitPref } from './store'
+import type { Gender } from '../data/assetCdn'
+import { getGenderPref, syncGenderPref, setGenderPref } from './gender'
+import { purgeExerciseImageCache } from './imageCache'
 
 /* ----------------------------- auth ----------------------------- */
 interface AuthValue {
@@ -56,8 +59,12 @@ export const useData = () => useContext(DataCtx)
 interface PrefsValue {
   unit: WeightUnit
   setUnit: (u: WeightUnit) => void
+  /** Which BodyMap dataset + CDN photo variant to show. Synced to profiles.gender
+   *  (see ./gender.ts) so it follows the account across devices, unlike `unit`. */
+  gender: Gender
+  setGender: (g: Gender) => void
 }
-const PrefsCtx = createContext<PrefsValue>({ unit: 'kg', setUnit: () => {} })
+const PrefsCtx = createContext<PrefsValue>({ unit: 'kg', setUnit: () => {}, gender: 'male', setGender: () => {} })
 export const usePrefs = () => useContext(PrefsCtx)
 
 /* --------------------------- session ---------------------------- */
@@ -139,6 +146,22 @@ export function AppProviders({ children }: { children: ReactNode }) {
     setUnitPref(u)
   }, [])
 
+  const [gender, setGenderState] = useState<Gender>(() => getGenderPref())
+  useEffect(() => {
+    // pulls the account's saved choice in over the localStorage guess the instant a
+    // session exists, so signing in on a second device shows the right body map
+    // without waiting for the person to open Settings first
+    if (session) syncGenderPref().then(setGenderState)
+  }, [session])
+  const setGender = useCallback((g: Gender) => {
+    setGenderState(g)
+    void setGenderPref(g)
+    // every cached exercise photo was fetched under the OTHER gender's URL (or the
+    // male one, if this is the first switch) — see imageCache.ts for why the whole
+    // bucket goes rather than anything selective
+    void purgeExerciseImageCache()
+  }, [])
+
   /* active session */
   const [active, setActive] = useState<ActiveSession | null>(() => loadActive())
   const start = useCallback((s: ActiveSession) => {
@@ -172,7 +195,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
 
   const authValue = useMemo(() => ({ session, profile, refreshProfile }), [session, profile, refreshProfile])
   const dataValue = useMemo(() => ({ ...data, refresh }), [data, refresh])
-  const prefsValue = useMemo(() => ({ unit, setUnit }), [unit, setUnit])
+  const prefsValue = useMemo(() => ({ unit, setUnit, gender, setGender }), [unit, setUnit, gender, setGender])
   const sessionValue = useMemo(() => ({ active, start, update, finish, discard }), [active, start, update, finish, discard])
 
   return (
