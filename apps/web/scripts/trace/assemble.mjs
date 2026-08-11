@@ -7,8 +7,8 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 const _HERE = dirname(fileURLToPath(import.meta.url))
-const T = join(_HERE, 'build') + '/'
-const OUT = join(_HERE, '..', 'traced-muscles.json')
+const T = join(_HERE, process.env.TRACE_BUILD ?? 'build') + '/'
+const OUT = join(_HERE, '..', process.env.TRACE_OUT ?? 'traced-muscles.json')
 
 const traced = JSON.parse(readFileSync(T + 'traced.json', 'utf8'))
 const labels = JSON.parse(readFileSync(T + 'labels.json', 'utf8'))
@@ -21,7 +21,7 @@ const pathOf = (view, key) => {
 
 const TITLE = { head: 'Head', hand: 'Hand', foot: 'Foot' }
 
-const out = { viewBox: traced.viewBox, source: 'muscles-worked-close-neutral-grip-lat-pulldown.png', front: [], back: [] }
+const out = { viewBox: traced.viewBox, source: process.env.TRACE_SOURCE_NAME ?? 'muscles-worked-close-neutral-grip-lat-pulldown.png', front: [], back: [] }
 
 for (const view of ['front', 'back']) {
   const rows = []
@@ -40,7 +40,10 @@ for (const view of ['front', 'back']) {
   // 3. muscle islands
   const ls = labels[view].slice().sort((a, b) => a.blob - b.blob)
   for (const l of ls) {
-    rows.push({ id: l.id, name: l.name, category: l.category, group: l.group, side: l.side, kind: 'muscle', path: pathOf(view, `isl${String(l.blob).padStart(3, '0')}`) })
+    // labels.json rows are 'muscle' by default (the male pipeline's labels.py never
+    // sets kind); the female labeller marks a few as 'silhouette' (head, forearm+hand
+    // -- untrainable extremities the source art didn't separate from a real muscle).
+    rows.push({ id: l.id, name: l.name, category: l.category, group: l.group, side: l.side, kind: l.kind ?? 'muscle', path: pathOf(view, `isl${String(l.blob).padStart(3, '0')}`) })
   }
   out[view] = rows
   const ids = new Set(rows.map((r) => r.id))

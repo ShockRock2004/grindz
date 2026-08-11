@@ -73,3 +73,54 @@ front and back are drawn at identical size. The taller figure fills the viewBox 
 each figure is centred horizontally in its own viewBox and both are top-aligned, as in
 the reference. This gives `viewBox 0 0 129 288` — aspect 0.448, matching the reference's
 ~0.44. Coordinates are rounded to 2dp after transforming into viewBox units.
+
+## The female variant
+
+`reference-female.png` is a different kind of source and gets a different first stage.
+The user-supplied photo had three poses (front/side/back); the side view was cropped out
+and the remaining two were composed onto one canvas, downscaled to match this pipeline's
+pixel-scale calibration (~950-990px figure height — the constants in `sil.py`'s watershed
+were tuned at that scale). It is also a soft-shaded raster (JPEG), not a flat vector, so
+`analyze.py`'s `lum > 90` split does not apply: there is no clean valley in the luminance
+histogram at any threshold, because the artwork's own airbrushed shading and its ink
+strokes occupy overlapping bands. `analyze-female.py` / `masks-female.py` split them by
+gradient magnitude instead (blur sigma 1.2, threshold 60, then a 1px morphological close)
+— thresholding *how fast* luminance changes, not its absolute value, reproduces the
+illustrator's line art almost exactly. That also means every enclosed region — muscle
+belly or extremity — is already its own connected component, so the female path skips
+`sil.py`/`silmasks.py` (the male source's solid dark ink fuses head/hands/feet into the
+separator network, which is what that watershed is for; here they are just more enclosed
+shapes).
+
+`labels-female.py` replaces `labels.py`'s table for the female geometry, hand-read the
+same way, with the same two checks (bilateral symmetry, red-implies-worked-category).
+The source art does not sub-divide the arm into biceps/triceps/forearm the way the male
+reference does — front arm mass reads as biceps, back arm mass as triceps (the
+visible-muscle convention most muscle-map apps use), and the forearm+hand blob (no wrist
+crease was drawn, so it traced as one shape) is left untrainable (`kind: 'silhouette'`)
+rather than mislabelled as a specific forearm muscle. A few interior highlight patches
+trace as their own enclosed blob nested inside a bigger one (the glute's inner highlight,
+the calf's shin highlight); those get the same `group` as their parent so they always
+paint together, rather than a name of their own.
+
+Every script in this directory that touches a reference image takes `TRACE_REF`,
+`TRACE_BUILD` and `TRACE_ISLAND_LUM` as env vars (analyze.py/masks.py), or `TRACE_BUILD`
+alone (sil.py/silmasks.py/trace.mjs), so the male pipeline is unaffected by default —
+the female run just points them at `reference-female.png` / `build-female/`. Pipeline:
+
+```
+python analyze-female.py                              # census + island split (edge-based)
+python masks-female.py                                 # write each region as a 1-bit mask
+TRACE_BUILD=build-female node trace.mjs                 # potrace -> shared viewBox
+python labels-female.py                                 # blob -> muscle name/category
+TRACE_BUILD=build-female TRACE_OUT=traced-muscles-female.json \
+  TRACE_SOURCE_NAME=reference-female.png node assemble.mjs
+cd .. && TRACE_SRC_JSON=traced-muscles-female.json \
+  TRACE_OUT_NAME=bodyMusclesFemale.ts node gen-body-muscles.mjs
+```
+
+Known gaps, from the source art rather than the pipeline: a couple of back-view regions
+(glute/lower-erector, external-oblique/hip) merge where the source's separating line was
+too faint for the edge threshold to catch, so they're labelled by whichever muscle
+dominates the shape rather than split; there's a small blemish near the back-right knee
+left over from the source photo's own watermark removal.

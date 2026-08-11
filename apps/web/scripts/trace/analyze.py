@@ -1,13 +1,20 @@
-"""Step 1-3 of the trace: split figures, extract muscle islands and silhouettes."""
+"""Step 1-3 of the trace: split figures, extract muscle islands and silhouettes.
+
+TRACE_REF / TRACE_BUILD / TRACE_ISLAND_LUM select an alternate source and the
+grey/separator split point for it — the female reference is a soft-shaded raster
+(JPEG, not a flat vector), so its separator network sits at a higher luminance
+than the male artwork's flat #333333 ink and needs its own threshold.
+"""
 import numpy as np
 from PIL import Image
 from scipy import ndimage
 
 import os
 _HERE = os.path.dirname(os.path.abspath(__file__))
-T = os.path.join(_HERE, 'build') + os.sep
+T = os.path.join(_HERE, os.environ.get('TRACE_BUILD', 'build')) + os.sep
 os.makedirs(T, exist_ok=True)
-REF = os.path.join(_HERE, 'reference.png')
+REF = os.path.join(_HERE, os.environ.get('TRACE_REF', 'reference.png'))
+ISLAND_LUM = float(os.environ.get('TRACE_ISLAND_LUM', '90'))
 
 im = Image.open(REF).convert('RGBA')
 a = np.array(im).astype(int)
@@ -15,7 +22,7 @@ R, G, B, A = a[:, :, 0], a[:, :, 1], a[:, :, 2], a[:, :, 3]
 lum = 0.299 * R + 0.587 * G + 0.114 * B
 
 ink = A > 128                      # the figure, including dark separator ink
-island = ink & (lum > 90)          # grey + both reds = muscle islands
+island = ink & (lum > ISLAND_LUM)  # grey + both reds = muscle islands
 
 print('image', im.size, 'opaque px', int(ink.sum()))
 

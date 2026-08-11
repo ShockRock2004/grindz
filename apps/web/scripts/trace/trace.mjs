@@ -9,7 +9,7 @@ import potrace from 'potrace'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 const _HERE = dirname(fileURLToPath(import.meta.url))
-const T = join(_HERE, 'build') + '/'
+const T = join(_HERE, process.env.TRACE_BUILD ?? 'build') + '/'
 const meta = JSON.parse(readFileSync(T + 'meta.json', 'utf8'))
 
 const OPTS = {
