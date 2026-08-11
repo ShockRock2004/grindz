@@ -44,10 +44,27 @@ for nm, i in zip(['front', 'back'], two):
     l2, n2 = ndimage.label(im_mask)
     sz = ndimage.sum(im_mask, l2, range(1, n2 + 1))
     kept = 0
+    holes_filled = 0
     for j in range(1, n2 + 1):
         if sz[j - 1] < MIN:
             continue
         m = l2 == j
+        # JPEG noise / skin texture inside an otherwise-solid island can register as a
+        # few edge px, which cuts a tiny hole into the mask -- potrace then traces it as
+        # its own subpath, rendering as a stray ring in the app. A hole this small is
+        # never a real anatomical feature (the smallest genuine one we have -- the
+        # head's eye socket -- is ~220px); a hole above HOLE_MIN is kept as drawn,
+        # since some of those are deliberate (e.g. a highlight patch's own boundary).
+        filled = ndimage.binary_fill_holes(m)
+        holes = filled & ~m
+        if holes.any():
+            hl, hn = ndimage.label(holes)
+            hsz = ndimage.sum(holes, hl, range(1, hn + 1))
+            HOLE_MIN = 130
+            for h in range(1, hn + 1):
+                if hsz[h - 1] < HOLE_MIN:
+                    m = m | (hl == h)
+                    holes_filled += 1
         yy, xx = np.where(m)
         dump(m, f'{nm}__isl{j:03d}')
         meta['regions'].append({
@@ -56,7 +73,7 @@ for nm, i in zip(['front', 'back'], two):
             'bbox': [int(xx.min()), int(yy.min()), int(xx.max()) + 1, int(yy.max()) + 1],
         })
         kept += 1
-    print(nm, 'islands written:', kept)
+    print(nm, 'islands written:', kept, '| small holes filled:', holes_filled)
 
 json.dump(meta, open(T + 'meta.json', 'w'), indent=1)
 print('figures:', {k: v['bbox'] for k, v in meta['figures'].items()})

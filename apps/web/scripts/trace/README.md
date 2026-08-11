@@ -115,12 +115,65 @@ TRACE_BUILD=build-female node trace.mjs                 # potrace -> shared view
 python labels-female.py                                 # blob -> muscle name/category
 TRACE_BUILD=build-female TRACE_OUT=traced-muscles-female.json \
   TRACE_SOURCE_NAME=reference-female.png node assemble.mjs
+node graft.mjs                                          # see "Grafts" below
 cd .. && TRACE_SRC_JSON=traced-muscles-female.json \
   TRACE_OUT_NAME=bodyMusclesFemale.ts node gen-body-muscles.mjs
 ```
 
 Known gaps, from the source art rather than the pipeline: a couple of back-view regions
-(glute/lower-erector, external-oblique/hip) merge where the source's separating line was
-too faint for the edge threshold to catch, so they're labelled by whichever muscle
-dominates the shape rather than split; there's a small blemish near the back-right knee
-left over from the source photo's own watermark removal.
+(external-oblique/hip) merge where the source's separating line was too faint for the
+edge threshold to catch, so they're labelled by whichever muscle dominates the shape
+rather than split.
+
+**JPEG noise holes.** A few px of skin-texture or compression noise inside an otherwise
+solid island can register as edge, cutting a tiny hole into that island's mask; potrace
+then traces the hole as its own subpath, which renders as a stray ring in the app.
+`masks-female.py` fills any such hole under 130px² (comfortably below the smallest real
+one we have -- the head's eye socket, ~220px²) before dumping the mask.
+
+**The knee blemish.** The source photo had a watermark removed from it before it reached
+this pipeline, and the removal left a faint scar (a diagonal line and a ring) across the
+back-right knee -- visible ink, not a hole, so the noise-hole fix above doesn't touch it.
+`reference-female.png` has that patch of pixels replaced with the mirror image of the
+same region on the other (clean) leg, on the assumption the body is bilaterally
+symmetric at the knee. This edits the checked-in PNG directly; if the source photo is
+ever replaced, check the new one for the same kind of scar before assuming this step is
+unnecessary. Editing the source shifts potrace's connected-component numbering for
+everything after the edit point (component IDs come from a raster scan, so any pixel
+change can renumber unrelated blobs downstream) -- `labels-female.py`'s blob IDs were
+re-verified against the patched image, not just carried over.
+
+## Grafts
+
+`graft.mjs` runs after `assemble.mjs` and replaces or augments specific female regions
+with the male dataset's geometry, for cases the photo trace alone doesn't cover well:
+
+- **Thighs** (front): the traced quad/TFL/adductor shapes were blobbier than the male
+  vector art. Replaced with the male's full front-thigh set (TFL, rectus femoris,
+  pectineus, sartorius, vastus lateralis, vastus medialis) at the male map's level of
+  detail, scaled *uniformly* (one factor, not stretched) to fit the female shapes'
+  combined bounding box, so the male proportions are preserved, not distorted onto the
+  female leg's aspect ratio.
+- **Forearms**: the source drew no wrist crease, so the whole forearm+hand traced as one
+  untrainable silhouette blob (see above). The male's forearm muscles (wrist flexors +
+  brachioradialis front, extensor carpi ulnaris + brachioradialis back) are grafted into
+  the upper ~65% of that blob's bounding box (the non-hand portion), drawn on top of the
+  silhouette rather than replacing it -- the hand itself is untouched.
+- **Trapezius, back only**: grafted the male's upper + middle/lower trap shapes onto the
+  female's (too-subtle) traced trap footprint. The male's *front* trapezius did NOT get
+  grafted -- it's a small angular chevron that reads fine against the male art's own
+  angularity but looked like a jagged zigzag against the female figure's softer style
+  when placed at the collarbone. The female's own traced front trap shape was already
+  clean, so front trap only gets a category fix (see below), not new geometry.
+
+**Category correction.** The male dataset splits `trapezius_upper` (category
+`shoulders`) from `trapezius_middle_lower` (category `back`); the female labels had put
+all trap muscle under `back`. Grafted shapes inherit the male shape's own category
+directly, and the front trapezius (not grafted) gets its category corrected to
+`shoulders` to match, so both views agree with the male convention.
+
+A graft is a similarity transform (uniform scale + translate, no stretching, no
+rotation) applied to path coordinates directly -- there is no `<g transform>` wrapper,
+because the `BodyMuscle.path` contract is geometry only (see gen-body-muscles.mjs). Male
+paths are read, never written; every graft call writes only into
+`traced-muscles-female.json`.

@@ -78,10 +78,10 @@ BACK = [
     (38, 39, 'External Oblique (Flank)', 'abs', 'external_oblique'),
     (32, 33, 'External Oblique (Lower Flank)', 'abs', 'external_oblique'),
     (53, 54, 'Gluteus Medius', 'legs', None),
-    (49, 66, 'Gluteus Maximus', 'legs', 'gluteus_maximus'),
+    (49, 65, 'Gluteus Maximus', 'legs', 'gluteus_maximus'),
     (61, 62, 'Adductors (Upper)', 'legs', None),
-    (67, 68, 'Hamstrings (Biceps Femoris)', 'legs', 'hamstrings'),
-    (77, 78, 'Gastrocnemius', 'legs', 'gastrocnemius'),
+    (66, 67, 'Hamstrings (Biceps Femoris)', 'legs', 'hamstrings'),
+    (73, 74, 'Gastrocnemius', 'legs', 'gastrocnemius'),
 ]
 BACK_CENTER = [
     (1, 'Head', None, 'head', 'silhouette'),
@@ -90,7 +90,11 @@ BACK_CENTER = [
 ]
 BACK_NESTED = [
     (55, 'gluteus_maximus'), (56, 'gluteus_maximus'),
-    (48, 'external_oblique'), (65, 'hamstrings'),
+    (48, 'external_oblique'),
+    # the old nested hamstring highlight (blob 65 pre-patch) got absorbed into its
+    # parent when the knee blemish was mirror-patched out of reference-female.png --
+    # removing that stray edge merged the two into one shape, so there is no longer
+    # a separate piece to list here.
 ]
 BACK_SILHOUETTE_PAIRS = [
     (40, 41, 'Forearm & Hand'),
