@@ -11,7 +11,7 @@
  */
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useData } from '../lib/app-context'
+import { useData, usePrefs } from '../lib/app-context'
 import { CATALOG, categoryOf } from '../data/catalog'
 import { cdnHero } from '../data/assetCdn'
 import { Ring } from '../components/Ring'
@@ -61,6 +61,7 @@ const HERO_FILTER = 'drop-shadow(-8px 0 18px rgba(0,198,255,0.16)) drop-shadow(0
 export function Home() {
   const nav = useNavigate()
   const { sessions, sets, custom, plan, loading } = useData()
+  const { gender } = usePrefs()
 
   const week = weekSummary(sessions)
 
@@ -146,7 +147,7 @@ export function Home() {
             >
               {/* the figure — bottom-aligned so every card shares a ground line */}
               <img
-                src={cdnHero(c.key)}
+                src={cdnHero(c.key, gender)}
                 alt=""
                 loading="lazy"
                 style={{

@@ -25,8 +25,9 @@ import { fileURLToPath } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const WEB_ROOT = resolve(HERE, '..')
-const NATIVE_ROOT = resolve(WEB_ROOT, '..', 'grindz-native')
-const SRC_JSON = join(HERE, 'traced-muscles.json')
+const NATIVE_ROOT = resolve(WEB_ROOT, '..', 'mobile')
+const SRC_JSON = join(HERE, process.env.TRACE_SRC_JSON ?? 'traced-muscles.json')
+const OUT_NAME = process.env.TRACE_OUT_NAME ?? 'bodyMuscles.ts'
 
 /** The only valid category values. `cardio` has no muscle of its own and stays unused. */
 const VALID = new Set(['chest', 'back', 'shoulders', 'biceps', 'triceps', 'legs', 'abs', 'cardio'])
@@ -146,7 +147,7 @@ ${rows(src.back)}
 `
 
 for (const root of [WEB_ROOT, NATIVE_ROOT]) {
-  const out = join(root, 'src', 'data', 'bodyMuscles.ts')
+  const out = join(root, 'src', 'data', OUT_NAME)
   mkdirSync(dirname(out), { recursive: true })
   writeFileSync(out, ts)
   console.log('wrote', out)

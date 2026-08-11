@@ -25,7 +25,7 @@ export function Session() {
   const nav = useNavigate()
   const { active, update, finish, discard } = useSession()
   const { sets, prs, custom, favorites } = useData()
-  const { unit } = usePrefs()
+  const { unit, gender } = usePrefs()
   useWakeLock(!!active)
 
   const [now, setNow] = useState(Date.now())
@@ -282,7 +282,7 @@ export function Session() {
             onNote={(n) => setNote(ei, n)}
             onSuperset={() => toggleSuperset(ei)}
             onRemove={() => removeExercise(ei)}
-            img={exerciseImage(e.exercise, custom)}
+            img={exerciseImage(e.exercise, custom, gender)}
             /* the session override wins over the catalog default */
             mode={e.mode ?? exerciseMode(e.exercise)}
             canChooseMode={categoryOf(e.exercise, custom)?.key === 'abs'}

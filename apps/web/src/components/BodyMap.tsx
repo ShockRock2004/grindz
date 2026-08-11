@@ -9,6 +9,16 @@ import {
 } from '../data/bodyMuscles'
 import { BODY_MAP_PAINT, ISLAND_LAYERS, isGradient, type BodyMapVariant, type IslandLayer } from '../data/bodyMapStyle'
 
+/** The shape gen-body-muscles.mjs emits, byte-identical between bodyMuscles.ts and any
+ *  other anatomy variant (e.g. bodyMusclesFemale.ts) generated from the same template. */
+export interface BodyMapDataset {
+  BODY_VIEWBOX: string
+  FRONT_MUSCLES: BodyMuscle[]
+  BACK_MUSCLES: BodyMuscle[]
+}
+
+const MALE_DATASET: BodyMapDataset = { BODY_VIEWBOX, FRONT_MUSCLES, BACK_MUSCLES }
+
 /** True when the OS asks for reduced transparency; glass falls back to solid. */
 function useReducedTransparency() {
   const [reduced, setReduced] = useState(false)
@@ -43,19 +53,47 @@ export function useBodyMapVariant(): BodyMapVariant {
  *
  * `variant` defaults to whatever `useBodyMapVariant` resolves; pass 'flat' to render the
  * reference artwork's own palette (used by the parity test).
+ *
+ * `dataset` defaults to the male anatomy (`../data/bodyMuscles`); pass e.g.
+ * `../data/bodyMusclesFemale` to render the other traced variant instead.
  */
-export function BodyMap({ trained, onPick, variant }: { trained: TrainedInput; onPick: (category: string) => void; variant?: BodyMapVariant }) {
+export function BodyMap({
+  trained,
+  onPick,
+  variant,
+  dataset,
+}: {
+  trained: TrainedInput
+  onPick: (category: string) => void
+  variant?: BodyMapVariant
+  dataset?: BodyMapDataset
+}) {
   const resolved = useBodyMapVariant()
   const v: BodyMapVariant = variant ?? resolved
+  const d = dataset ?? MALE_DATASET
   return (
     <div className="flex items-start justify-center gap-2">
-      <BodyView label="Front" muscles={FRONT_MUSCLES} trained={trained} onPick={onPick} variant={v} />
-      <BodyView label="Back" muscles={BACK_MUSCLES} trained={trained} onPick={onPick} variant={v} />
+      <BodyView label="Front" viewBox={d.BODY_VIEWBOX} muscles={d.FRONT_MUSCLES} trained={trained} onPick={onPick} variant={v} />
+      <BodyView label="Back" viewBox={d.BODY_VIEWBOX} muscles={d.BACK_MUSCLES} trained={trained} onPick={onPick} variant={v} />
     </div>
   )
 }
 
-function BodyView({ label, muscles, trained, onPick, variant }: { label: string; muscles: BodyMuscle[]; trained: TrainedInput; onPick: (c: string) => void; variant: BodyMapVariant }) {
+function BodyView({
+  label,
+  viewBox,
+  muscles,
+  trained,
+  onPick,
+  variant,
+}: {
+  label: string
+  viewBox: string
+  muscles: BodyMuscle[]
+  trained: TrainedInput
+  onPick: (c: string) => void
+  variant: BodyMapVariant
+}) {
   const paint = BODY_MAP_PAINT[variant]
   // ids must be unique per figure, or the Front map's gradients would also paint the Back one
   const raw = useId().replace(/[^a-zA-Z0-9]/g, '')
@@ -71,7 +109,7 @@ function BodyView({ label, muscles, trained, onPick, variant }: { label: string;
 
   return (
     <div className="flex flex-1 flex-col items-center gap-2">
-      <svg viewBox={BODY_VIEWBOX} className="h-auto w-full" role="img" aria-label={`${label} muscle map`}>
+      <svg viewBox={viewBox} className="h-auto w-full" role="img" aria-label={`${label} muscle map`}>
         {gradientLayers.length > 0 && (
           <defs>
             {gradientLayers.map((k) => {

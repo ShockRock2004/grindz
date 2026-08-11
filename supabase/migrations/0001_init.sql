@@ -13,14 +13,24 @@
 
 -- =====================================================================
 -- profiles — one row per user. Holds the optional Groq API key
--- (src/lib/groq.ts), used only for AI-assisted exercise authoring.
+-- (src/lib/groq.ts), used only for AI-assisted exercise authoring, and the
+-- body-map gender preference (src/lib/gender.ts) — synced here rather than
+-- kept device-local so it follows the user across devices, the same reason
+-- the Groq key does.
 -- =====================================================================
 create table if not exists public.profiles (
   id         uuid primary key references auth.users on delete cascade,
   groq_key   text,
+  gender     text check (gender in ('male', 'female')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- `create table if not exists` above only helps a brand-new project; a `profiles` table
+-- that already existed before this column was added needs it bolted on explicitly.
+alter table public.profiles add column if not exists gender text;
+alter table public.profiles drop constraint if exists profiles_gender_check;
+alter table public.profiles add constraint profiles_gender_check check (gender in ('male', 'female'));
 
 -- =====================================================================
 -- workout_sessions — one finished training session.

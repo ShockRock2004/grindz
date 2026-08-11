@@ -6,7 +6,7 @@ from scipy import ndimage
 
 import os
 _HERE = os.path.dirname(os.path.abspath(__file__))
-T = os.path.join(_HERE, 'build') + os.sep
+T = os.path.join(_HERE, os.environ.get('TRACE_BUILD', 'build')) + os.sep
 os.makedirs(T, exist_ok=True)
 sil = np.load(T + 'sil.npy')
 ink = np.load(T + 'ink.npy')

@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useAuth } from './lib/app-context'
 import { DesktopShell } from './components/DesktopShell'
 import { Landing } from './pages/Landing'
@@ -10,6 +10,7 @@ import { History } from './pages/History'
 import { SessionDetail } from './pages/SessionDetail'
 import { Progress } from './pages/Progress'
 import { Planner } from './pages/Planner'
+import { DevBodyMapPreview } from './pages/DevBodyMapPreview'
 
 function Loading() {
   return (
@@ -21,6 +22,11 @@ function Loading() {
 
 export default function App() {
   const { session } = useAuth()
+  const location = useLocation()
+  // dev-only scratch route (see DevBodyMapPreview.tsx) — outside the auth gate so it
+  // doesn't need a signed-in session; delete alongside that file once the female
+  // dataset has a real home in the app.
+  if (location.pathname === '/dev-preview/body-map') return <DevBodyMapPreview />
   if (session === undefined) return <Loading />
   /*
    * Signed out, the sign-in page IS this app's front door. The marketing pitch lives in a

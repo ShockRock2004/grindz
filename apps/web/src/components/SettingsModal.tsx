@@ -21,7 +21,7 @@ import { IconTrash, IconPlus, IconLogout } from './Icons'
 export function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { profile } = useAuth()
   const { custom, sessions, sets, templates, bodyweights, plan, refresh } = useData()
-  const { unit, setUnit } = usePrefs()
+  const { unit, setUnit, gender, setGender } = usePrefs()
   const [adding, setAdding] = useState(false)
 
   // the AI key lives on the user's own profile row, so it follows them across devices
@@ -56,6 +56,11 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
   const pickUnit = (u: 'kg' | 'lbs') => {
     haptic.select()
     setUnit(u)
+  }
+  const pickGender = (g: 'male' | 'female') => {
+    if (g === gender) return
+    haptic.select()
+    setGender(g)
   }
   const exportData = () => {
     haptic.success()
@@ -94,6 +99,21 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
           </button>
           <button onClick={() => pickUnit('lbs')} className={cx('rounded-lg px-3 py-1.5', unit === 'lbs' ? 'bg-cyan text-cyan-ink' : 'text-muted')}>
             lbs
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-4 flex items-center justify-between rounded-2xl border border-line px-4 py-3">
+        <div>
+          <p className="font-heading text-sm font-bold">Body type</p>
+          <p className="text-xs text-muted">Muscle map and exercise photos</p>
+        </div>
+        <div className="flex rounded-xl border border-line2 p-0.5 text-xs font-bold">
+          <button onClick={() => pickGender('male')} className={cx('rounded-lg px-3 py-1.5', gender === 'male' ? 'bg-cyan text-cyan-ink' : 'text-muted')}>
+            Male
+          </button>
+          <button onClick={() => pickGender('female')} className={cx('rounded-lg px-3 py-1.5', gender === 'female' ? 'bg-cyan text-cyan-ink' : 'text-muted')}>
+            Female
           </button>
         </div>
       </div>

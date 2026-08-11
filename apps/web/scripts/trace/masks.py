@@ -6,16 +6,17 @@ from scipy import ndimage
 
 import os
 _HERE = os.path.dirname(os.path.abspath(__file__))
-T = os.path.join(_HERE, 'build') + os.sep
+T = os.path.join(_HERE, os.environ.get('TRACE_BUILD', 'build')) + os.sep
 os.makedirs(T, exist_ok=True)
-REF = os.path.join(_HERE, 'reference.png')
+REF = os.path.join(_HERE, os.environ.get('TRACE_REF', 'reference.png'))
+ISLAND_LUM = float(os.environ.get('TRACE_ISLAND_LUM', '90'))
 
 im = Image.open(REF).convert('RGBA')
 a = np.array(im).astype(int)
 R, G, B, A = a[:, :, 0], a[:, :, 1], a[:, :, 2], a[:, :, 3]
 lum = 0.299 * R + 0.587 * G + 0.114 * B
 ink = A > 128
-island = ink & (lum > 90)
+island = ink & (lum > ISLAND_LUM)
 H, W = ink.shape
 
 lab, n = ndimage.label(ink)

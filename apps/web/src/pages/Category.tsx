@@ -17,7 +17,7 @@ export function Category() {
   const nav = useNavigate()
   const { custom, favorites, prs, templates, refresh } = useData()
   const { active, start } = useSession()
-  const { unit } = usePrefs()
+  const { unit, gender } = usePrefs()
 
   const category = useMemo(() => mergeCustom(custom).find((c) => c.key === key), [custom, key])
   const base = CATALOG_BY_KEY[key]
@@ -163,7 +163,7 @@ export function Category() {
                   user-uploaded photo down the "no image" branch. ExerciseImage handles the
                   absent case itself.
                 */}
-                <ExerciseImage src={exerciseSrc(category.key, ex)} alt={ex.name} size={56} eager />
+                <ExerciseImage src={exerciseSrc(category.key, ex, gender)} alt={ex.name} size={56} eager />
 
                 {/* target tag */}
                 <span className="absolute left-2 top-2 max-w-[calc(100%-1rem)] truncate rounded-full border border-cyan/40 bg-black/50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-cyan backdrop-blur">
@@ -245,7 +245,7 @@ export function Category() {
                 placeholder for exercises that definitely had one.
               */}
               <ExerciseImage
-                src={exerciseSrc(category.key, detail)}
+                src={exerciseSrc(category.key, detail, gender)}
                 alt={detail.name}
                 size={56}
                 eager
