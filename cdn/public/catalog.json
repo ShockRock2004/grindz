@@ -1,5 +1,5 @@
 {
-  "version": "94b93b7e0f81808d",
+  "version": "8b436fb82c4ee00c",
   "categories": [
     {
       "key": "chest",
@@ -481,7 +481,8 @@
         "pectoralis_major"
       ],
       "secondary": [
-        "anterior_deltoid"
+        "anterior_deltoid",
+        "trapezius_upper"
       ]
     },
     "Flat Bench Press": {
@@ -509,7 +510,8 @@
         "triceps_brachii"
       ],
       "secondary": [
-        "extensor_carpi_ulnaris"
+        "extensor_carpi_ulnaris",
+        "forearm"
       ]
     },
     "Overhead Cable Triceps Extension": {
@@ -529,10 +531,12 @@
         "trapezius_middle_lower",
         "infraspinatus_teres_major",
         "trapezius_upper",
+        "trapezius_upper",
         "biceps_brachii",
         "brachioradialis",
         "wrist_flexors",
         "extensor_carpi_ulnaris",
+        "forearm",
         "posterior_deltoid"
       ]
     },
@@ -540,13 +544,15 @@
       "primary": [
         "latissimus_dorsi",
         "trapezius_middle_lower",
-        "infraspinatus_teres_major"
+        "infraspinatus_teres_major",
+        "trapezius_upper"
       ],
       "secondary": [
         "biceps_brachii",
         "brachioradialis",
         "wrist_flexors",
         "extensor_carpi_ulnaris",
+        "forearm",
         "posterior_deltoid",
         "erector_spinae"
       ]
@@ -561,6 +567,7 @@
         "brachioradialis",
         "wrist_flexors",
         "extensor_carpi_ulnaris",
+        "forearm",
         "posterior_deltoid",
         "infraspinatus_teres_major"
       ]
@@ -569,13 +576,15 @@
       "primary": [
         "latissimus_dorsi",
         "trapezius_middle_lower",
-        "infraspinatus_teres_major"
+        "infraspinatus_teres_major",
+        "trapezius_upper"
       ],
       "secondary": [
         "biceps_brachii",
         "brachioradialis",
         "wrist_flexors",
         "extensor_carpi_ulnaris",
+        "forearm",
         "erector_spinae",
         "posterior_deltoid"
       ]
@@ -587,7 +596,8 @@
       "secondary": [
         "brachioradialis",
         "wrist_flexors",
-        "extensor_carpi_ulnaris"
+        "extensor_carpi_ulnaris",
+        "forearm"
       ]
     },
     "Concentration Curl": {
@@ -595,13 +605,15 @@
         "biceps_brachii"
       ],
       "secondary": [
-        "brachioradialis"
+        "brachioradialis",
+        "forearm"
       ]
     },
     "Rope Hammer Curl": {
       "primary": [
         "biceps_brachii",
-        "brachioradialis"
+        "brachioradialis",
+        "forearm"
       ],
       "secondary": [
         "wrist_flexors",
@@ -610,27 +622,28 @@
     },
     "Wrist Curls": {
       "primary": [
-        "wrist_flexors"
-      ],
-      "secondary": [
         "brachioradialis",
-        "extensor_carpi_ulnaris"
-      ]
+        "wrist_flexors",
+        "extensor_carpi_ulnaris",
+        "forearm"
+      ],
+      "secondary": []
     },
     "Overhead Shoulder Press": {
       "primary": [
         "anterior_deltoid",
-        "lateral_deltoid"
+        "lateral_deltoid",
+        "trapezius_upper"
       ],
       "secondary": [
         "triceps_lateral_head",
-        "triceps_brachii",
-        "trapezius_upper"
+        "triceps_brachii"
       ]
     },
     "Dumbbell Front Raise": {
       "primary": [
-        "anterior_deltoid"
+        "anterior_deltoid",
+        "trapezius_upper"
       ],
       "secondary": [
         "lateral_deltoid"
@@ -638,11 +651,11 @@
     },
     "Dumbbell Lateral Raise": {
       "primary": [
-        "lateral_deltoid"
+        "lateral_deltoid",
+        "trapezius_upper"
       ],
       "secondary": [
-        "anterior_deltoid",
-        "trapezius_upper"
+        "anterior_deltoid"
       ]
     },
     "Shrugs": {
@@ -653,7 +666,8 @@
         "trapezius_middle_lower",
         "brachioradialis",
         "wrist_flexors",
-        "extensor_carpi_ulnaris"
+        "extensor_carpi_ulnaris",
+        "forearm"
       ]
     },
     "Reverse Pec Deck": {
@@ -662,7 +676,8 @@
       ],
       "secondary": [
         "trapezius_middle_lower",
-        "infraspinatus_teres_major"
+        "infraspinatus_teres_major",
+        "trapezius_upper"
       ]
     },
     "Upright Row": {
@@ -674,7 +689,8 @@
         "biceps_brachii",
         "brachioradialis",
         "wrist_flexors",
-        "extensor_carpi_ulnaris"
+        "extensor_carpi_ulnaris",
+        "forearm"
       ]
     },
     "Rope Face Pull": {
@@ -693,14 +709,17 @@
         "semitendinosus"
       ],
       "secondary": [
+        "gastrocnemius",
         "gastrocnemius_lateral",
-        "gastrocnemius_medial"
+        "gastrocnemius_medial",
+        "soleus"
       ]
     },
     "Adductor and Abductor": {
       "primary": [
         "pectineus",
-        "tensor_fasciae_latae"
+        "tensor_fasciae_latae",
+        "adductors"
       ],
       "secondary": [
         "gluteus_maximus",
@@ -721,7 +740,8 @@
         "gastrocnemius",
         "gastrocnemius_lateral",
         "gastrocnemius_medial",
-        "soleus"
+        "soleus",
+        "gluteus_medius"
       ]
     },
     "Seated Leg Extension": {
@@ -731,7 +751,8 @@
         "vastus_medialis"
       ],
       "secondary": [
-        "tensor_fasciae_latae"
+        "tensor_fasciae_latae",
+        "adductors"
       ]
     },
     "Dumbbell Romanian Deadlift": {
@@ -745,7 +766,9 @@
         "trapezius_upper",
         "brachioradialis",
         "wrist_flexors",
-        "extensor_carpi_ulnaris"
+        "extensor_carpi_ulnaris",
+        "forearm",
+        "gluteus_medius"
       ]
     },
     "Seated Calf Raise Machine": {
