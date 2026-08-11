@@ -22,7 +22,7 @@
  * three cannot drift — they previously each did their own thing, and two rendered nothing at
  * all while an image was in flight.
  */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { cx } from '../lib/util'
 import { IconDumbbell } from './Icons'
 
@@ -49,6 +49,18 @@ export function ExerciseImage({
 }) {
   const [loaded, setLoaded] = useState(false)
   const [failed, setFailed] = useState(false)
+  // A `src` change (e.g. switching Body type in Settings, see gender.ts) re-renders this
+  // same component instance with a new URL rather than mounting a fresh one — React has no
+  // reason to reset `loaded`, so without this the OLD bitmap keeps showing (a `<img>` holds
+  // its last frame across a `src` swap) until the new photo happens to finish, then jumps
+  // straight to it with no visible transition. That reads as "nothing happened" right when
+  // the point is to show the switch took effect. Resetting on every `src` change brings back
+  // the loading placeholder immediately, so the old photo visibly clears before the new one
+  // downloads, matching every other src change (a genuinely different exercise) too.
+  useEffect(() => {
+    setLoaded(false)
+    setFailed(false)
+  }, [src])
   const usable = !!src && !failed
 
   return (
@@ -69,6 +81,14 @@ export function ExerciseImage({
       )}
       {usable && (
         <img
+          // Keyed on src, not left to the default "same position in the tree" identity:
+          // a same-element src swap can keep painting the OLD bitmap's pixels for a beat
+          // after the attribute changes (confirmed by watching naturalWidth stay at the
+          // previous image's size immediately after a switch) — browsers don't guarantee
+          // the frame clears just because the source did. The key forces React to tear
+          // down that DOM node and mount a genuinely new one, which has never painted
+          // anything, so there is no stale frame left to show.
+          key={src}
           src={src as string}
           alt={alt}
           loading={eager ? 'eager' : 'lazy'}

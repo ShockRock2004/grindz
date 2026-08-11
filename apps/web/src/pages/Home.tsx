@@ -145,8 +145,13 @@ export function Home() {
               className="group relative flex h-56 animate-fadeUp overflow-hidden rounded-3xl bg-panel2 text-left shadow-card transition duration-200 hover:-translate-y-0.5 hover:shadow-raise focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
               style={{ animationDelay: `${i * 45}ms` }}
             >
-              {/* the figure — bottom-aligned so every card shares a ground line */}
+              {/* the figure — bottom-aligned so every card shares a ground line.
+                  Keyed on gender too: a plain <img> holds its last frame across a src
+                  change, so without a fresh element the old-gender hero would keep
+                  showing until the new one happened to finish loading, then silently
+                  jump straight to it. The remount drops that frame immediately instead. */}
               <img
+                key={gender}
                 src={cdnHero(c.key, gender)}
                 alt=""
                 loading="lazy"

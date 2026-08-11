@@ -22,7 +22,7 @@ import { setSignedInHint } from './domains'
 import { loadActive, saveActive, clearActive, getUnitPref, setUnitPref } from './store'
 import type { Gender } from '../data/assetCdn'
 import { getGenderPref, syncGenderPref, setGenderPref } from './gender'
-import { purgeExerciseImageCache } from './imageCache'
+import { purgeExerciseImageCache, prefetchGenderHeroes } from './imageCache'
 
 /* ----------------------------- auth ----------------------------- */
 interface AuthValue {
@@ -150,16 +150,27 @@ export function AppProviders({ children }: { children: ReactNode }) {
   useEffect(() => {
     // pulls the account's saved choice in over the localStorage guess the instant a
     // session exists, so signing in on a second device shows the right body map
-    // without waiting for the person to open Settings first
+    // without waiting for the person to open Settings first.
+    //
+    // Keyed on the user id, not the session object: Supabase hands back a NEW session
+    // object on every token refresh (same user, same signed-in state), which happens
+    // periodically in the background. Depending on `session` itself re-ran this sync
+    // far more often than "a person actually signed in" — harmless after the fix to
+    // syncGenderPref itself (it no longer resets anything on a failed fetch), but this
+    // keeps it to the one re-sync that's actually meaningful.
     if (session) syncGenderPref().then(setGenderState)
-  }, [session])
+  }, [session?.user?.id])
   const setGender = useCallback((g: Gender) => {
     setGenderState(g)
     void setGenderPref(g)
-    // every cached exercise photo was fetched under the OTHER gender's URL (or the
-    // male one, if this is the first switch) — see imageCache.ts for why the whole
-    // bucket goes rather than anything selective
-    void purgeExerciseImageCache()
+    // Purge before prefetch, strictly sequenced (not fired in parallel): every cached
+    // exercise photo was fetched under the OTHER gender's URL (or the male one, if this
+    // is the first switch) — see imageCache.ts for why the whole bucket goes rather than
+    // anything selective — and a prefetch racing ahead of that delete would just get
+    // evicted again immediately. Once purged, warm the cache with what Home shows
+    // immediately (the 8 category heroes) so the new gender is already on disk by the
+    // time the person navigates there instead of loading in one card at a time.
+    void purgeExerciseImageCache().then(() => prefetchGenderHeroes(g))
   }, [])
 
   /* active session */

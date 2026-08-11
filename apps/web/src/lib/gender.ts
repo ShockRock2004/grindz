@@ -20,17 +20,36 @@ export function getGenderPref(): Gender {
   }
 }
 
-/** Pull the preference from the shared profile row. Call after sign-in. */
+/**
+ * Pull the preference from the shared profile row. Call after sign-in.
+ *
+ * Only ever MOVES the local value toward an explicit server answer; never resets it to
+ * the 'male' default on an ambiguous one. That distinction is load-bearing — an earlier
+ * version treated "the fetch errored" and "the fetch succeeded and found no preference"
+ * as the same case and defaulted both to 'male', which silently flipped a real choice
+ * back to male on every token refresh whenever the read failed (missing `gender` column
+ * on a project that hadn't run the migration yet, a dropped request, anything). A
+ * fetch failure now leaves whatever is already on this device alone — the same "fail
+ * soft, keep showing what you had" contract every other sync in this app already uses
+ * (see catalogSync.ts, groq.ts).
+ */
 export async function syncGenderPref(): Promise<Gender> {
+  const current = getGenderPref()
   try {
     const uid = (await supabase.auth.getUser()).data.user?.id
-    if (!uid) return getGenderPref()
-    const { data } = await supabase.from('profiles').select('gender').eq('id', uid).maybeSingle()
-    const g: Gender = data?.gender === 'female' ? 'female' : 'male'
-    localStorage.setItem(CACHE, g)
-    return g
+    if (!uid) return current
+    const { data, error } = await supabase.from('profiles').select('gender').eq('id', uid).maybeSingle()
+    if (error) return current // fetch failed — do not touch the local value
+    if (data?.gender === 'male' || data?.gender === 'female') {
+      // the server has an explicit answer; that's authoritative for cross-device sync
+      if (data.gender !== current) localStorage.setItem(CACHE, data.gender)
+      return data.gender
+    }
+    // row exists but no preference has ever been saved (a genuinely new account, or
+    // this device's own write is still in flight) — nothing to adopt, keep local
+    return current
   } catch {
-    return getGenderPref()
+    return current
   }
 }
 
