@@ -42,7 +42,6 @@ FRONT = [
     (82, 83, 'Gastrocnemius', 'legs', 'gastrocnemius'),
     (84, 85, 'Gastrocnemius (Lateral)', 'legs', 'gastrocnemius'),
     (86, 87, 'Gastrocnemius (Medial)', 'legs', 'gastrocnemius'),
-    (90, 91, 'Soleus', 'legs', 'soleus'),
 ]
 # arm/forearm slivers that are real anatomy but too thin individually to name on
 # their own -- explicitly folded into biceps_brachii / forearm rather than left for
@@ -64,8 +63,19 @@ FRONT_CENTER = [
     (62, 'Lower Abdomen', 'abs', 'lower_abdomen', 'muscle'),
     (63, 'Lower Abdomen', 'abs', 'lower_abdomen', 'muscle'),
 ]
-# hand: every small blob at the wrist/fingers, silhouette (never trainable)
-FRONT_HAND = {'left': [59, 61, 65, 67, 69, 73], 'right': [58, 60, 64, 66, 68, 70]}
+# Dropped entirely, not just left untrainable: the palm/finger tendon lines and the
+# ankle/foot detail (heel wedge, toe crease, the 'soleus'-looking patch that turned out
+# on inspection to sit on the widened foot silhouette, past where the calf narrows) read
+# as clutter rather than anatomy at this scale, and the male reference draws hands and
+# feet as plain unmarked silhouette. Excluding them here means `body` (the whole
+# figure's ink footprint) covers that area with a smooth, seamless fill -- see
+# analyze-female.py's docstring for why `body` already has the right shape without
+# these. Kept as an explicit set rather than a lower area threshold because some of
+# these blobs (the heel patch) are not small.
+FRONT_EXCLUDE = {
+    58, 59, 60, 61, 64, 65, 66, 67, 68, 69, 70, 73,  # palm + fingers
+    88, 89, 90, 91, 92, 93, 94, 95,                   # ankle notch through toes
+}
 
 BACK = [
     (2, 3, 'Trapezius (Upper)', 'shoulders', 'trapezius_upper'),
@@ -81,8 +91,6 @@ BACK = [
     (52, 53, 'Adductors', 'legs', 'adductors'),
     (56, 57, 'Gastrocnemius', 'legs', 'gastrocnemius'),
     (58, 59, 'Gastrocnemius (Medial)', 'legs', 'gastrocnemius'),
-    (60, 61, 'Soleus', 'legs', 'soleus'),
-    (62, 63, 'Soleus (Lower)', 'legs', 'soleus'),
 ]
 BACK_FOLD_EXPLICIT = {
     6: ('trapezius_upper', 'shoulders'), 7: ('trapezius_upper', 'shoulders'),
@@ -90,12 +98,15 @@ BACK_FOLD_EXPLICIT = {
     20: ('triceps_brachii', 'triceps'), 21: ('triceps_brachii', 'triceps'),
     24: ('triceps_brachii', 'triceps'), 25: ('triceps_brachii', 'triceps'),
     34: ('forearm', 'biceps'), 35: ('forearm', 'biceps'),
-    64: ('soleus', 'legs'), 65: ('soleus', 'legs'),
 }
 BACK_CENTER = [
     (1, 'Hair', None, 'hair', 'silhouette'),
 ]
-BACK_HAND = {'left': [36, 38, 40, 42, 44], 'right': [37, 39, 41, 43, 45]}
+# see FRONT_EXCLUDE
+BACK_EXCLUDE = {
+    36, 37, 38, 39, 40, 41, 42, 43, 44, 45,  # palm + fingers
+    60, 61, 62, 63, 64, 65,                   # ankle through heel
+}
 
 WORKED = set()  # this source carries no highlighted (worked-muscle) colour to check against
 
@@ -119,8 +130,8 @@ problems = []
 out = {}
 
 TABLES = {
-    'front': (FRONT, FRONT_CENTER, FRONT_FOLD_EXPLICIT, FRONT_HAND),
-    'back': (BACK, BACK_CENTER, BACK_FOLD_EXPLICIT, BACK_HAND),
+    'front': (FRONT, FRONT_CENTER, FRONT_FOLD_EXPLICIT, FRONT_EXCLUDE),
+    'back': (BACK, BACK_CENTER, BACK_FOLD_EXPLICIT, BACK_EXCLUDE),
 }
 
 for view, comp in zip(['front', 'back'], two):
@@ -139,10 +150,10 @@ for view, comp in zip(['front', 'back'], two):
         left = cx < mid
         return ('right' if left else 'left') if view == 'front' else ('left' if left else 'right')
 
-    TABLE, CENTER, FOLD_EXPLICIT, HAND = TABLES[view]
+    TABLE, CENTER, FOLD_EXPLICIT, EXCLUDE = TABLES[view]
 
     rows = []
-    claimed = set()
+    claimed = set(EXCLUDE) & set(all_blobs)  # dropped on purpose -- see FRONT_EXCLUDE
     group_positions = {}  # group -> list of (side, cx, cy) for the fold pass
 
     for ba, bb, name, cat, group in TABLE:
@@ -164,12 +175,6 @@ for view, comp in zip(['front', 'back'], two):
         rows.append({'blob': b, 'id': f'{group}_center_{b}' if any(r['group'] == group for r in rows) else f'{group}_center',
                      'name': name, 'category': cat, 'group': group, 'side': 'center', 'kind': kind})
         claimed.add(b)
-
-    for side, ids in HAND.items():
-        for b in ids:
-            rows.append({'blob': b, 'id': f'hand_{side}_{b}', 'name': f'Hand ({"L" if side=="left" else "R"})',
-                         'category': None, 'group': 'hand', 'side': side, 'kind': 'silhouette'})
-            claimed.add(b)
 
     for b, (group, cat) in FOLD_EXPLICIT.items():
         info = all_blobs[b]
@@ -203,7 +208,7 @@ for view, comp in zip(['front', 'back'], two):
     ids = [r['id'] for r in rows]
     if len(set(ids)) != len(ids):
         problems.append(f'{view}: duplicate ids {[x for x in ids if ids.count(x) > 1]}')
-    print(f'{view}: {len(rows)} shapes ({len(TABLE)*2} major, {sum(len(v) for v in HAND.values())} hand, '
+    print(f'{view}: {len(rows)} shapes ({len(TABLE)*2} major, {len(EXCLUDE)} excluded, '
           f'{len(CENTER)} center, {len(FOLD_EXPLICIT)} explicit-fold, {len(unclaimed)} auto-fold)')
 
 print('\n--- checks ---')
