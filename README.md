@@ -16,7 +16,7 @@ sharing one Supabase backend, one muscle map palette, and one image CDN.
 [![Open in browser](https://img.shields.io/badge/Open%20in%20browser-0072ff?style=for-the-badge)](https://app.grindz.dev)
 
 ![Android 7.0+](https://img.shields.io/badge/Android-7.0%2B-3ddc84?logo=android&logoColor=white)
-![APK 52.7 MB](https://img.shields.io/badge/APK-52.7%20MB-informational)
+![APK 52.8 MB](https://img.shields.io/badge/APK-52.8%20MB-informational)
 ![Free](https://img.shields.io/badge/Free-no%20ads-00c6ff)
 
 <br/>
