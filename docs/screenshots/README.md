@@ -30,6 +30,10 @@ and every card renders blank:
 emulator -avd grindz -gpu host -dns-server 8.8.8.8,1.1.1.1
 ```
 
+`settings-body-type.png`, `home-female.png` and `progress-female.png` are the same run with
+**Body type** switched to Female in Settings — the photo set and the traced anatomy both
+follow that one control, which is the whole point of the three being a set.
+
 Two presentation-only notes, so these are honest about what they are:
 
 - The fixture's display name was changed to a demo name for the capture. In the repo it is
