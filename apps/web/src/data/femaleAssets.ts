@@ -3,16 +3,24 @@
 // See that script's header comment for why this is a committed manifest rather than a
 // runtime directory listing (the CDN is a static-assets Worker with no listing API).
 
-/** Category keys with a female hero image, e.g. 'chest' -> cdn/public/female/hero/chest.png */
-export const FEMALE_HERO: ReadonlySet<string> = new Set([
-  'abs',
-  'back',
-  'biceps',
-  'cardio',
-  'chest',
-  'legs',
-  'shoulders',
-  'triceps',
+/**
+ * Category key -> the file serving its female hero, e.g.
+ * 'chest' -> cdn/public/female/hero/chest.png.
+ *
+ * A filename rather than a bare key because a replaced hero ships under a numbered name
+ * ('cardio-2.png') instead of overwriting the old one — the CDN serves these immutably for
+ * a year, so mutating a file in place would leave every device that already has it showing
+ * the old photo. Only the newest number per category appears here.
+ */
+export const FEMALE_HERO: ReadonlyMap<string, string> = new Map([
+  ['abs', 'abs.png'],
+  ['back', 'back.png'],
+  ['biceps', 'biceps.png'],
+  ['cardio', 'cardio-2.png'],
+  ['chest', 'chest.png'],
+  ['legs', 'legs.png'],
+  ['shoulders', 'shoulders.png'],
+  ['triceps', 'triceps.png'],
 ])
 
 /** '<category>/<file>.png' pairs that exist under cdn/public/female/images/. */
