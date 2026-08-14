@@ -18,7 +18,7 @@ import type { ActiveSession, Exercise, TemplateRow } from '../lib/types'
 export function Category({ categoryKey, onBack, onStarted }: { categoryKey: string; onBack: () => void; onStarted: () => void }) {
   const { custom, favorites, prs, templates, refresh } = useData()
   const { active, start } = useSession()
-  const { unit } = usePrefs()
+  const { unit, gender } = usePrefs()
   const { width } = useWindowDimensions()
   const L = useLayout()
   const insets = useSafeAreaInsets()
@@ -145,7 +145,7 @@ export function Category({ categoryKey, onBack, onStarted }: { categoryKey: stri
             const faved = favorites.includes(ex.name)
             // a custom exercise has no bundled illustration, but may have the
             // user's own photo — either way the card looks the same
-            const src = ex.imageUri ? { uri: ex.imageUri } : exerciseImageSource(category.key, ex.img)
+            const src = ex.imageUri ? { uri: ex.imageUri } : exerciseImageSource(category.key, ex.img, gender)
             return (
               <Pressable
                 key={ex.name}
@@ -203,7 +203,7 @@ export function Category({ categoryKey, onBack, onStarted }: { categoryKey: stri
         {detail ? (() => {
           const detailImage = detail.imageUri
             ? { uri: detail.imageUri }
-            : exerciseImageSource(category.key, detail.img)
+            : exerciseImageSource(category.key, detail.img, gender)
           const detailTips = detail.tips?.length ? detail.tips : exerciseTips(detail.name)
           const detailVideo = detail.videoUrl ? youTubeWatch(detail.videoUrl) : null
           return (

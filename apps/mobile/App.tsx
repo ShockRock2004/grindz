@@ -220,7 +220,7 @@ function Shell() {
 function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { profile } = useAuth()
   const { custom, refresh } = useData()
-  const { unit, setUnit } = usePrefs()
+  const { unit, setUnit, gender, setGender } = usePrefs()
   const [adding, setAdding] = useState(false)
 
   // the AI key lives on the user's own profile row, so it follows them across devices
@@ -269,6 +269,33 @@ function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }
           {(['kg', 'lbs'] as const).map((u) => (
             <Pressable key={u} onPress={() => { haptic.select(); setUnit(u) }} style={[s.unitBtn, unit === u && { backgroundColor: C.cyan }]}>
               <T style={[s.unitText, unit === u && { color: C.cyanInk }]}>{u}</T>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+
+      {/*
+        Body type — the same control the web app carries in its Settings dialog, matched
+        row for row so the two surfaces agree on what the setting is called and what it
+        claims to change. It drives two things and nothing else: which traced anatomy the
+        Progress heat map draws, and which CDN photo variant every exercise card resolves.
+      */}
+      <View style={s.settingRow}>
+        <View style={{ flex: 1 }}>
+          <T style={{ fontSize: 14, fontWeight: '800' }}>Body type</T>
+          <T style={{ fontSize: 12, color: C.muted }}>Muscle map and exercise photos</T>
+        </View>
+        <View style={s.unitTgl}>
+          {([['male', 'Male'], ['female', 'Female']] as const).map(([g, label]) => (
+            <Pressable
+              key={g}
+              onPress={() => { if (g === gender) return; haptic.select(); setGender(g) }}
+              style={[s.unitBtn, gender === g && { backgroundColor: C.cyan }]}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: gender === g }}
+              accessibilityLabel={`${label} body type`}
+            >
+              <T style={[s.unitText, gender === g && { color: C.cyanInk }]}>{label}</T>
             </Pressable>
           ))}
         </View>

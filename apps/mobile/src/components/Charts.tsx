@@ -14,6 +14,18 @@ import {
 } from '../data/bodyMuscles'
 import { BODY_MAP_PAINT, ISLAND_LAYERS, isGradient, type BodyMapVariant, type IslandLayer } from '../data/bodyMapStyle'
 
+/** The shape gen-body-muscles.mjs emits, byte-identical between bodyMuscles.ts and any
+ *  other anatomy variant (e.g. bodyMusclesFemale.ts) generated from the same template.
+ *  Mirrors apps/web/src/components/BodyMap.tsx — the geometry is parity-enforced, the
+ *  two renderers are not (DOM vs react-native-svg), so this interface is restated here. */
+export interface BodyMapDataset {
+  BODY_VIEWBOX: string
+  FRONT_MUSCLES: BodyMuscle[]
+  BACK_MUSCLES: BodyMuscle[]
+}
+
+const MALE_DATASET: BodyMapDataset = { BODY_VIEWBOX, FRONT_MUSCLES, BACK_MUSCLES }
+
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 /* All charts draw into a fixed viewBox and scale to container width. */
@@ -235,14 +247,28 @@ export function useBodyMapVariant(): BodyMapVariant {
  *
  * `variant` defaults to whatever `useBodyMapVariant` resolves; pass 'flat' to render the
  * reference artwork's own palette (used by the parity test).
+ *
+ * `dataset` defaults to the male anatomy (`../data/bodyMuscles`); pass e.g.
+ * `../data/bodyMusclesFemale` to render the other traced variant instead.
  */
-export function BodyMap({ trained, onPick, variant }: { trained: TrainedInput; onPick: (category: string) => void; variant?: BodyMapVariant }) {
+export function BodyMap({
+  trained,
+  onPick,
+  variant,
+  dataset,
+}: {
+  trained: TrainedInput
+  onPick: (category: string) => void
+  variant?: BodyMapVariant
+  dataset?: BodyMapDataset
+}) {
   const resolved = useBodyMapVariant()
   const v: BodyMapVariant = variant ?? resolved
+  const d = dataset ?? MALE_DATASET
   return (
     <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', gap: 8 }}>
-      <BodyView label="Front" muscles={FRONT_MUSCLES} trained={trained} onPick={onPick} variant={v} />
-      <BodyView label="Back" muscles={BACK_MUSCLES} trained={trained} onPick={onPick} variant={v} />
+      <BodyView label="Front" viewBox={d.BODY_VIEWBOX} muscles={d.FRONT_MUSCLES} trained={trained} onPick={onPick} variant={v} />
+      <BodyView label="Back" viewBox={d.BODY_VIEWBOX} muscles={d.BACK_MUSCLES} trained={trained} onPick={onPick} variant={v} />
     </View>
   )
 }
@@ -262,9 +288,11 @@ function rgba(c: string): { color: string; opacity: number } {
   return { color: `rgb(${p[0]},${p[1]},${p[2]})`, opacity: Number.isFinite(a) ? a : 1 }
 }
 
-function BodyView({ label, muscles, trained, onPick, variant }: { label: string; muscles: BodyMuscle[]; trained: TrainedInput; onPick: (c: string) => void; variant: BodyMapVariant }) {
+function BodyView({ label, viewBox, muscles, trained, onPick, variant }: { label: string; viewBox: string; muscles: BodyMuscle[]; trained: TrainedInput; onPick: (c: string) => void; variant: BodyMapVariant }) {
   const [w, setW] = useState(0)
-  const [, , vw, vh] = BODY_VIEWBOX.split(' ').map(Number)
+  // the two traces do not share a viewBox, so this has to come from the dataset — reading
+  // the male constant here drew the female figure into the wrong box and cropped it
+  const [, , vw, vh] = viewBox.split(' ').map(Number)
   const h = w ? (w * vh) / vw : 0
   const paint = BODY_MAP_PAINT[variant]
   // ids must be unique per figure, or the Front map's gradients would also paint the Back one
@@ -280,7 +308,7 @@ function BodyView({ label, muscles, trained, onPick, variant }: { label: string;
   return (
     <View style={{ flex: 1, alignItems: 'center', gap: 6 }} onLayout={(e) => setW(e.nativeEvent.layout.width)}>
       {w > 0 && (
-        <Svg width={w} height={h} viewBox={BODY_VIEWBOX}>
+        <Svg width={w} height={h} viewBox={viewBox}>
           {gradientLayers.length > 0 && (
             <Defs>
               {gradientLayers.map((k) => {

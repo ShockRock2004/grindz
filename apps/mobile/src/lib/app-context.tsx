@@ -18,8 +18,11 @@ import { buildPRs } from './stats'
 import type { ActiveSession, SetRow, SessionRow, CustomExerciseRow, PlanRow, ExercisePR, TemplateRow } from './types'
 import type { WeightUnit } from './util'
 import { loadActive, saveActive, clearActive, getUnitPref, setUnitPref } from './store'
+import { getGenderPref, syncGenderPref, setGenderPref } from './gender'
 import { VERIFY, VERIFY_SESSION, VERIFY_PROFILE, buildVerifyData } from './verify-fixture'
 import { hydrateCatalogFromCache, syncCatalogFromNetwork } from '../data/catalogSync'
+import { prefetchGenderHeroes } from '../data/images'
+import type { Gender } from '../data/assetCdn'
 
 /* ----------------------------- auth ----------------------------- */
 interface AuthValue {
@@ -51,8 +54,12 @@ export const useData = () => useContext(DataCtx)
 interface PrefsValue {
   unit: WeightUnit
   setUnit: (u: WeightUnit) => void
+  /** Which BodyMap dataset + CDN photo variant to show. Synced to profiles.gender
+   *  (see ./gender.ts) so it follows the account across devices, unlike `unit`. */
+  gender: Gender
+  setGender: (g: Gender) => void
 }
-const PrefsCtx = createContext<PrefsValue>({ unit: 'kg', setUnit: () => {} })
+const PrefsCtx = createContext<PrefsValue>({ unit: 'kg', setUnit: () => {}, gender: 'male', setGender: () => {} })
 export const usePrefs = () => useContext(PrefsCtx)
 
 /* --------------------------- session ---------------------------- */
@@ -137,6 +144,32 @@ export function AppProviders({ children }: { children: ReactNode }) {
     void setUnitPref(u)
   }, [])
 
+  /*
+   * Body type. Two hydration steps, in this order: the cached value first so the very
+   * first paint is already correct offline, then the account's own answer once there is a
+   * session, which is what makes the choice follow the person to a second device.
+   *
+   * The re-sync on every session change is belt and braces — the guarantee lives inside
+   * syncGenderPref itself (it never resets anything on a failed fetch), but pulling on
+   * each sign-in is what picks up a switch made on the web app in between.
+   */
+  const [gender, setGenderState] = useState<Gender>('male')
+  useEffect(() => {
+    getGenderPref().then(setGenderState)
+  }, [])
+  useEffect(() => {
+    if (!VERIFY && session) syncGenderPref().then(setGenderState)
+  }, [session])
+  const setGender = useCallback((g: Gender) => {
+    setGenderState(g)
+    void setGenderPref(g)
+    // warm the 8 heroes Home renders immediately, so the switch is visibly instant when
+    // the user closes Settings rather than eight cards popping in one at a time. Only the
+    // heroes: an exercise photo still downloads on first view, which is the whole trade
+    // the CDN move was making (see cdn/README.md).
+    void prefetchGenderHeroes(g)
+  }, [])
+
   /* active session — likewise hydrated, not read inline */
   const [active, setActive] = useState<ActiveSession | null>(null)
   useEffect(() => {
@@ -190,7 +223,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
 
   const authValue = useMemo(() => ({ session, profile, refreshProfile }), [session, profile, refreshProfile])
   const dataValue = useMemo(() => ({ ...data, refresh }), [data, refresh])
-  const prefsValue = useMemo(() => ({ unit, setUnit }), [unit, setUnit])
+  const prefsValue = useMemo(() => ({ unit, setUnit, gender, setGender }), [unit, setUnit, gender, setGender])
   const sessionValue = useMemo(() => ({ active, start, update, finish, discard }), [active, start, update, finish, discard])
 
   return (
