@@ -1,5 +1,5 @@
 {
-  "version": "8b436fb82c4ee00c",
+  "version": "ca4b5f6596208302",
   "categories": [
     {
       "key": "chest",
@@ -481,8 +481,7 @@
         "pectoralis_major"
       ],
       "secondary": [
-        "anterior_deltoid",
-        "trapezius_upper"
+        "anterior_deltoid"
       ]
     },
     "Flat Bench Press": {
@@ -632,8 +631,7 @@
     "Overhead Shoulder Press": {
       "primary": [
         "anterior_deltoid",
-        "lateral_deltoid",
-        "trapezius_upper"
+        "lateral_deltoid"
       ],
       "secondary": [
         "triceps_lateral_head",
@@ -642,8 +640,7 @@
     },
     "Dumbbell Front Raise": {
       "primary": [
-        "anterior_deltoid",
-        "trapezius_upper"
+        "anterior_deltoid"
       ],
       "secondary": [
         "lateral_deltoid"
@@ -651,8 +648,7 @@
     },
     "Dumbbell Lateral Raise": {
       "primary": [
-        "lateral_deltoid",
-        "trapezius_upper"
+        "lateral_deltoid"
       ],
       "secondary": [
         "anterior_deltoid"
