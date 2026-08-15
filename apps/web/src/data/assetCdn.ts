@@ -61,10 +61,18 @@ export function cdnExercise(categoryKey: string, img: string, gender: Gender = '
   return `${ASSET_CDN}/images/${categoryKey}/${img}`
 }
 
-/** Public URL for a category hero image. Falls back the same way as cdnExercise. */
+/**
+ * Public URL for a category hero image. Falls back the same way as cdnExercise.
+ *
+ * The female side reads its filename out of FEMALE_HERO rather than composing
+ * `${categoryKey}.png`, because a hero is the one image whose name is derived from data
+ * and so cannot be reshot under a free-form new name. A replacement ships numbered —
+ * `cardio-2.png` — and the manifest points at the newest, which keeps the "never overwrite
+ * an image in place" rule intact for a file the URL scheme would otherwise force us to
+ * mutate. The male tree has no replacements yet and stays on the derived name.
+ */
 export function cdnHero(categoryKey: string, gender: Gender = 'male'): string {
-  if (gender === 'female' && FEMALE_HERO.has(categoryKey)) {
-    return `${ASSET_CDN}/female/hero/${categoryKey}.png`
-  }
+  const female = gender === 'female' ? FEMALE_HERO.get(categoryKey) : undefined
+  if (female) return `${ASSET_CDN}/female/hero/${female}`
   return `${ASSET_CDN}/hero/${categoryKey}.png`
 }

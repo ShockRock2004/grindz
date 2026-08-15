@@ -48,13 +48,14 @@ const LATS = ['latissimus_dorsi']
 // direct references elsewhere), on the female map it is what makes a row or a face pull
 // light the only back/shoulder shape that exists there.
 const UPPER_BACK = ['trapezius_middle_lower', 'infraspinatus_teres_major', 'trapezius_upper']
-// female's front sheet has no separate deltoid shape at all: the shoulder-cap linework
-// that would be it auto-folded into trapezius_upper during tracing (nothing else on that
-// side claimed it — see labels-female.py). Without this, a press/raise's anterior/lateral
-// deltoid primary has no id to match on female and the front view lights up nothing for
-// it. 'trapezius_upper' is promoted to primary (not just listed in secondary, as it
-// already was for these) so the one shape that exists there carries the highlight.
-const FRONT_DELTOID_FALLBACK = 'trapezius_upper'
+// There is deliberately no deltoid fallback here any more. The female front sheet used to
+// have no deltoid shape at all — the shoulder caps were folded into trapezius_upper by the
+// tracer — so a press or a raise had nothing to light, and 'trapezius_upper' was promoted
+// to PRIMARY on four exercises to cover for it. That made a lateral raise claim the upper
+// trap as a prime mover on both sheets to paper over a gap on one of them. The female
+// sheet now traces anterior_deltoid and lateral_deltoid as their own shapes
+// (see scripts/trace/labels-female.py), so the exercises below name the muscle they
+// actually work and nothing else.
 
 export interface MuscleWork {
   primary: string[]
@@ -75,7 +76,7 @@ export let EXERCISE_MUSCLES: Record<string, MuscleWork> = {
   /* ---------------------------------------------------------------- chest */
   'Incline Bench Press': { primary: ['pectoralis_major', 'anterior_deltoid'], secondary: TRICEPS },
   'Decline Bench Press': { primary: ['pectoralis_major'], secondary: [...TRICEPS, 'anterior_deltoid'] },
-  'Pec Fly': { primary: ['pectoralis_major'], secondary: ['anterior_deltoid', FRONT_DELTOID_FALLBACK] },
+  'Pec Fly': { primary: ['pectoralis_major'], secondary: ['anterior_deltoid'] },
   'Flat Bench Press': { primary: ['pectoralis_major'], secondary: [...TRICEPS, 'anterior_deltoid'] },
 
   /* -------------------------------------------------------------- triceps */
@@ -112,15 +113,15 @@ export let EXERCISE_MUSCLES: Record<string, MuscleWork> = {
 
   /* ------------------------------------------------------------ shoulders */
   'Overhead Shoulder Press': {
-    primary: ['anterior_deltoid', 'lateral_deltoid', FRONT_DELTOID_FALLBACK],
+    primary: ['anterior_deltoid', 'lateral_deltoid'],
     secondary: TRICEPS,
   },
   'Dumbbell Front Raise': {
-    primary: ['anterior_deltoid', FRONT_DELTOID_FALLBACK],
+    primary: ['anterior_deltoid'],
     secondary: ['lateral_deltoid'],
   },
   'Dumbbell Lateral Raise': {
-    primary: ['lateral_deltoid', FRONT_DELTOID_FALLBACK],
+    primary: ['lateral_deltoid'],
     secondary: ['anterior_deltoid'],
   },
   'Shrugs': { primary: ['trapezius_upper'], secondary: ['trapezius_middle_lower', ...FOREARMS] },

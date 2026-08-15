@@ -31,7 +31,7 @@ export function Home({ onOpenCategory, onBuildWorkout }: { onOpenCategory: (key:
   const L = useLayout()
   const refresher = usePullToRefresh()
   const { sessions, sets, custom, plan, loading } = useData()
-  const { unit } = usePrefs()
+  const { unit, gender } = usePrefs()
   const [filter, setFilter] = useState('all')
 
   const week = weekSummary(sessions)
@@ -162,12 +162,12 @@ export function Home({ onOpenCategory, onBuildWorkout }: { onOpenCategory: (key:
                 start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }}
                 style={StyleSheet.absoluteFill}
               />
-              {heroSource(c.key) ? (
+              {heroSource(c.key, gender) ? (
                 <View
                   style={[s.hero, L.columns > 1 && { width: 150, height: 150, right: -8, top: -10 }]}
                   pointerEvents="none"
                 >
-                  <Image source={heroSource(c.key)} style={s.heroImg} contentFit="contain" cachePolicy="memory-disk" transition={150} />
+                  <Image source={heroSource(c.key, gender)} style={s.heroImg} contentFit="contain" cachePolicy="memory-disk" transition={150} />
                 </View>
               ) : null}
               {/* left-to-right scrim so the title always clears the artwork */}

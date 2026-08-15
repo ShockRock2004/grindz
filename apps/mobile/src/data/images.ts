@@ -1,5 +1,6 @@
 import type { ImageSourcePropType } from 'react-native'
-import { cdnExercise, cdnHero } from './assetCdn'
+import { Image } from 'expo-image'
+import { cdnExercise, cdnHero, type Gender } from './assetCdn'
 import { CATALOG } from './catalog'
 
 /*
@@ -43,19 +44,49 @@ function knownExerciseImages(): ReadonlySet<string> {
 
 const HERO_CATEGORIES: ReadonlySet<string> = new Set(CATALOG.map((c) => c.key))
 
+/*
+ * `gender` is threaded through all three resolvers below and defaults to 'male', so every
+ * pre-existing call site keeps its old behaviour. Unlike the web app there is nothing to
+ * purge when it changes: the expo-image disk cache is keyed by URL, and the two variants
+ * live at different URLs (see assetCdn.ts), so switching simply resolves to a key that
+ * isn't cached yet. Web needs a purge only because its Workbox rule buckets the whole CDN
+ * origin under one cache name.
+ */
+
 /** Exercise photo for a category + filename, or undefined when absent (custom lifts). */
-export function exerciseImageSource(categoryKey: string, img?: string | null): ImageSourcePropType | undefined {
+export function exerciseImageSource(categoryKey: string, img?: string | null, gender: Gender = 'male'): ImageSourcePropType | undefined {
   if (!img) return undefined
   // guard on the catalog rather than pointing the loader at a URL that will 404 — a custom
   // lift carrying a stale filename should render as "no photo", not as a broken fetch
   if (!knownExerciseImages().has(`${categoryKey}/${img}`)) return undefined
-  return { uri: cdnExercise(categoryKey, img) }
+  return { uri: cdnExercise(categoryKey, img, gender) }
 }
 
 /** Full-bleed hero render used on the Home category cards. */
-export function heroSource(categoryKey: string): ImageSourcePropType | undefined {
+export function heroSource(categoryKey: string, gender: Gender = 'male'): ImageSourcePropType | undefined {
   if (!HERO_CATEGORIES.has(categoryKey)) return undefined
-  return { uri: cdnHero(categoryKey) }
+  return { uri: cdnHero(categoryKey, gender) }
+}
+
+/**
+ * Warm the disk cache for the body type just switched to, starting with what the person is
+ * about to see: the category heroes are what Home renders the instant Settings closes.
+ *
+ * Deliberately NOT prefetching the ~35 exercise photos — the app's own tradeoff (see
+ * cdn/README.md) is that a photo downloads on first view, not on every app open, and
+ * eagerly pulling the whole library on a switch would undo that on a metered connection
+ * for exercises that may never be opened. Best-effort: a failed prefetch just means the
+ * first view fetches it, so this never rejects.
+ */
+export async function prefetchGenderHeroes(gender: Gender): Promise<void> {
+  try {
+    await Image.prefetch(
+      CATALOG.map((c) => cdnHero(c.key, gender)),
+      { cachePolicy: 'memory-disk' },
+    )
+  } catch {
+    /* offline or the CDN is unreachable — nothing is broken, just not pre-warmed */
+  }
 }
 
 /**
@@ -66,10 +97,10 @@ export function heroSource(categoryKey: string): ImageSourcePropType | undefined
  * location when the photos moved to the CDN, so the surgery was operating on a path that no
  * longer pointed anywhere; resolving from the catalog directly removes the coupling.
  */
-export function exerciseImageSourceByName(name: string): ImageSourcePropType | undefined {
+export function exerciseImageSourceByName(name: string, gender: Gender = 'male'): ImageSourcePropType | undefined {
   for (const c of CATALOG) {
     const e = c.exercises.find((x) => x.name === name)
-    if (e?.img) return exerciseImageSource(c.key, e.img)
+    if (e?.img) return exerciseImageSource(c.key, e.img, gender)
   }
   return undefined
 }

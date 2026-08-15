@@ -5,8 +5,9 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import { LinearGradient } from 'expo-linear-gradient'
 import { C, R, alpha } from '../theme'
 import { T, Button, EmptyState, Modal, Select } from '../components/ui'
-import { BarChart, BodyMap, LineChart, useBodyMapVariant } from '../components/Charts'
+import { BarChart, BodyMap, LineChart, useBodyMapVariant, type BodyMapDataset } from '../components/Charts'
 import { legendRim, legendStops, type BodyMapVariant, type IslandLayer } from '../data/bodyMapStyle'
+import { BODY_VIEWBOX as FEMALE_VIEWBOX, FRONT_MUSCLES as FEMALE_FRONT, BACK_MUSCLES as FEMALE_BACK } from '../data/bodyMusclesFemale'
 import { CategoryThumb, IconChart, IconChevronDown, IconChevronLeft, IconChevronRight, IconPlay, IconScale, IconTrophy } from '../components/Icons'
 import { CATALOG, CATALOG_BY_KEY, categoryOf, mergeCustom } from '../data/catalog'
 import { musclesFromSets } from '../data/exerciseMuscles'
@@ -42,9 +43,12 @@ function LegendSwatch({ variant, layer, label }: { variant: BodyMapVariant; laye
 export function Progress({ onOpenCategory, onStart }: { onOpenCategory: (key: string) => void; onStart: () => void }) {
   const { sessions, sets, prs, bodyweights, custom, refresh } = useData()
   const refresher = usePullToRefresh()
-  const { unit } = usePrefs()
+  const { unit, gender } = usePrefs()
   // resolved once here so the figure and its legend cannot disagree
   const bodyMapVariant = useBodyMapVariant()
+  // BodyMap defaults to the male dataset internally; only pass one explicitly for female
+  const bodyMapDataset: BodyMapDataset | undefined =
+    gender === 'female' ? { BODY_VIEWBOX: FEMALE_VIEWBOX, FRONT_MUSCLES: FEMALE_FRONT, BACK_MUSCLES: FEMALE_BACK } : undefined
 
   const [muscleCat, setMuscleCat] = useState<string | null>(null)
   const weekStartMs = (() => {
@@ -178,7 +182,7 @@ export function Progress({ onOpenCategory, onStart }: { onOpenCategory: (key: st
 
       <View style={s.card}>
         <T style={s.cardLabel}>Muscles worked this week · tap for detail</T>
-        <BodyMap trained={trainedThisWeek} onPick={setMuscleCat} variant={bodyMapVariant} />
+        <BodyMap trained={trainedThisWeek} onPick={setMuscleCat} variant={bodyMapVariant} dataset={bodyMapDataset} />
         {nothingTrainedYet ? (
           <T style={s.hint}>Nothing logged this week yet — muscles light up as you train them. Tap any muscle to see its progress.</T>
         ) : (

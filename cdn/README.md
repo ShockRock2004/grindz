@@ -126,7 +126,8 @@ once — a deliberate one-time cost.
 ## The female library
 
 `public/female/` mirrors the structure above (`female/images/<category>/<file>.png`,
-`female/hero/<category>.png`) rather than replacing any file in place — same reasoning
+`female/hero/<category>.png`, plus numbered hero replacements — see below) rather than
+replacing any file in place — same reasoning
 as "never overwrite an image", just applied to a whole gendered tree instead of one
 filename: a device that already has the male `shrugs.png` must keep getting it forever.
 
@@ -145,11 +146,30 @@ git add cdn/public/female/images/legs/barbell-squats.png apps/web/src/data/femal
 git commit && git push
 ```
 
+### Replacing a hero
+
+A hero is the one image whose filename is **derived from data** (`hero/<category>.png`), so
+"ship it under a new name" has nowhere to go — the category key is the name. Replacements
+are therefore **numbered**, and `FEMALE_HERO` maps a category to the file actually serving
+it rather than to a bare key:
+
+```bash
+cp better-photo.png cdn/public/female/hero/cardio-2.png   # NOT cardio.png
+node apps/web/scripts/gen-female-assets.mjs               # picks the highest number per category
+```
+
+`cardio.png` stays exactly where it is, forever, because every build already in the field
+asks for that URL and the CDN promised it for a year. Nothing is deleted; the manifest just
+stops pointing at it. Numbering continues upwards (`-3`, `-4`) for any later reshoot.
+
+The male tree has no replacements yet and stays on the plain derived name — `cdnHero` only
+consults the manifest for `female`.
+
 ## Rules
 
 **Never overwrite an image in place.** Filenames are effectively content-addressed: devices
 holding the old copy will keep serving it for a year. Ship a changed photo under a **new
-filename**.
+filename** — or, for a hero, a **numbered** one (see above).
 
 **Sanity check after touching any of this** — build every URL the catalog can produce and
 `HEAD` them; all 35 (male) must return `200`. `scripts/check-cdn.mjs` walks the whole of

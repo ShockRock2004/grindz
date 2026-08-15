@@ -261,6 +261,10 @@ function ExerciseCard(p: {
   onNote: (n: string) => void; onSuperset: () => void; onRemove: () => void; onRpe: (si: number, rpe: number) => void
 }) {
   const [showNote, setShowNote] = useState(!!p.note)
+  // read here rather than threading a prop down from Session: the card already reads its
+  // own unit off `p`, but gender is needed only for the photo, and every card wants the
+  // same answer — a prop would be eight identical hand-offs for one value
+  const { gender } = usePrefs()
   const unitLabel = p.unit === 'lbs' ? 'Lbs' : 'Kg'
   const headers = p.mode === 'timed' ? ['Sec', unitLabel] : p.mode === 'distance' ? ['Dist (m)', 'Min'] : [unitLabel, 'Reps']
   const lp = p.lastPerf
@@ -269,7 +273,7 @@ function ExerciseCard(p: {
     const w = lp?.sets[si]?.weight
     return w == null ? undefined : Math.round(fromKg(w, p.unit) * 10) / 10
   }
-  const src = exerciseImageSourceByName(p.name)
+  const src = exerciseImageSourceByName(p.name, gender)
   const doneCount = p.sets.filter((x) => x.done).length
 
   return (
