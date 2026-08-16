@@ -6,8 +6,8 @@
 
 **Log lifts. Chase PRs. See exactly what you've trained.**
 
-A training tracker built twice — as a React Native Android app and as an installable web app —
-sharing one Supabase backend, one muscle map palette, and one image CDN.
+One training log, on your phone and in your browser — a React Native Android app and an
+installable web app over a shared Supabase backend, muscle map palette, and image CDN.
 
 <br/>
 
