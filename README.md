@@ -33,7 +33,9 @@ sharing one Supabase backend, one muscle map palette, and one image CDN.
 
 ## What it does
 
-Grindz is a training log with a muscle map that shows exactly what you worked this week. Every muscle is shaded by what you actually trained so a group you keep skipping is impossible to miss.
+Most training logs give you a list of numbers and leave you to work out what you've been
+neglecting. Grindz shades a muscle map with what you actually trained this week, so the group
+you keep skipping is impossible to miss.
 
 🗺️ **MUSCLE MAP** - Traced vector figures with every muscle individually addressable. Shaded by what you actually hit this week.
 
@@ -51,9 +53,9 @@ Grindz is a training log with a muscle map that shows exactly what you worked th
 
 📅 **WEEKLY PLANNER** - Drag a split onto any day and it surfaces on the home screen ready to start. 35 exercises come with photos and form cues, and you can add your own exercise with Groq writing the cue if you want it.
 
-📈 **PROGRESSION MEMORY** -  Last time and your best sit right where you are about to type. PRs get detected as they happen.
+📈 **PROGRESSION MEMORY** - Last time and your best sit right where you are about to type. PRs get detected as they happen.
 
-📝 **LIVE LOGGING** - Record kg × reps with RPE captured right after the set. Timed holds, supersets, notes and warm up flags are all handled. The rest timer starts itself and keeps the screen awake.
+📝 **LIVE LOGGING** - Record kg × reps with RPE captured right after the set. Timed holds, supersets, notes and warm-up flags are all handled. The rest timer starts itself and keeps the screen awake.
 
 🏋️ **ACCURATE TRACKING** - One trip to the gym is one session. Chest and triceps is a single workout, not two. Every set remembers the muscle it actually trained, so the map stays exact even when the session wanders off the plan.
 
@@ -122,7 +124,7 @@ Prefer nothing to install? The web app is the same product. Open
 
 ---
 
-## How it's built
+## Inside the repo
 
 ```
 grindz/
@@ -136,6 +138,12 @@ grindz/
 └── scripts/           check-parity · check-cdn · check-domains
 ```
 
+The two apps are deliberately not a shared-component codebase — a Tailwind `<div>` and a React
+Native `<View>` do not usefully unify. What *is* shared is everything where disagreement would
+be a bug: the muscle geometry, the heat-map palette, the exercise-to-muscle mapping and the
+PR maths. Those files are byte-identical across both apps, and `scripts/check-parity` fails the
+build if they ever drift.
+
 → **[Build guide](docs/BUILD.md)** · **[Architecture](docs/ARCHITECTURE.md)** ·
 **[Domains](docs/DOMAINS.md)** · **[Supabase setup](docs/SUPABASE-SETUP.md)** ·
 **[Images & CDN](docs/IMAGES.md)** · **[Catalog sync](docs/CATALOG.md)**
@@ -143,5 +151,5 @@ grindz/
 ---
 
 <div align="center">
-<sub>Built for one lifter who wanted the log to be honest about what he'd actually trained.</sub>
+<sub>One account, both surfaces, no ads and nothing to subscribe to. Log the set and get back to the bar.</sub>
 </div>
