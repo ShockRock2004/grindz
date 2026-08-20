@@ -4,11 +4,17 @@
  *
  * The image half of this problem was already solved — see docs/IMAGES.md — by fetching
  * photos from `cdn.grindz.dev` instead of bundling them. This is the same move for the *row*
- * describing an exercise: its name, form cue, tips, and which muscles it lights up. Those are
- * plain data, generated onto the same CDN by `apps/web/scripts/gen-catalog-json.mts` from the
- * same `catalog.ts` / `exerciseMuscles.ts` a developer already edits — so "add a workout on
- * GitHub" is still just editing those two files; this is what gets it in front of a user
- * without them reinstalling anything.
+ * describing an exercise: its name, form cue, tips, which muscles it lights up, and whether
+ * it has a female photo. Those are plain data, generated onto the same CDN by
+ * `apps/web/scripts/gen-catalog-json.mts` from the same `catalog.ts` / `exerciseMuscles.ts` a
+ * developer already edits — so "add a workout on GitHub" is still just editing those two
+ * files; this is what gets it in front of a user without them reinstalling anything.
+ *
+ * That last item was a gap worth naming: the first version of this payload carried the row
+ * but not `femaleAssets.ts`, so a new exercise arrived complete except that a user on the
+ * female body type saw the male photo — the manifest answering "is there a female shot of
+ * this?" was still the one compiled into the APK. Anything the resolver consults to build an
+ * image URL has to travel with the row, or the row is only half-delivered.
  *
  * Two calls, both wired up in `lib/app-context.tsx`:
  *   - `hydrateCatalogFromCache()` — fast, on every app open, from AsyncStorage. This is what
@@ -26,6 +32,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import type { Category } from '../lib/types'
 import { applyLiveCatalog } from './catalog'
 import { applyLiveMuscles, type MuscleWork } from './exerciseMuscles'
+import { applyLiveFemaleAssets } from './femaleAssets'
 
 const CATALOG_URL = 'https://cdn.grindz.dev/catalog.json'
 const STORAGE_KEY = 'grindz.catalog.v1'
@@ -35,6 +42,18 @@ interface CatalogPayload {
   categories: Category[]
   tips: Record<string, string[]>
   muscles: Record<string, MuscleWork>
+  /*
+   * Which exercises and categories have a female photo on the CDN — the same manifest
+   * `femaleAssets.ts` holds, sent as data so it is not frozen at build time.
+   *
+   * Optional, and deliberately so in both directions. Backwards: a payload generated before
+   * these existed (or cached on disk from one) simply leaves the bundled manifest alone
+   * rather than clearing it — the exercises it covers are exactly the ones the APK already
+   * knows about. Forwards: an app version older than this field ignores it, which is the
+   * whole reason the catalogue is fetched as plain data rather than as code.
+   */
+  femaleHero?: [string, string][]
+  femaleImages?: string[]
 }
 
 /**
@@ -59,10 +78,20 @@ function isValidPayload(x: unknown): x is CatalogPayload {
 // it came from the cache first and the network confirmed the same version, or vice versa
 let lastAppliedVersion: string | null = null
 
+/** Every entry has to be the right shape, or the bundled manifest is left alone entirely — a half-applied one would resolve some photos to a 404. */
+function isStringPairs(x: unknown): x is [string, string][] {
+  return Array.isArray(x) && x.every((p) => Array.isArray(p) && p.length === 2 && typeof p[0] === 'string' && typeof p[1] === 'string')
+}
+
 function apply(payload: CatalogPayload): boolean {
   if (payload.version === lastAppliedVersion) return false
   applyLiveCatalog(payload.categories, payload.tips)
   applyLiveMuscles(payload.muscles)
+  // Absent on a payload older than this field — keep whatever the APK bundled rather than
+  // replacing it with an empty set, which would drop every female photo the app already had.
+  if (isStringPairs(payload.femaleHero) && Array.isArray(payload.femaleImages) && payload.femaleImages.every((s) => typeof s === 'string')) {
+    applyLiveFemaleAssets(new Map(payload.femaleHero), new Set(payload.femaleImages))
+  }
   lastAppliedVersion = payload.version
   return true
 }

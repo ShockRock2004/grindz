@@ -1,7 +1,7 @@
 name: Sync catalog.json
 
-# Regenerates cdn/public/catalog.json from apps/web/src/data/catalog.ts and
-# exerciseMuscles.ts whenever either changes on main, and commits the result back.
+# Regenerates cdn/public/catalog.json from apps/web/src/data/catalog.ts, exerciseMuscles.ts
+# and femaleAssets.ts whenever any of them changes on main, and commits the result back.
 #
 # This is what makes "add a workout on GitHub" the whole workflow — see
 # apps/web/scripts/gen-catalog-json.mts and apps/mobile/src/data/catalogSync.ts for the two
@@ -20,6 +20,9 @@ on:
     paths:
       - 'apps/web/src/data/catalog.ts'
       - 'apps/web/src/data/exerciseMuscles.ts'
+      # the payload carries the female image manifest too, so adding a female photo — which
+      # regenerates only this file, not the two above — has to republish the JSON as well
+      - 'apps/web/src/data/femaleAssets.ts'
 
 permissions:
   contents: write

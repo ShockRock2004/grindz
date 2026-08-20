@@ -1,5 +1,5 @@
 {
-  "version": "483fb77456bcfa12",
+  "version": "623917e17f7da07a",
   "categories": [
     {
       "key": "chest",
@@ -906,5 +906,78 @@
         "tibialis_anterior"
       ]
     }
-  }
+  },
+  "femaleHero": [
+    [
+      "abs",
+      "abs.png"
+    ],
+    [
+      "back",
+      "back.png"
+    ],
+    [
+      "biceps",
+      "biceps.png"
+    ],
+    [
+      "cardio",
+      "cardio-2.png"
+    ],
+    [
+      "chest",
+      "chest.png"
+    ],
+    [
+      "legs",
+      "legs.png"
+    ],
+    [
+      "shoulders",
+      "shoulders.png"
+    ],
+    [
+      "triceps",
+      "triceps.png"
+    ]
+  ],
+  "femaleImages": [
+    "abs/bicycle-crunches.png",
+    "abs/crunches.png",
+    "abs/leg-raises.png",
+    "abs/mountain-climbers.png",
+    "abs/plank-shoulder-tap.png",
+    "abs/seated-knee-tucks.png",
+    "back/dumbbell-row.png",
+    "back/lat-pulldown.png",
+    "back/seated-cable-row.png",
+    "back/t-bar-rows.png",
+    "biceps/concentration-curl.png",
+    "biceps/preacher-curl.png",
+    "biceps/rope-hammer-curl.png",
+    "biceps/wrist-curls.png",
+    "cardio/elliptical.png",
+    "chest/decline-bench-press.png",
+    "chest/flat-bench-press.png",
+    "chest/incline-bench-press.png",
+    "chest/pec-fly.png",
+    "legs/adductor-and-abductor.png",
+    "legs/barbell-squats.png",
+    "legs/dumbbell-romanian-deadlift.png",
+    "legs/nordic-hamstring-curl.png",
+    "legs/pistol-squat.png",
+    "legs/seated-calf-raise-machine.png",
+    "legs/seated-leg-curl.png",
+    "legs/seated-leg-extension.png",
+    "shoulders/dumbbell-front-raise.png",
+    "shoulders/dumbbell-lateral-raise.png",
+    "shoulders/overhead-shoulder-press.png",
+    "shoulders/reverse-pec-deck.png",
+    "shoulders/rope-face-pull.png",
+    "shoulders/shrugs.png",
+    "shoulders/upright-row.png",
+    "triceps/cable-pushdowns.png",
+    "triceps/overhead-cable-triceps-extension.png",
+    "triceps/seated-overhead-dumbbell-triceps-extension.png"
+  ]
 }

@@ -28,6 +28,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { CATALOG, EXERCISE_TIPS } from '../src/data/catalog.ts'
 import { EXERCISE_MUSCLES } from '../src/data/exerciseMuscles.ts'
+import { FEMALE_HERO, FEMALE_EXERCISE_IMAGES } from '../src/data/femaleAssets.ts'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = resolve(HERE, '..', '..', '..', 'cdn', 'public', 'catalog.json')
@@ -35,10 +36,23 @@ const OUT = resolve(HERE, '..', '..', '..', 'cdn', 'public', 'catalog.json')
 // `img` is a bare filename (e.g. 'wrist-curls.png'), not a URL — both apps already know how
 // to turn `(categoryKey, img)` into a CDN URL via their own assetCdn.ts, so shipping the raw
 // filename here keeps this payload identical in shape to the local fallback it replaces.
+//
+// `femaleHero` / `femaleImages` are the other half of "a new exercise reaches a phone without
+// a new APK", and they were missing from the first version of this payload. The rows arrived
+// over the air, but `femaleAssets.ts` — the manifest saying which exercises have a female
+// photo — is compiled into the APK, so a device on the female body type resolved a brand-new
+// exercise against a build-time manifest, found nothing, and fell back to the male photo (see
+// cdnExercise in assetCdn.ts). Shipping the manifest as data closes that: it changes for
+// exactly the same reason the catalogue does, so it belongs in the same file.
+//
+// A Set and a Map have no JSON representation, so they go over as an array and as entry
+// pairs, and catalogSync.ts rebuilds them on the way in.
 const payload = {
   categories: CATALOG,
   tips: EXERCISE_TIPS,
   muscles: EXERCISE_MUSCLES,
+  femaleHero: [...FEMALE_HERO.entries()],
+  femaleImages: [...FEMALE_EXERCISE_IMAGES],
 }
 
 const version = createHash('sha256').update(JSON.stringify(payload)).digest('hex').slice(0, 16)
@@ -48,3 +62,4 @@ writeFileSync(OUT, JSON.stringify({ version, ...payload }, null, 2) + '\n')
 const exerciseCount = payload.categories.reduce((n, c) => n + c.exercises.length, 0)
 console.log(`Wrote ${OUT}`)
 console.log(`  ${payload.categories.length} categories, ${exerciseCount} exercises, version ${version}`)
+console.log(`  female manifest: ${payload.femaleHero.length} heroes, ${payload.femaleImages.length} exercise photos`)
