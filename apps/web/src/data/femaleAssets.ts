@@ -12,7 +12,7 @@
  * a year, so mutating a file in place would leave every device that already has it showing
  * the old photo. Only the newest number per category appears here.
  */
-export const FEMALE_HERO: ReadonlyMap<string, string> = new Map([
+export let FEMALE_HERO: ReadonlyMap<string, string> = new Map([
   ['abs', 'abs.png'],
   ['back', 'back.png'],
   ['biceps', 'biceps.png'],
@@ -24,7 +24,7 @@ export const FEMALE_HERO: ReadonlyMap<string, string> = new Map([
 ])
 
 /** '<category>/<file>.png' pairs that exist under cdn/public/female/images/. */
-export const FEMALE_EXERCISE_IMAGES: ReadonlySet<string> = new Set([
+export let FEMALE_EXERCISE_IMAGES: ReadonlySet<string> = new Set([
   'abs/bicycle-crunches.png',
   'abs/crunches.png',
   'abs/leg-raises.png',
@@ -63,3 +63,22 @@ export const FEMALE_EXERCISE_IMAGES: ReadonlySet<string> = new Set([
   'triceps/overhead-cable-triceps-extension.png',
   'triceps/seated-overhead-dumbbell-triceps-extension.png',
 ])
+
+/**
+ * Swap in a freshly-fetched manifest (mobile only — see catalogSync.ts).
+ *
+ * `let` rather than `const` for the same reason `EXERCISE_MUSCLES` is a mutable binding:
+ * this file is compiled into the APK, so without a setter the only way a new female photo
+ * reaches a phone is a new release. That was a real bug, not a theoretical one — an exercise
+ * added over the air arrived with rows, tips and muscles all current, then asked a manifest
+ * frozen at build time whether it had a female photo, got "no", and fell back to the male
+ * one. `assetCdn.ts` imports these as live ES bindings, so reassigning them here is visible
+ * to every call site the next time it resolves a URL.
+ *
+ * The web app never calls this — it rebuilds on every deploy, so its literal above is always
+ * current — and the parity check keeps the file byte-identical across both apps anyway.
+ */
+export function applyLiveFemaleAssets(hero: ReadonlyMap<string, string>, images: ReadonlySet<string>): void {
+  FEMALE_HERO = hero
+  FEMALE_EXERCISE_IMAGES = images
+}
