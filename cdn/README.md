@@ -18,7 +18,7 @@ Change the origin there and copy it across. Nothing else in either app hardcodes
 
 ## Why
 
-The 35 PNGs total roughly **30 MB**. They used to be compiled into the Android APK, so every
+The 37 PNGs total roughly **31 MB**. They used to be compiled into the Android APK, so every
 user paid the full 33 MB on first install **and again on every update**, forever, whether or
 not they ever opened a single exercise.
 
@@ -57,7 +57,7 @@ builds the Worker directly from it.
 ```
 cdn/
   public/
-    images/<category>/<file>.png    35 exercise photos
+    images/<category>/<file>.png    37 exercise photos
     hero/<category>.png              8 category heroes
     _headers                         immutable cache + CORS
   wrangler.jsonc
@@ -172,7 +172,7 @@ holding the old copy will keep serving it for a year. Ship a changed photo under
 filename** — or, for a hero, a **numbered** one (see above).
 
 **Sanity check after touching any of this** — build every URL the catalog can produce and
-`HEAD` them; all 35 (male) must return `200`. `scripts/check-cdn.mjs` walks the whole of
+`HEAD` them; all 37 (male) must return `200`. `scripts/check-cdn.mjs` walks the whole of
 `cdn/public/` including `female/`, so it covers both libraries in one run.
 
 ## Trade-off, stated plainly

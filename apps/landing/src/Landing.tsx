@@ -74,7 +74,7 @@ function Mark({ size = 40 }: { size?: number }) {
 
 const STATS = [
   { value: '8', label: 'muscle groups' },
-  { value: '35', label: 'exercises' },
+  { value: '37', label: 'exercises' },
   { value: 'Free', label: 'no ads, ever' },
 ]
 

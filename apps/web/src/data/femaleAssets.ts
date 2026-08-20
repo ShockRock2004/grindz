@@ -47,6 +47,8 @@ export const FEMALE_EXERCISE_IMAGES: ReadonlySet<string> = new Set([
   'legs/adductor-and-abductor.png',
   'legs/barbell-squats.png',
   'legs/dumbbell-romanian-deadlift.png',
+  'legs/nordic-hamstring-curl.png',
+  'legs/pistol-squat.png',
   'legs/seated-calf-raise-machine.png',
   'legs/seated-leg-curl.png',
   'legs/seated-leg-extension.png',

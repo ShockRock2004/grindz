@@ -156,6 +156,16 @@ export let EXERCISE_MUSCLES: Record<string, MuscleWork> = {
     secondary: ['erector_spinae', 'trapezius_upper', ...FOREARMS, 'gluteus_medius'],
   },
   'Seated Calf Raise Machine': { primary: CALVES, secondary: [] },
+  // a knee-flexion hamstring lift done with the hips locked out, so the glutes and the
+  // spinal erectors hold that line rather than move the load — secondary, not primary
+  'Nordic Hamstring Curl': {
+    primary: HAMSTRINGS,
+    secondary: ['gluteus_maximus', 'erector_spinae', ...CALVES],
+  },
+  'Pistol Squat': {
+    primary: [...QUADS, 'gluteus_maximus'],
+    secondary: [...HAMSTRINGS, ...CALVES, 'gluteus_medius', 'tibialis_anterior', 'erector_spinae'],
+  },
 
   /* ------------------------------------------------------------------ abs */
   'Plank Shoulder Tap': {

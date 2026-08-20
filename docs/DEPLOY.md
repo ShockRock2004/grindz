@@ -107,7 +107,7 @@ read. Full reasoning in [DOMAINS.md](DOMAINS.md); provider setup in
 
 ## Images → Cloudflare
 
-`cdn/` holds the 35 exercise PNGs, the 8 category heroes, `_headers`, and `wrangler.jsonc`.
+`cdn/` holds the 37 exercise PNGs, the 8 category heroes, `_headers`, and `wrangler.jsonc`.
 See [cdn/README.md](../cdn/README.md) for how the caching works and why filenames are
 effectively immutable.
 

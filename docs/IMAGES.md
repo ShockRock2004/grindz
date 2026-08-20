@@ -13,7 +13,7 @@ Everything below explains why that split exists and what actually happens on eac
 
 | | **Curated library** | **User upload** |
 |---|---|---|
-| What | The 35 exercise PNGs + 8 category heroes | A photo someone attaches to a custom exercise |
+| What | The 37 exercise PNGs + 8 category heroes | A photo someone attaches to a custom exercise |
 | Lives in | Cloudflare Worker (`cdn.grindz.dev`) | Supabase Storage (`exercise-images` bucket) |
 | Source of truth | `cdn/public/` **in this git repo** | The bucket; nothing in git |
 | How it gets there | You commit a file and push | The app uploads it at runtime |
@@ -46,7 +46,7 @@ A static-assets Worker has:
 - **no write credentials** — nothing the client could authenticate with even if there were
 - **no runtime code at all** — `wrangler.jsonc` has no `main`; Cloudflare just serves bytes
 
-Adding an image means committing it and redeploying. That is exactly right for 35 curated
+Adding an image means committing it and redeploying. That is exactly right for 37 curated
 photos that ship with the product, and exactly wrong for something a user picks in a gym at
 11pm. Making it work would mean building an authenticated upload API, giving it write access
 to a git repo, and triggering a full site rebuild per photo — reinventing object storage,

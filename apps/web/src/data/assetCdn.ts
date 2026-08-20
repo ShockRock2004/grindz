@@ -8,7 +8,7 @@ import { FEMALE_HERO, FEMALE_EXERCISE_IMAGES } from './femaleAssets'
  * and a device that has already downloaded a photo in one never downloads it again in
  * the other.
  *
- * These 35 PNGs are ~30 MB. They used to be bundled into the app builds, so every user
+ * These 37 PNGs are ~31 MB. They used to be bundled into the app builds, so every user
  * paid the full 30 MB on first install AND on every update, forever, whether or not they
  * ever opened the exercise. Serving them from a Cloudflare static-assets Worker means a
  * device downloads an image at most once in its lifetime:
