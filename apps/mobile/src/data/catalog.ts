@@ -86,6 +86,8 @@ const BUNDLED_CATALOG: Category[] = [
       { name: 'Seated Leg Extension', img: 'seated-leg-extension.png', form: 'Squeeze quads hard at the top.', target: 'Quads Isolation' },
       { name: 'Dumbbell Romanian Deadlift', img: 'dumbbell-romanian-deadlift.png', form: 'Hinge at hips, slight knee bend.', target: 'Hamstrings/Glutes' },
       { name: 'Seated Calf Raise Machine', img: 'seated-calf-raise-machine.png', form: 'Full range of motion, pause at bottom.', target: 'Calves' },
+      { name: 'Nordic Hamstring Curl', img: 'nordic-hamstring-curl.png', form: 'Anchor the ankles, lower as slowly as you can.', target: 'Hamstrings Eccentric' },
+      { name: 'Pistol Squat', img: 'pistol-squat.png', form: 'One leg, heel down, other leg held out front.', target: 'Quads/Balance' },
     ],
   },
   {
@@ -198,6 +200,8 @@ const BUNDLED_TIPS: Record<string, string[]> = {
   'Seated Leg Extension': ['Squeeze the quads with a one-second hold at the top.', 'Control the lowering; don’t let it drop.', 'Keep your back flat against the pad.'],
   'Dumbbell Romanian Deadlift': ['Hinge at the hips with a soft knee bend.', 'Keep the dumbbells close and your back flat.', 'Feel the hamstring stretch, then drive the hips forward.'],
   'Seated Calf Raise Machine': ['Use a full range with a deep stretch at the bottom.', 'Pause at the top and bottom for a beat.', 'Don’t bounce — keep the tempo controlled.'],
+  'Nordic Hamstring Curl': ['Have a partner pin your ankles, or wedge them under something solid.', 'Keep your hips extended — a straight line from knees to shoulders.', 'Resist the whole way down, then push off the floor to get back up.'],
+  'Pistol Squat': ['Hold a rack or a strap at first — depth before unassisted reps.', 'Keep the heel of the working leg flat and the knee tracking over the toes.', 'Extend the free leg forward as a counterweight and keep your chest up.'],
   'Plank Shoulder Tap': ['Keep your hips still and resist the rotation.', 'Set hands under shoulders and feet wide for balance.', 'Brace your core and breathe steadily.'],
   'Leg Raises': ['Keep your lower back pressed to the floor.', 'Lower your legs slowly and stop before your back arches.', 'Exhale as you lift for a stronger contraction.'],
   'Crunches': ['Curl your ribs toward your hips — don’t pull your neck.', 'Exhale sharply at the top and squeeze the abs.', 'Move slowly; quality over quantity.'],

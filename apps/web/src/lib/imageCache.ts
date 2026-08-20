@@ -36,7 +36,7 @@ export async function purgeExerciseImageCache(): Promise<void> {
  * runs after `purgeExerciseImageCache`, so it is genuinely a fresh fetch under the
  * new gender's URL, not a cache hit left over from before the switch.
  *
- * Deliberately NOT prefetching all ~35 exercise photos here — the app's own tradeoff
+ * Deliberately NOT prefetching all ~37 exercise photos here — the app's own tradeoff
  * (see cdn/README.md) is that a photo downloads on first view, not on every app open;
  * eagerly pulling the whole library on a switch would undo that on a metered
  * connection for exercises that may never be opened this session.

@@ -1,5 +1,5 @@
 {
-  "version": "ca4b5f6596208302",
+  "version": "483fb77456bcfa12",
   "categories": [
     {
       "key": "chest",
@@ -214,6 +214,18 @@
           "img": "seated-calf-raise-machine.png",
           "form": "Full range of motion, pause at bottom.",
           "target": "Calves"
+        },
+        {
+          "name": "Nordic Hamstring Curl",
+          "img": "nordic-hamstring-curl.png",
+          "form": "Anchor the ankles, lower as slowly as you can.",
+          "target": "Hamstrings Eccentric"
+        },
+        {
+          "name": "Pistol Squat",
+          "img": "pistol-squat.png",
+          "form": "One leg, heel down, other leg held out front.",
+          "target": "Quads/Balance"
         }
       ]
     },
@@ -418,6 +430,16 @@
       "Use a full range with a deep stretch at the bottom.",
       "Pause at the top and bottom for a beat.",
       "Don’t bounce — keep the tempo controlled."
+    ],
+    "Nordic Hamstring Curl": [
+      "Have a partner pin your ankles, or wedge them under something solid.",
+      "Keep your hips extended — a straight line from knees to shoulders.",
+      "Resist the whole way down, then push off the floor to get back up."
+    ],
+    "Pistol Squat": [
+      "Hold a rack or a strap at first — depth before unassisted reps.",
+      "Keep the heel of the working leg flat and the knee tracking over the toes.",
+      "Extend the free leg forward as a counterweight and keep your chest up."
     ],
     "Plank Shoulder Tap": [
       "Keep your hips still and resist the rotation.",
@@ -775,6 +797,39 @@
         "soleus"
       ],
       "secondary": []
+    },
+    "Nordic Hamstring Curl": {
+      "primary": [
+        "biceps_femoris",
+        "semitendinosus"
+      ],
+      "secondary": [
+        "gluteus_maximus",
+        "erector_spinae",
+        "gastrocnemius",
+        "gastrocnemius_lateral",
+        "gastrocnemius_medial",
+        "soleus"
+      ]
+    },
+    "Pistol Squat": {
+      "primary": [
+        "rectus_femoris",
+        "vastus_lateralis",
+        "vastus_medialis",
+        "gluteus_maximus"
+      ],
+      "secondary": [
+        "biceps_femoris",
+        "semitendinosus",
+        "gastrocnemius",
+        "gastrocnemius_lateral",
+        "gastrocnemius_medial",
+        "soleus",
+        "gluteus_medius",
+        "tibialis_anterior",
+        "erector_spinae"
+      ]
     },
     "Plank Shoulder Tap": {
       "primary": [
