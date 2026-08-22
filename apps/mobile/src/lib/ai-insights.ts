@@ -33,7 +33,13 @@ export const NO_KEY = 'Add your Gemini API key in Settings to generate insights.
 const BAD_KEY = "Your Gemini API key isn't working. Check it in Settings."
 const GENERIC = "Couldn't generate insights. Try again in a moment."
 const TIMEOUT_MS = 30_000
-const MODEL = 'gemini-2.5-flash'
+/**
+ * Google retires Gemini model ids faster than this file gets touched — gemini-2.5-flash
+ * (the original choice here) started 404ing for new callers within weeks, with the error
+ * body naming its own replacement. If this ever 404s with NOT_FOUND again, the fix is to
+ * read the model name Google's error suggests and swap it in here, not to guess.
+ */
+const MODEL = 'gemini-3.6-flash'
 const RECENT_SESSIONS = 8
 const TOP_PRS = 12
 

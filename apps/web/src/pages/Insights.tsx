@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useData, usePrefs } from '../lib/app-context'
-import { getGeminiKey, setGeminiKey, testGeminiKey, maskKey } from '../lib/gemini'
+import { getGeminiKey, maskKey } from '../lib/gemini'
 import { buildInsightsPayload, generateInsights, NO_KEY, type AIInsightsResult, type AIInsight } from '../lib/ai-insights'
 import { Button, EmptyState } from '../components/ui'
 import { IconAlert, IconChart, IconFlame, IconScale, IconTrophy, IconSparkles } from '../components/Icons'
@@ -55,10 +55,10 @@ export function Insights() {
   const { sessions, sets, prs, bodyweights, loading } = useData()
   const { unit } = usePrefs()
 
-  const [key, setKey] = useState(() => getGeminiKey())
-  const [keyDraft, setKeyDraft] = useState('')
-  const [savingKey, setSavingKey] = useState(false)
-  const [keyErr, setKeyErr] = useState<string | null>(null)
+  // Key management lives entirely in Settings now — this screen only reads it. Re-reading on
+  // every mount (this component unmounts on tab/route change on both apps) is enough to pick
+  // up a key saved elsewhere without needing shared state just for this.
+  const [key] = useState(() => getGeminiKey())
 
   const cached = useMemo(loadCache, [])
   const [result, setResult] = useState<AIInsightsResult | null>(cached?.result ?? null)
@@ -67,23 +67,6 @@ export function Insights() {
   const [err, setErr] = useState<string | null>(null)
 
   const hasEnoughData = sessions.length >= 3
-
-  const saveKey = async () => {
-    const k = keyDraft.trim()
-    if (!k) return
-    setSavingKey(true)
-    setKeyErr(null)
-    if (!(await testGeminiKey(k))) {
-      setKeyErr("That key didn't work. Check it and try again.")
-      setSavingKey(false)
-      return
-    }
-    await setGeminiKey(k)
-    setKey(k)
-    setKeyDraft('')
-    setSavingKey(false)
-    haptic.success()
-  }
 
   const run = async () => {
     setBusy(true)
@@ -123,26 +106,9 @@ export function Insights() {
           <p className="mt-1.5 text-sm leading-relaxed text-muted2">
             Grindz never runs its own AI backend for this — your Gemini API key talks directly to Google from your device, and only ever
             sees the numbers already on this page (weekly totals, PRs, muscle-group balance), never your raw workout log. Get a free key
-            at <span className="text-cyan-soft">aistudio.google.com</span>.
+            at <span className="text-cyan-soft">aistudio.google.com</span>, then add it in <span className="text-cyan-soft">Settings</span> —
+            click your profile at the bottom of the sidebar.
           </p>
-          <div className="mt-3 flex flex-col gap-2">
-            <input
-              type="password"
-              value={keyDraft}
-              onChange={(e) => setKeyDraft(e.target.value)}
-              placeholder="AIza…"
-              autoComplete="off"
-              aria-label="Gemini API key"
-              className={cx(
-                'min-h-[44px] rounded-xl border bg-panel2 px-3 text-sm outline-none focus:ring-2 focus:ring-cyan/50 placeholder:text-muted',
-                keyErr ? 'border-bad' : 'border-line2',
-              )}
-            />
-            {keyErr && <p role="alert" className="text-xs font-semibold text-bad">{keyErr}</p>}
-            <Button disabled={!keyDraft.trim() || savingKey} onClick={saveKey}>
-              {savingKey ? 'Checking…' : 'Save key'}
-            </Button>
-          </div>
         </div>
       ) : (
         <>
