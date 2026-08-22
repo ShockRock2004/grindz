@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { C, R, alpha } from '../theme'
 import { T, Button, EmptyState } from '../components/ui'
 import { useData, usePrefs } from '../lib/app-context'
-import { getGeminiKey, maskKey } from '../lib/gemini'
+import { getGeminiKey, maskKey, onGeminiKeyChange } from '../lib/gemini'
 import { buildInsightsPayload, generateInsights, NO_KEY, type AIInsightsResult, type AIInsight } from '../lib/ai-insights'
 import { IconAlert, IconChart, IconFlame, IconScale, IconSparkles, IconTrophy } from '../components/Icons'
 import { haptic } from '../lib/haptics'
@@ -49,9 +49,10 @@ export function Insights() {
   const { sessions, sets, prs, bodyweights, loading } = useData()
   const { unit } = usePrefs()
 
-  // Key management lives entirely in Settings now — this screen only reads it. Re-reading on
-  // every mount (this tab unmounts when the user switches tabs, since it's a conditional
-  // render, not a hidden one) is enough to pick up a key saved elsewhere.
+  // Key management lives entirely in Settings now — this screen only reads it. Settings is an
+  // overlay Modal, not a screen swap, so this tab stays mounted underneath while it's open —
+  // a mount-time-only read would miss a key saved there. onGeminiKeyChange keeps this in sync
+  // for the lifetime of this instance, not just its first render.
   const [key, setKeyState] = useState('')
 
   const [result, setResult] = useState<AIInsightsResult | null>(null)
@@ -67,6 +68,7 @@ export function Insights() {
         setGeneratedAt(c.generatedAt)
       }
     })
+    return onGeminiKeyChange(setKeyState)
   }, [])
 
   const hasEnoughData = sessions.length >= 3

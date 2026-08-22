@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useData, usePrefs } from '../lib/app-context'
-import { getGeminiKey, maskKey } from '../lib/gemini'
+import { getGeminiKey, maskKey, onGeminiKeyChange } from '../lib/gemini'
 import { buildInsightsPayload, generateInsights, NO_KEY, type AIInsightsResult, type AIInsight } from '../lib/ai-insights'
 import { Button, EmptyState } from '../components/ui'
 import { IconAlert, IconChart, IconFlame, IconScale, IconTrophy, IconSparkles } from '../components/Icons'
@@ -55,10 +55,12 @@ export function Insights() {
   const { sessions, sets, prs, bodyweights, loading } = useData()
   const { unit } = usePrefs()
 
-  // Key management lives entirely in Settings now — this screen only reads it. Re-reading on
-  // every mount (this component unmounts on tab/route change on both apps) is enough to pick
-  // up a key saved elsewhere without needing shared state just for this.
-  const [key] = useState(() => getGeminiKey())
+  // Key management lives entirely in Settings now — this screen only reads it. Settings is an
+  // overlay drawer, not a route change, so this page stays mounted underneath while it's open —
+  // a one-shot read at mount would miss a key saved there. onGeminiKeyChange keeps this in sync
+  // for the lifetime of this instance, not just its first render.
+  const [key, setKey] = useState(() => getGeminiKey())
+  useEffect(() => onGeminiKeyChange(setKey), [])
 
   const cached = useMemo(loadCache, [])
   const [result, setResult] = useState<AIInsightsResult | null>(cached?.result ?? null)
