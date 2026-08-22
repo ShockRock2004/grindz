@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import {
   Dumbbell, CalendarDays, TrendingUp, History, Timer, Trophy, Flame, Star, Trash2,
   Plus, Minus, Check, X, ArrowLeft, ChevronLeft, ChevronRight, ChevronDown, Play,
-  Scale, LogOut, Link2, LayoutGrid, Search,
+  Scale, LogOut, Link2, LayoutGrid, Search, AlertTriangle, Sparkles,
 } from 'lucide-react-native'
 import { C } from '../theme'
 
@@ -62,6 +62,8 @@ export const IconLogout = LogOut
 export const IconLink = Link2
 export const IconGrid = LayoutGrid
 export const IconSearch = Search
+export const IconAlert = AlertTriangle
+export const IconSparkles = Sparkles
 
 /**
  * The muscle-group glyphs, carried over verbatim from the web app's CUSTOM_ICONS.

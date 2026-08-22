@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom'
 import { useData } from '../lib/app-context'
 import { mergeCustom } from '../data/catalog'
 import { cx } from '../lib/util'
-import { IconSearch, IconDumbbell, IconCalendar, IconChart, IconHistory, IconGrid } from './Icons'
+import { IconSearch, IconDumbbell, IconCalendar, IconChart, IconHistory, IconGrid, IconSparkles } from './Icons'
 import { Kbd } from './Kbd'
 
 interface Item {
@@ -50,6 +50,7 @@ export function CommandPalette({
       { id: 'nav:plan', label: 'Plan', hint: 'Your training week', Icon: IconCalendar, run: go('/planner') },
       { id: 'nav:progress', label: 'Progress', hint: 'Charts, PRs, muscle map', Icon: IconChart, run: go('/progress') },
       { id: 'nav:history', label: 'History', hint: 'Every session you have logged', Icon: IconHistory, run: go('/history') },
+      { id: 'nav:insights', label: 'Insights', hint: 'AI-generated read on your training', Icon: IconSparkles, run: go('/insights') },
       {
         id: 'act:settings',
         label: 'Settings',

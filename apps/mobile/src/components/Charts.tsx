@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { AccessibilityInfo, Pressable, StyleSheet, View } from 'react-native'
 import Svg, { Circle, Defs, G, LinearGradient, Path, Rect, Stop } from 'react-native-svg'
 import { C, alpha } from '../theme'
@@ -61,6 +61,10 @@ function describeBars(bars: { label: string; value: number }[]): string {
 }
 
 export function LineChart({ points, height = 120 }: { points: { x: string; y: number }[]; height?: number }) {
+  // Every gradient fill needs an id unique to its own <Svg>, or two charts on the same
+  // screen silently share whichever <Defs> mounted first — same fix as the web side's
+  // Charts.tsx, using useId() instead of a module counter since this is React Native.
+  const fillId = `lcfill-${useId()}`
   if (points.length === 0) return <Empty height={height} />
   const label = describeLine(points)
   const ys = points.map((p) => p.y)
@@ -84,12 +88,12 @@ export function LineChart({ points, height = 120 }: { points: { x: string; y: nu
       accessibilityLabel={label}
     >
       <Defs>
-        <LinearGradient id="lcfill" x1="0" y1="0" x2="0" y2="1">
+        <LinearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0" stopColor={C.cyan} stopOpacity={0.28} />
           <Stop offset="1" stopColor={C.cyan} stopOpacity={0} />
         </LinearGradient>
       </Defs>
-      <Path d={area} fill="url(#lcfill)" />
+      <Path d={area} fill={`url(#${fillId})`} />
       <Path d={line} fill="none" stroke={C.cyan} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
       <Circle cx={px(n - 1)} cy={py(last.y)} r={3.2} fill={C.cyan} />
     </Svg>
@@ -97,6 +101,7 @@ export function LineChart({ points, height = 120 }: { points: { x: string; y: nu
 }
 
 export function BarChart({ bars, height = 120 }: { bars: { label: string; value: number }[]; height?: number }) {
+  const fillId = `barfill-${useId()}`
   if (!bars.length) return <Empty height={height} />
   const label = describeBars(bars)
   const max = Math.max(...bars.map((b) => b.value), 1)
@@ -113,7 +118,7 @@ export function BarChart({ bars, height = 120 }: { bars: { label: string; value:
       accessibilityLabel={label}
     >
       <Defs>
-        <LinearGradient id="barfill" x1="0" y1="0" x2="0" y2="1">
+        <LinearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0" stopColor={C.cyan} />
           <Stop offset="1" stopColor={C.cyanDeep} />
         </LinearGradient>
@@ -128,13 +133,130 @@ export function BarChart({ bars, height = 120 }: { bars: { label: string; value:
             width={bw * 0.68}
             height={Math.max(h, b.value > 0 ? 2 : 0)}
             rx={2}
-            fill={b.value > 0 ? 'url(#barfill)' : 'rgba(255,255,255,0.06)'}
+            fill={b.value > 0 ? `url(#${fillId})` : 'rgba(255,255,255,0.06)'}
           />
         )
       })}
     </Svg>
   )
 }
+
+/**
+ * A tiny trend line with no axis, no grid, no labels — the "is this going up or down"
+ * shape, not a chart you read values off. Meant to sit inside a StatTile under a number
+ * that already states the value; the sparkline supplies the direction the number can't.
+ */
+export function Sparkline({ values, height = 32, tone = 'cyan' }: { values: number[]; height?: number; tone?: 'cyan' | 'good' | 'bad' | 'muted' }) {
+  const fillId = `sparkfill-${useId()}`
+  const color = tone === 'good' ? C.good : tone === 'bad' ? C.bad : tone === 'muted' ? C.muted : C.cyan
+  if (values.length < 2) return <View style={{ height }} />
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const span = max - min || 1
+  const n = values.length
+  const sw = 96
+  const sh = 28
+  const px = (i: number) => (i * sw) / (n - 1)
+  const py = (v: number) => sh - ((v - min) / span) * sh
+  const line = values.map((v, i) => `${i === 0 ? 'M' : 'L'}${px(i).toFixed(1)},${py(v).toFixed(1)}`).join(' ')
+  const area = `${line} L${px(n - 1).toFixed(1)},${sh} L0,${sh} Z`
+  const dir = values[n - 1] > values[0] ? 'up' : values[n - 1] < values[0] ? 'down' : 'flat'
+  return (
+    <Svg width="100%" height={height} viewBox={`0 0 ${sw} ${sh}`} preserveAspectRatio="none" accessible accessibilityRole="image" accessibilityLabel={`Trend, ${dir}`}>
+      <Defs>
+        <LinearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0" stopColor={color} stopOpacity={0.22} />
+          <Stop offset="1" stopColor={color} stopOpacity={0} />
+        </LinearGradient>
+      </Defs>
+      <Path d={area} fill={`url(#${fillId})`} />
+      <Path d={line} fill="none" stroke={color} strokeWidth={1.6} strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+      <Circle cx={px(n - 1)} cy={py(values[n - 1])} r={2} fill={color} />
+    </Svg>
+  )
+}
+
+/**
+ * Vertical bars with an optional rolling-mean overlay line — the one chart in the redesign
+ * that carries a real axis. `highlightIndex` paints one bar at full strength and dims the
+ * rest, for "this one vs the others" comparisons. Tooltip is tap-only (no hover on a
+ * phone), and only ever for the tapped bar — never pinned open by `highlightIndex`, which
+ * already calls the bar out by colour.
+ */
+export function ColumnChart({
+  bars,
+  overlay,
+  height = 140,
+  highlightIndex,
+  overlayLabel = 'Rolling average',
+}: {
+  bars: { label: string; value: number }[]
+  overlay?: number[]
+  height?: number
+  highlightIndex?: number
+  overlayLabel?: string
+}) {
+  const fillId = `colfill-${useId()}`
+  const [tapped, setTapped] = useState<number | null>(null)
+  if (!bars.length) return <Empty height={height} />
+  const values = bars.map((b) => b.value)
+  const max = Math.max(...values, ...(overlay ?? []), 1)
+  const n = bars.length
+  const bw = (W - 2 * PAD) / n
+  const yFor = (v: number) => H - PAD - (v / max) * (H - 2 * PAD)
+  const overlayPath =
+    overlay && overlay.length === n
+      ? overlay.map((v, i) => `${i === 0 ? 'M' : 'L'}${(PAD + i * bw + bw / 2).toFixed(1)},${yFor(v).toFixed(1)}`).join(' ')
+      : null
+  const label = describeBars(bars)
+  return (
+    <View>
+      <Svg width="100%" height={height} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" accessible accessibilityRole="image" accessibilityLabel={label}>
+        <Defs>
+          <LinearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={C.cyan} />
+            <Stop offset="1" stopColor={C.cyanDeep} />
+          </LinearGradient>
+        </Defs>
+        <Path d={`M${PAD},${H - PAD} L${W - PAD},${H - PAD}`} stroke="rgba(255,255,255,0.08)" strokeWidth={1} />
+        {bars.map((b, i) => {
+          const h = (b.value / max) * (H - 2 * PAD)
+          const x = PAD + i * bw + bw * 0.16
+          const w = bw * 0.68
+          const dim = highlightIndex != null && i !== highlightIndex
+          return (
+            <Rect
+              key={i}
+              x={x}
+              y={H - PAD - h}
+              width={w}
+              height={Math.max(h, b.value > 0 ? 2 : 0)}
+              rx={2}
+              fill={b.value > 0 ? `url(#${fillId})` : 'rgba(255,255,255,0.06)'}
+              fillOpacity={dim ? 0.32 : 1}
+              onPress={() => setTapped((t) => (t === i ? null : i))}
+            />
+          )
+        })}
+        {overlayPath && <Path d={overlayPath} fill="none" stroke={C.cyanSoft} strokeWidth={1.4} strokeDasharray="3,3" strokeLinecap="round" />}
+      </Svg>
+      {tapped != null && bars[tapped] && (
+        <T style={{ marginTop: 6, fontSize: 11, fontWeight: '700', color: C.ink2, textAlign: 'center' }}>
+          {bars[tapped].label}: {bars[tapped].value.toLocaleString()}
+        </T>
+      )}
+      {overlay && (
+        <View style={{ marginTop: 6, flexDirection: 'row', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
+          <View style={{ width: 12, height: 2, backgroundColor: C.cyanSoft, borderRadius: 1 }} />
+          <T style={{ fontSize: 10, color: C.muted }}>{overlayLabel}</T>
+        </View>
+      )}
+    </View>
+  )
+}
+
+/** Reads the same 4-stop cyan ramp `Heatmap` paints with, for a "less → more" legend key. */
+export const HEATMAP_LEVEL_COLORS = ['rgba(255,255,255,0.05)', alpha(C.cyan, 0.35), alpha(C.cyan, 0.62), C.cyan] as const
 
 /** Last `weeks` weeks of training-day intensity, GitHub-style. */
 export function Heatmap({ dayVolumes, unit, weeks = 16 }: { dayVolumes: Record<string, number>; unit: WeightUnit; weeks?: number }) {

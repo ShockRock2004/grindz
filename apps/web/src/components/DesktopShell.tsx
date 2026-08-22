@@ -29,6 +29,7 @@ import {
   IconHistory,
   IconPlay,
   IconSearch,
+  IconSparkles,
 } from './Icons'
 
 export const NAV = [
@@ -36,6 +37,7 @@ export const NAV = [
   { to: '/planner', label: 'Plan', Icon: IconCalendar, end: false, key: '2' },
   { to: '/progress', label: 'Progress', Icon: IconChart, end: false, key: '3' },
   { to: '/history', label: 'History', Icon: IconHistory, end: false, key: '4' },
+  { to: '/insights', label: 'Insights', Icon: IconSparkles, end: false, key: '5' },
 ]
 
 /** True when focus is somewhere that should swallow single-key shortcuts. */

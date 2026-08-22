@@ -9,34 +9,12 @@ import { exerciseSeries, splitByCategory, volumeByDay } from '../lib/stats'
 import { dateKey, fmtWeight, cx, clamp, fromKg, relativeDay, toKg } from '../lib/util'
 import { Button, EmptyState, Modal, Select } from '../components/ui'
 import { BodyMap, useBodyMapVariant, type BodyMapDataset } from '../components/BodyMap'
-import { legendRim, legendStops, type BodyMapVariant, type IslandLayer } from '../data/bodyMapStyle'
+import { LegendSwatch } from '../components/stats'
 import { BODY_VIEWBOX as FEMALE_VIEWBOX, FRONT_MUSCLES as FEMALE_FRONT, BACK_MUSCLES as FEMALE_BACK } from '../data/bodyMusclesFemale'
 import { musclesFromSets } from '../data/exerciseMuscles'
 import { SetsPerMuscle } from '../components/SetsPerMuscle'
 import { haptic } from '../lib/haptics'
 import { SkelPanel, LoadingRegion } from '../components/Skeleton'
-
-/** One legend entry, painted from the same source the figure reads. */
-function LegendSwatch({ variant, layer, label }: { variant: BodyMapVariant; layer: IslandLayer; label: string }) {
-  const rim = legendRim(variant, layer)
-  // 135deg matches the ramp direction the islands are painted along; a flat tier returns
-  // the same colour twice, so this renders as a solid chip for those
-  const [from, to] = legendStops(variant, layer)
-  return (
-    <span className="flex items-center gap-1.5">
-      <span
-        className="h-2.5 w-2.5 rounded-sm ring-1 ring-inset"
-        style={{
-          backgroundImage: `linear-gradient(135deg, ${from} 0%, ${to} 100%)`,
-          // the tier's own rim when it has one, else a neutral edge so a near-black
-          // resting swatch is still findable on the card
-          ['--tw-ring-color' as string]: rim ?? 'rgba(255,255,255,0.15)',
-        }}
-      />{' '}
-      {label}
-    </span>
-  )
-}
 
 export function Progress() {
   const nav = useNavigate()

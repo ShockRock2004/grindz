@@ -2,14 +2,16 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useData, usePrefs } from '../lib/app-context'
 import { CATALOG, CATALOG_BY_KEY } from '../data/catalog'
-import { Heatmap } from '../components/charts/Charts'
-import { CategoryThumb, IconChevronRight, IconChevronLeft, IconFlame, IconHistory, IconPlay, IconSearch, IconClose} from '../components/Icons'
-import { currentStreak, volumeByDay } from '../lib/stats'
-import { relativeDay, fmtDuration, fmtWeight, dateKey, cx } from '../lib/util'
+import { Heatmap, ColumnChart, HEATMAP_LEVEL_COLORS } from '../components/charts/Charts'
+import { StatTile, MeterBar, InsightCard } from '../components/stats'
+import { CategoryThumb, IconChevronRight, IconChevronLeft, IconFlame, IconHistory, IconPlay, IconSearch, IconClose, IconTrophy, IconGrid, IconChart } from '../components/Icons'
+import { currentStreak, volumeByDay, weeklySeries, rollingMean, type WeekPoint } from '../lib/stats'
+import { historyInsights } from '../lib/insights'
+import { relativeDay, fmtDuration, fmtWeight, dateKey, cx, fromKg } from '../lib/util'
 import { Button } from '../components/ui'
 import { SkelRows, LoadingRegion } from '../components/Skeleton'
 import { haptic } from '../lib/haptics'
-import type { SessionRow } from '../lib/types'
+import type { SessionRow, SetRow, ExercisePR } from '../lib/types'
 
 const MONTHS_LONG = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -18,6 +20,8 @@ const MONTHS_LONG = [
 
 /** Week groups shown per page. */
 const WEEKS_PER_PAGE = 4
+/** How many weeks the momentum strip and trend chart look back over. */
+const TREND_WEEKS = 12
 
 /** Monday (local) of the week containing the given date. */
 function mondayOf(iso: string | Date): Date {
@@ -44,6 +48,13 @@ function weekLabel(monday: Date, thisKey: string, lastKey: string): string {
   if (key === lastKey) return 'Last week'
   const nth = ordinal(Math.ceil(monday.getDate() / 7))
   return `${nth} week of ${MONTHS_LONG[monday.getMonth()]} ${monday.getFullYear()}`
+}
+
+/** Short label for the trend chart's x-axis, e.g. "3 Jun". */
+function shortWeekLabel(weekStartKey: string): string {
+  const [y, m, d] = weekStartKey.split('-').map(Number)
+  const date = new Date(y, m - 1, d)
+  return `${date.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][date.getMonth()]}`
 }
 
 interface WeekGroup {
@@ -81,19 +92,36 @@ function groupByWeek(sessions: SessionRow[]): WeekGroup[] {
   return groups.sort((a, b) => b.key.localeCompare(a.key))
 }
 
+/** A group's volume vs the immediately preceding *calendar* week — null if that week isn't in view (skipped, or off the front of history), since comparing across a gap would mislead. */
+function weekOverWeekDelta(groups: WeekGroup[], index: number): number | null {
+  const cur = groups[index]
+  const prev = groups[index + 1]
+  if (!cur || !prev) return null
+  const [cy, cm, cd] = cur.key.split('-').map(Number)
+  const [py, pm, pd] = prev.key.split('-').map(Number)
+  const gapDays = Math.round((new Date(cy, cm - 1, cd).getTime() - new Date(py, pm - 1, pd).getTime()) / 86400000)
+  if (gapDays !== 7 || !(prev.volume > 0)) return null
+  return ((cur.volume - prev.volume) / prev.volume) * 100
+}
+
+/** Count of exercises where a working set in this session matched the all-time PR at save time — the same test Session Detail uses, applied per-row so the History list can show it too. */
+function prCountForSession(sessionSets: SetRow[], prs: Record<string, ExercisePR>): number {
+  const hit = new Set<string>()
+  for (const r of sessionSets) {
+    if (r.is_warmup || !(r.weight_kg > 0)) continue
+    const pr = prs[r.exercise]
+    if (pr && r.weight_kg >= pr.bestWeight - 0.001) hit.add(r.exercise)
+  }
+  return hit.size
+}
+
 export function History() {
   const nav = useNavigate()
-  const { sessions, loading } = useData()
+  const { sessions, sets, prs, loading } = useData()
   const { unit } = usePrefs()
   const streak = currentStreak(sessions)
   const heat = volumeByDay(sessions)
-  /*
-   * Filter + search.
-   *
-   * History was a flat reverse-chronological list with a pager. Finding "that leg day
-   * where I hit 105" meant paging through every week. Filtering by muscle group and
-   * searching by title narrows first, then the weeks regroup around what is left.
-   */
+
   const [cat, setCat] = useState<string | null>(null)
   const [q, setQ] = useState('')
 
@@ -102,6 +130,15 @@ export function History() {
     const keys = new Set(sessions.map((x) => x.category_key))
     return CATALOG.filter((c) => keys.has(c.key))
   }, [sessions])
+
+  /** All-time session count per category — the loaded chips read this, not the filtered
+   *  set, so a chip's own fill doesn't shift as you use it to filter. */
+  const catCounts = useMemo(() => {
+    const m: Record<string, number> = {}
+    for (const s of sessions) m[s.category_key] = (m[s.category_key] ?? 0) + 1
+    return m
+  }, [sessions])
+  const maxCatCount = Math.max(1, ...Object.values(catCounts))
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase()
@@ -115,12 +152,12 @@ export function History() {
 
   const groups = useMemo(() => groupByWeek(filtered), [filtered])
   const filtering = !!cat || q.trim().length > 0
+  const maxGroupVolume = Math.max(1, ...groups.map((g) => g.volume))
+  const maxSessionVolume = Math.max(1, ...filtered.map((s) => s.total_volume_kg ?? 0))
 
   const [page, setPage] = useState(0)
   useEffect(() => { setPage(0) }, [cat, q])
   const pageCount = Math.max(1, Math.ceil(groups.length / WEEKS_PER_PAGE))
-  // deleting the last session on a page (or a data refresh) can shrink the list
-  // out from under us — clamp rather than render an empty page
   useEffect(() => {
     if (page > pageCount - 1) setPage(pageCount - 1)
   }, [page, pageCount])
@@ -131,6 +168,28 @@ export function History() {
     setPage(next)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+
+  /* ---------------------------------------------------------------- momentum + trend */
+  const weekly: WeekPoint[] = useMemo(() => weeklySeries(sessions, TREND_WEEKS), [sessions])
+  const thisWeek = weekly[weekly.length - 1]
+  const completedPriorWeeks = weekly.slice(0, -1).filter((w) => w.sessions > 0)
+  const avgOf = (pick: (w: WeekPoint) => number) =>
+    completedPriorWeeks.length ? completedPriorWeeks.reduce((a, w) => a + pick(w), 0) / completedPriorWeeks.length : null
+
+  const avgSessions = avgOf((w) => w.sessions)
+  const avgVolume = avgOf((w) => w.volume)
+  const avgSets = avgOf((w) => w.sets)
+
+  const trendBars = useMemo(
+    () => weekly.map((w) => ({ label: shortWeekLabel(w.weekStart), value: Math.round(fromKg(w.volume, unit)) })),
+    [weekly, unit],
+  )
+  const trendOverlay = useMemo(() => rollingMean(trendBars.map((b) => b.value), 4), [trendBars])
+
+  const insights = useMemo(
+    () => historyInsights({ sessions: filtered, weekly, fmt: (kg) => `${fmtWeight(kg, unit)}${unit}` }),
+    [filtered, weekly, unit],
+  )
 
   return (
     <div className="flex flex-col gap-5">
@@ -144,18 +203,73 @@ export function History() {
         </span>
       </div>
 
+      {sessions.length > 0 && !loading && (
+        <>
+          {/* Momentum strip — "am I doing more or less than usual", answered in one glance
+              rather than by scrolling through every week below. */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <StatTile
+              icon={<IconGrid size={12} />}
+              label="Sessions/wk"
+              value={thisWeek.sessions}
+              delta={avgSessions == null ? undefined : { n: Math.round(thisWeek.sessions - avgSessions), text: String(Math.abs(Math.round(thisWeek.sessions - avgSessions))) }}
+              spark={weekly.map((w) => w.sessions)}
+            />
+            <StatTile
+              icon={<IconChart size={12} />}
+              label="Volume/wk"
+              value={fmtWeight(thisWeek.volume, unit)}
+              unit={unit}
+              delta={avgVolume == null ? undefined : { n: Math.round(thisWeek.volume - avgVolume), text: fmtWeight(Math.abs(thisWeek.volume - avgVolume), unit) }}
+              spark={weekly.map((w) => w.volume)}
+            />
+            <StatTile
+              icon={<IconGrid size={12} />}
+              label="Sets/wk"
+              value={thisWeek.sets}
+              delta={avgSets == null ? undefined : { n: Math.round(thisWeek.sets - avgSets), text: String(Math.abs(Math.round(thisWeek.sets - avgSets))) }}
+              spark={weekly.map((w) => w.sets)}
+            />
+            <StatTile icon={<IconFlame size={12} />} label="Streak" value={streak} unit="d" />
+          </div>
+
+          {/* The one chart on the page with an axis — volume, week over week. */}
+          <section className="card p-4">
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-wide text-muted">
+              Volume · last {TREND_WEEKS} weeks
+            </p>
+            <ColumnChart bars={trendBars} overlay={trendOverlay} height={140} highlightIndex={trendBars.length - 1} overlayLabel="4-week average" />
+          </section>
+
+          {insights.length > 0 && (
+            <div className="grid gap-2 sm:grid-cols-3">
+              {insights.map((ins) => (
+                <InsightCard key={ins.id} icon={ins.icon} tone={ins.tone} text={ins.text} value={ins.value} />
+              ))}
+            </div>
+          )}
+
+          <section className="card p-4">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-[11px] font-bold uppercase tracking-wide text-muted">Last 16 weeks</p>
+              <div className="flex items-center gap-1.5 text-[10px] text-muted">
+                Less
+                {HEATMAP_LEVEL_COLORS.map((c, i) => (
+                  <span key={i} className="h-2 w-2 rounded-[2px]" style={{ background: c }} />
+                ))}
+                More
+              </div>
+            </div>
+            <Heatmap dayVolumes={heat} unit={unit} />
+          </section>
+        </>
+      )}
+
       {/*
-        Desktop keeps the heatmap and the filters pinned in a rail while the list scrolls
-        beside them — on the phone they sat on top and were scrolled away the moment you
-        started looking for a session, which is exactly when you want them.
+        Desktop keeps the filters pinned in a rail while the list scrolls beside them.
       */}
       <div className="grid gap-5 xl:grid-cols-[336px_minmax(0,1fr)] xl:items-start">
       <aside className="flex flex-col gap-4 xl:sticky xl:top-6">
-
-      <section className="card p-4">
-        <p className="mb-3 text-[11px] font-bold uppercase tracking-wide text-muted">Last 16 weeks</p>
-        <Heatmap dayVolumes={heat} unit={unit} />
-      </section>
 
       {sessions.length > 0 && (
         <div className="flex flex-col gap-2.5">
@@ -176,32 +290,43 @@ export function History() {
           </label>
 
           {cats.length > 1 && (
-            <div className="flex gap-1.5 overflow-x-auto px-0.5 pb-1" role="tablist">
+            <div className="flex flex-col gap-1.5" role="tablist" aria-label="Filter by category">
               <button
                 role="tab"
                 aria-selected={cat === null}
                 onClick={() => { haptic.select(); setCat(null) }}
                 className={cx(
-                  'min-h-[32px] shrink-0 rounded-full border px-3.5 text-[11px] font-bold transition',
-                  cat === null ? 'border-cyan bg-cyan text-cyan-ink' : 'border-line2 text-muted2 hover:text-ink',
+                  'min-h-[32px] rounded-xl border px-3 text-left text-[11px] font-bold transition',
+                  cat === null ? 'border-cyan bg-cyan/[0.08] text-ink' : 'border-line2 text-muted2 hover:text-ink',
                 )}
               >
-                All
+                All · {sessions.length}
               </button>
-              {cats.map((c) => (
-                <button
-                  key={c.key}
-                  role="tab"
-                  aria-selected={cat === c.key}
-                  onClick={() => { haptic.select(); setCat(cat === c.key ? null : c.key) }}
-                  className={cx(
-                    'min-h-[32px] shrink-0 rounded-full border px-3.5 text-[11px] font-bold transition',
-                    cat === c.key ? 'border-cyan bg-cyan text-cyan-ink' : 'border-line2 text-muted2 hover:text-ink',
-                  )}
-                >
-                  {c.title}
-                </button>
-              ))}
+              {/* Loaded chips: each carries its own share of your history as a fill, so the
+                  filter row doubles as the split breakdown without a second chart. */}
+              {cats.map((c) => {
+                const count = catCounts[c.key] ?? 0
+                const pct = (count / maxCatCount) * 100
+                const on = cat === c.key
+                return (
+                  <button
+                    key={c.key}
+                    role="tab"
+                    aria-selected={on}
+                    onClick={() => { haptic.select(); setCat(on ? null : c.key) }}
+                    className={cx(
+                      'relative min-h-[32px] overflow-hidden rounded-xl border px-3 text-left text-[11px] font-bold transition',
+                      on ? 'border-cyan text-ink' : 'border-line2 text-muted2 hover:text-ink',
+                    )}
+                  >
+                    <span className="absolute inset-y-0 left-0 bg-cyan/[0.14]" style={{ width: `${pct}%` }} aria-hidden="true" />
+                    <span className="relative flex items-center justify-between gap-2">
+                      <span className="truncate">{c.title}</span>
+                      <span className="tnum shrink-0 text-muted">{count}</span>
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           )}
 
@@ -239,22 +364,36 @@ export function History() {
         )
       ) : (
         <div className="flex flex-col gap-5">
-          {visible.map((g) => (
+          {visible.map((g, gi) => {
+            const groupIndex = page * WEEKS_PER_PAGE + gi
+            const wow = weekOverWeekDelta(groups, groupIndex)
+            return (
             <section key={g.key} className="flex flex-col gap-2">
               {/*
                 The header is a flex sibling of the grid below, NOT a cell in it. Putting a
                 header inside a wrapping grid is what makes week labels collide with cards
                 once the container goes multi-column.
               */}
-              <div className="flex items-baseline justify-between gap-2 px-0.5">
-                <h2 className="min-w-0 truncate font-heading text-sm font-bold">{g.label}</h2>
-                <p className="tnum shrink-0 text-xs text-muted">
-                  {g.sessions.length} session{g.sessions.length === 1 ? '' : 's'} · {fmtWeight(g.volume, unit)}{unit}
-                </p>
+              <div className="flex flex-col gap-1 px-0.5">
+                <div className="flex items-baseline justify-between gap-2">
+                  <h2 className="min-w-0 truncate font-heading text-sm font-bold">{g.label}</h2>
+                  <p className="tnum shrink-0 text-xs text-muted">
+                    {g.sessions.length} session{g.sessions.length === 1 ? '' : 's'} · {fmtWeight(g.volume, unit)}{unit}
+                    {wow != null && (
+                      <span className={cx('ml-1.5 font-bold', wow > 0 ? 'text-good' : wow < 0 ? 'text-bad' : 'text-muted')}>
+                        {wow === 0 ? '±0%' : `${wow > 0 ? '↑' : '↓'}${Math.abs(Math.round(wow))}%`}
+                      </span>
+                    )}
+                  </p>
+                </div>
+                <MeterBar label="" value={g.volume} max={maxGroupVolume} size="sm" />
               </div>
               <div className="grid gap-2 2xl:grid-cols-2">
               {g.sessions.map((s) => {
                 const cat = CATALOG_BY_KEY[s.category_key]
+                const sessionSets = sets.filter((x) => x.session_id === s.id)
+                const prCount = prCountForSession(sessionSets, prs)
+                const volPct = Math.max(4, ((s.total_volume_kg ?? 0) / maxSessionVolume) * 100)
                 return (
                   <button
                     key={s.id}
@@ -263,32 +402,44 @@ export function History() {
                       haptic.select()
                       nav(`/history/${s.id}`)
                     }}
-                    className="flex items-center gap-3 rounded-2xl glass p-3.5 text-left transition active:scale-[0.99]"
+                    className="flex flex-col gap-2 rounded-2xl glass p-3.5 text-left transition active:scale-[0.99]"
                   >
-                    {cat ? (
-                      <CategoryThumb icon={s.category_key} size={44} />
-                    ) : (
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-cyan/[0.12] text-cyan">
-                        <IconHistory size={20} />
-                      </span>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-heading font-bold">{s.title || cat?.title || 'Workout'}</p>
-                      <p className="text-xs text-muted">
-                        {relativeDay(s.started_at)} · {fmtDuration(s.duration_s ?? 0)} · {s.total_sets ?? 0} sets
-                      </p>
+                    <div className="flex items-center gap-3">
+                      {cat ? (
+                        <CategoryThumb icon={s.category_key} size={44} />
+                      ) : (
+                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-cyan/[0.12] text-cyan">
+                          <IconHistory size={20} />
+                        </span>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="flex items-center gap-1.5 truncate font-heading font-bold">
+                          <span className="min-w-0 truncate">{s.title || cat?.title || 'Workout'}</span>
+                          {prCount > 0 && (
+                            <span className="flex shrink-0 items-center gap-0.5 rounded-full bg-cyan/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-cyan">
+                              <IconTrophy size={9} /> {prCount}
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-xs text-muted">
+                          {relativeDay(s.started_at)} · {fmtDuration(s.duration_s ?? 0)} · {s.total_sets ?? 0} sets
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="tnum font-heading text-sm font-extrabold text-cyan-soft">{fmtWeight(s.total_volume_kg ?? 0, unit)}</p>
+                        <p className="text-[10px] text-muted">{unit} vol</p>
+                      </div>
+                      <IconChevronRight size={16} className="text-muted" />
                     </div>
-                    <div className="text-right">
-                      <p className="tnum font-heading text-sm font-extrabold text-cyan-soft">{fmtWeight(s.total_volume_kg ?? 0, unit)}</p>
-                      <p className="text-[10px] text-muted">{unit} vol</p>
+                    <div className="h-1 w-full overflow-hidden rounded-full bg-white/[0.05]">
+                      <div className="h-full rounded-full bg-cyan/60" style={{ width: `${volPct}%` }} />
                     </div>
-                    <IconChevronRight size={16} className="text-muted" />
                   </button>
                 )
               })}
               </div>
             </section>
-          ))}
+          )})}
 
           {pageCount > 1 && (
             <nav className="flex items-center justify-between gap-3 pt-1" aria-label="History pages">

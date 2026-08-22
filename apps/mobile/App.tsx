@@ -4,11 +4,12 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { KeyboardProvider, useKeyboardState } from 'react-native-keyboard-controller'
 import { C, R, alpha } from './src/theme'
 import { T, Button, Modal, Select } from './src/components/ui'
-import { GrindzMark, IconCalendar, IconChart, IconDumbbell, IconHistory, IconLogout, IconPlay, IconPlus, IconTrash } from './src/components/Icons'
+import { GrindzMark, IconCalendar, IconChart, IconDumbbell, IconHistory, IconLogout, IconPlay, IconPlus, IconSparkles, IconTrash } from './src/components/Icons'
 import { AppProviders, useAuth, useCatalog, useData, usePrefs, useSession } from './src/lib/app-context'
 import { deleteCustom } from './src/lib/db'
 import { syncGroqKey, setGroqKey, maskKey } from './src/lib/groq'
 import { testGroqKey } from './src/lib/exercise-ai'
+import { syncGeminiKey, setGeminiKey, testGeminiKey, maskKey as maskGeminiKey } from './src/lib/gemini'
 import { AddExercise } from './src/components/AddExercise'
 import { useLayout } from './src/lib/layout'
 import { Opening } from './src/components/Opening'
@@ -25,8 +26,9 @@ import { BuildWorkout } from './src/screens/BuildWorkout'
 import { Progress } from './src/screens/Progress'
 import { History } from './src/screens/History'
 import { SessionDetail } from './src/screens/SessionDetail'
+import { Insights } from './src/screens/Insights'
 
-type Tab = 'train' | 'plan' | 'progress' | 'history'
+type Tab = 'train' | 'plan' | 'progress' | 'history' | 'insights'
 /** Stacked views that sit above the tabs, mirroring the web app's routes. */
 type Overlay =
   | { kind: 'none' }
@@ -41,6 +43,7 @@ const TABS: { key: Tab; label: string; Icon: typeof IconDumbbell }[] = [
   { key: 'plan', label: 'Plan', Icon: IconCalendar },
   { key: 'progress', label: 'Progress', Icon: IconChart },
   { key: 'history', label: 'History', Icon: IconHistory },
+  { key: 'insights', label: 'Insights', Icon: IconSparkles },
 ]
 
 function Shell() {
@@ -160,8 +163,10 @@ function Shell() {
           <Planner onOpenCategory={openCategory} />
         ) : tab === 'progress' ? (
           <Progress onOpenCategory={openCategory} onStart={() => setTab('train')} />
-        ) : (
+        ) : tab === 'history' ? (
           <History onOpenSession={(id) => setOverlay({ kind: 'detail', id })} onStart={() => setTab('train')} />
+        ) : (
+          <Insights />
         )}
         </View>
         </View>
@@ -230,8 +235,18 @@ function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }
   const [keyBusy, setKeyBusy] = useState(false)
   const [keyErr, setKeyErr] = useState<string | null>(null)
 
+  // AI Insights reads from its own key, on its own service — a separate card, same pattern
+  const [geminiKey, setGeminiKeyState] = useState('')
+  const [geminiKeyOpen, setGeminiKeyOpen] = useState(false)
+  const [geminiKeyDraft, setGeminiKeyDraft] = useState('')
+  const [geminiKeyBusy, setGeminiKeyBusy] = useState(false)
+  const [geminiKeyErr, setGeminiKeyErr] = useState<string | null>(null)
+
   useEffect(() => {
-    if (open) void syncGroqKey().then(setKey)
+    if (open) {
+      void syncGroqKey().then(setKey)
+      void syncGeminiKey().then(setGeminiKeyState)
+    }
   }, [open])
 
   const saveKey = async () => {
@@ -245,6 +260,20 @@ function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }
     }
     await setGroqKey(k)
     setKey(k); setKeyDraft(''); setKeyOpen(false); setKeyBusy(false)
+    haptic.success()
+  }
+
+  const saveGeminiKey = async () => {
+    const k = geminiKeyDraft.trim()
+    if (!k) return
+    setGeminiKeyBusy(true); setGeminiKeyErr(null)
+    if (!(await testGeminiKey(k))) {
+      setGeminiKeyErr("That key didn't work. Check it and try again.")
+      setGeminiKeyBusy(false)
+      return
+    }
+    await setGeminiKey(k)
+    setGeminiKeyState(k); setGeminiKeyDraft(''); setGeminiKeyOpen(false); setGeminiKeyBusy(false)
     haptic.success()
   }
 
@@ -345,6 +374,54 @@ function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }
         ) : (
           <Button variant="outline" onPress={() => { haptic.nav(); setKeyOpen(true) }}>
             {key ? 'Replace key' : 'Add Groq API key'}
+          </Button>
+        )}
+      </View>
+
+      {/* Gemini key — optional; only the AI Insights tab needs it */}
+      <View style={[s.settingRow, { flexDirection: 'column', alignItems: 'stretch', gap: 10 }]}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <View style={{ flex: 1 }}>
+            <T style={{ fontSize: 14, fontWeight: '800' }}>Gemini key</T>
+            <T style={{ fontSize: 12, color: C.muted }}>
+              {geminiKey ? `Connected · ${maskGeminiKey(geminiKey)}` : 'Not set — AI Insights is off'}
+            </T>
+          </View>
+          <View style={[s.keyPill, geminiKey ? { borderColor: alpha(C.cyan, 0.4), backgroundColor: C.cyanWash } : null]}>
+            <T style={[s.keyPillText, geminiKey ? { color: C.cyan } : null]}>{geminiKey ? 'Active' : 'Off'}</T>
+          </View>
+        </View>
+
+        {geminiKeyOpen ? (
+          <>
+            <TextInput
+              value={geminiKeyDraft}
+              onChangeText={setGeminiKeyDraft}
+              placeholder="AIza…"
+              placeholderTextColor={C.muted}
+              autoCapitalize="none"
+              autoCorrect={false}
+              secureTextEntry
+              style={[s.input, geminiKeyErr ? { borderColor: C.bad } : null]}
+              accessibilityLabel="Gemini API key"
+            />
+            {geminiKeyErr ? (
+              <T style={{ fontSize: 12, color: C.bad }} accessibilityRole="alert" accessibilityLiveRegion="polite">{geminiKeyErr}</T>
+            ) : (
+              <T style={{ fontSize: 11, lineHeight: 16, color: C.muted }}>
+                Stored on your account, so it works on every device you sign in on.
+              </T>
+            )}
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <Button variant="ghost" style={{ flex: 1 }} onPress={() => { setGeminiKeyOpen(false); setGeminiKeyErr(null); setGeminiKeyDraft('') }}>Cancel</Button>
+              <Button style={{ flex: 1 }} disabled={!geminiKeyDraft.trim() || geminiKeyBusy} onPress={saveGeminiKey}>
+                {geminiKeyBusy ? 'Checking…' : 'Save key'}
+              </Button>
+            </View>
+          </>
+        ) : (
+          <Button variant="outline" onPress={() => { haptic.nav(); setGeminiKeyOpen(true) }}>
+            {geminiKey ? 'Replace key' : 'Add Gemini API key'}
           </Button>
         )}
       </View>
