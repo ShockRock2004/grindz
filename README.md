@@ -11,7 +11,7 @@ installable web app over a shared Supabase backend, muscle map palette, and imag
 
 <br/>
 
-[![Download APK](https://img.shields.io/badge/Download-Grindz%20v1.7.0%20APK-00c6ff?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest)
+[![Download APK](https://img.shields.io/badge/Download-Grindz%20v1.8.0%20APK-00c6ff?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest)
 [![Install guide](https://img.shields.io/badge/How%20to%20install-555?style=for-the-badge)](docs/INSTALL.md)
 [![Open in browser](https://img.shields.io/badge/Open%20in%20browser-0072ff?style=for-the-badge)](https://app.grindz.dev)
 

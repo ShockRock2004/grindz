@@ -52,6 +52,10 @@ const GROUPS = [
   { file: 'data/bodyMusclesFemale.ts', apps: ['web', 'mobile'] },
   { file: 'data/exerciseMuscles.ts', apps: ['web', 'mobile'] },
   { file: 'lib/stats.ts', apps: ['web', 'mobile'] },
+  // The sentence a user reads on the phone must be the sentence they'd read on the web for
+  // the same workout — drift here is a trust bug, not just a rendering one. See the file's
+  // own header comment for why it deliberately doesn't import from the unlocked lib/util.ts.
+  { file: 'lib/insights.ts', apps: ['web', 'mobile'] },
   { file: 'data/bodyMuscles.ts', apps: ['web', 'mobile', 'landing'] },
   { file: 'data/bodyMapStyle.ts', apps: ['web', 'mobile', 'landing'] },
   { file: 'theme.ts', apps: ['web', 'landing'] },

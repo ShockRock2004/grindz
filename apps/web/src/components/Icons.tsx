@@ -23,6 +23,8 @@ import {
   LayoutGrid,
   Pencil,
   Search,
+  AlertTriangle,
+  Sparkles,
 } from 'lucide-react'
 import { cx } from '../lib/util'
 
@@ -51,6 +53,8 @@ export const IconLink = Link2
 export const IconGrid = LayoutGrid
 export const IconPencil = Pencil
 export const IconSearch = Search
+export const IconAlert = AlertTriangle
+export const IconSparkles = Sparkles
 
 /* Muscle-group identity is a bespoke SVG line-icon set (stroke = currentColor), consistent
    with the lucide chrome icons above. No photography on navigation surfaces. */

@@ -16,6 +16,7 @@ import { Button, Modal } from './ui'
 import { AddExercise } from './AddExercise'
 import { syncGroqKey, setGroqKey, maskKey } from '../lib/groq'
 import { testGroqKey } from '../lib/exercise-ai'
+import { syncGeminiKey, setGeminiKey, testGeminiKey, maskKey as maskGeminiKey } from '../lib/gemini'
 import { IconTrash, IconPlus, IconLogout } from './Icons'
 
 export function SettingsModal({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -31,8 +32,18 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
   const [keyBusy, setKeyBusy] = useState(false)
   const [keyErr, setKeyErr] = useState<string | null>(null)
 
+  // AI Insights reads from its own key, on its own service — a separate card, same pattern
+  const [geminiKey, setGeminiKeyState] = useState('')
+  const [geminiKeyOpen, setGeminiKeyOpen] = useState(false)
+  const [geminiKeyDraft, setGeminiKeyDraft] = useState('')
+  const [geminiKeyBusy, setGeminiKeyBusy] = useState(false)
+  const [geminiKeyErr, setGeminiKeyErr] = useState<string | null>(null)
+
   useEffect(() => {
-    if (open) void syncGroqKey().then(setGroqKeyState)
+    if (open) {
+      void syncGroqKey().then(setGroqKeyState)
+      void syncGeminiKey().then(setGeminiKeyState)
+    }
   }, [open])
 
   const saveKey = async () => {
@@ -50,6 +61,24 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
     setKeyDraft('')
     setKeyOpen(false)
     setKeyBusy(false)
+    haptic.success()
+  }
+
+  const saveGeminiKey = async () => {
+    const k = geminiKeyDraft.trim()
+    if (!k) return
+    setGeminiKeyBusy(true)
+    setGeminiKeyErr(null)
+    if (!(await testGeminiKey(k))) {
+      setGeminiKeyErr("That key didn't work. Check it and try again.")
+      setGeminiKeyBusy(false)
+      return
+    }
+    await setGeminiKey(k)
+    setGeminiKeyState(k)
+    setGeminiKeyDraft('')
+    setGeminiKeyOpen(false)
+    setGeminiKeyBusy(false)
     haptic.success()
   }
 
@@ -170,6 +199,62 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
         ) : (
           <Button variant="outline" className="mt-3 w-full" onClick={() => setKeyOpen(true)}>
             {groqKey ? 'Replace key' : 'Add Groq API key'}
+          </Button>
+        )}
+      </div>
+
+      {/* Gemini key — optional; only the AI Insights screen needs it */}
+      <div className="mt-4 rounded-2xl border border-line px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="font-heading text-sm font-bold">Gemini key</p>
+            <p className="truncate text-xs text-muted">
+              {geminiKey ? `Connected · ${maskGeminiKey(geminiKey)}` : 'Not set — AI Insights is off'}
+            </p>
+          </div>
+          <span
+            className={cx(
+              'rounded-full border px-2.5 py-1 text-[11px] font-bold',
+              geminiKey ? 'border-cyan/40 bg-cyan/[0.12] text-cyan' : 'border-line2 text-muted',
+            )}
+          >
+            {geminiKey ? 'Active' : 'Off'}
+          </span>
+        </div>
+
+        {geminiKeyOpen ? (
+          <div className="mt-3 flex flex-col gap-2">
+            <input
+              type="password"
+              value={geminiKeyDraft}
+              onChange={(e) => setGeminiKeyDraft(e.target.value)}
+              placeholder="AIza…"
+              autoComplete="off"
+              aria-label="Gemini API key"
+              className={cx(
+                'min-h-[44px] rounded-xl border bg-panel2 px-3 text-sm outline-none focus:ring-2 focus:ring-cyan/50 placeholder:text-muted',
+                geminiKeyErr ? 'border-bad' : 'border-line2',
+              )}
+            />
+            {geminiKeyErr ? (
+              <p role="alert" className="text-xs font-semibold text-bad">{geminiKeyErr}</p>
+            ) : (
+              <p className="text-[11px] leading-snug text-muted">
+                Stored on your account, so it works on every device you sign in on.
+              </p>
+            )}
+            <div className="flex gap-2">
+              <Button variant="ghost" className="flex-1" onClick={() => { setGeminiKeyOpen(false); setGeminiKeyErr(null); setGeminiKeyDraft('') }}>
+                Cancel
+              </Button>
+              <Button className="flex-1" disabled={!geminiKeyDraft.trim() || geminiKeyBusy} onClick={saveGeminiKey}>
+                {geminiKeyBusy ? 'Checking…' : 'Save key'}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Button variant="outline" className="mt-3 w-full" onClick={() => setGeminiKeyOpen(true)}>
+            {geminiKey ? 'Replace key' : 'Add Gemini API key'}
           </Button>
         )}
       </div>

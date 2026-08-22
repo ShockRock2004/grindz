@@ -8,6 +8,7 @@ import { NewWorkout } from './pages/NewWorkout'
 import { Session } from './pages/Session'
 import { History } from './pages/History'
 import { SessionDetail } from './pages/SessionDetail'
+import { Insights } from './pages/Insights'
 import { Progress } from './pages/Progress'
 import { Planner } from './pages/Planner'
 import { DevBodyMapPreview } from './pages/DevBodyMapPreview'
@@ -49,6 +50,7 @@ export default function App() {
         <Route path="progress" element={<Progress />} />
         <Route path="history" element={<History />} />
         <Route path="history/:id" element={<SessionDetail />} />
+        <Route path="insights" element={<Insights />} />
         {/*
           The phone build hides its tab bar during a workout because a handset has no room
           to spare. A 1440px browser does, and losing the rail mid-session means losing the
