@@ -12,6 +12,22 @@ import { supabase } from './supabase'
 
 const CACHE = 'grindz:gemini_key'
 
+/*
+ * Settings (where the key is saved) is an overlay drawer, not a route — the screen
+ * behind it (Insights) never unmounts while it's open. A one-shot read at mount time
+ * means saving the key in Settings and closing it back to an already-mounted Insights
+ * left that screen showing "no key" forever, even though the key really did save. Every
+ * write below notifies these listeners so any mounted consumer picks it up immediately.
+ */
+const listeners = new Set<(key: string) => void>()
+export function onGeminiKeyChange(fn: (key: string) => void): () => void {
+  listeners.add(fn)
+  return () => listeners.delete(fn)
+}
+function notify(key: string) {
+  for (const fn of listeners) fn(key)
+}
+
 export function getGeminiKey(): string {
   try {
     return localStorage.getItem(CACHE) ?? ''
@@ -28,6 +44,7 @@ export async function syncGeminiKey(): Promise<string> {
     const { data } = await supabase.from('profiles').select('gemini_key').eq('id', uid).maybeSingle()
     const key = ((data?.gemini_key as string | null) ?? '')
     localStorage.setItem(CACHE, key)
+    notify(key)
     return key
   } catch {
     return getGeminiKey()
@@ -45,6 +62,7 @@ export async function setGeminiKey(key: string): Promise<boolean> {
   } catch {
     /* private mode */
   }
+  notify(k)
   try {
     const uid = (await supabase.auth.getUser()).data.user?.id
     if (!uid) return false
@@ -62,6 +80,7 @@ export function clearGeminiKey(): void {
   } catch {
     /* ignore */
   }
+  notify('')
 }
 
 /** `AIzaSy…wxyz` — enough to recognise, not enough to leak. */

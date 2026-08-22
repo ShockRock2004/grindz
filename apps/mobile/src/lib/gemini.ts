@@ -15,6 +15,23 @@ const CACHE = 'grindz:gemini_key'
 
 let memo: string | null = null
 
+/*
+ * Settings (where the key is saved) is an overlay Modal, not a screen swap — the tab
+ * behind it (Insights) never unmounts while it's open. Insights only fetched the key
+ * once on mount, so saving it in Settings and closing back to an already-mounted
+ * Insights left that screen showing "no key" forever, even though the key really did
+ * save. Every write below notifies these listeners so any mounted consumer picks it
+ * up immediately.
+ */
+const listeners = new Set<(key: string) => void>()
+export function onGeminiKeyChange(fn: (key: string) => void): () => void {
+  listeners.add(fn)
+  return () => listeners.delete(fn)
+}
+function notify(key: string) {
+  for (const fn of listeners) fn(key)
+}
+
 /** Cached key, or '' — safe to call on every render. */
 export async function getGeminiKey(): Promise<string> {
   if (memo !== null) return memo
@@ -31,6 +48,7 @@ export async function syncGeminiKey(): Promise<string> {
     const key = (data?.gemini_key as string | null) ?? ''
     memo = key
     await AsyncStorage.setItem(CACHE, key).catch(() => {})
+    notify(key)
     return key
   } catch {
     // offline — fall back to whatever was cached
@@ -46,6 +64,7 @@ export async function setGeminiKey(key: string): Promise<boolean> {
   const k = key.trim()
   memo = k
   await AsyncStorage.setItem(CACHE, k).catch(() => {})
+  notify(k)
   try {
     const uid = (await supabase.auth.getUser()).data.user?.id
     if (!uid) return false
@@ -60,6 +79,7 @@ export async function setGeminiKey(key: string): Promise<boolean> {
 export async function clearGeminiKey(): Promise<void> {
   memo = ''
   await AsyncStorage.removeItem(CACHE).catch(() => {})
+  notify('')
 }
 
 /** `AIzaSy…wxyz` — enough to recognise, not enough to leak. */
