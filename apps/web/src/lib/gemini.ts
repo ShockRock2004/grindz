@@ -41,7 +41,12 @@ export async function syncGeminiKey(): Promise<string> {
   try {
     const uid = (await supabase.auth.getUser()).data.user?.id
     if (!uid) return getGeminiKey()
-    const { data } = await supabase.from('profiles').select('gemini_key').eq('id', uid).maybeSingle()
+    const { data, error } = await supabase.from('profiles').select('gemini_key').eq('id', uid).maybeSingle()
+    // supabase-js resolves query failures into `error`, it does not throw — a naive
+    // `const { data } = await ...` treats a failed query the same as "no key saved" and
+    // wipes whatever was cached locally. A key that just saved fine must survive a sync
+    // that couldn't reach the server, not get erased by it.
+    if (error) return getGeminiKey()
     const key = ((data?.gemini_key as string | null) ?? '')
     localStorage.setItem(CACHE, key)
     notify(key)
