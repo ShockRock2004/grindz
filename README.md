@@ -11,7 +11,7 @@ installable web app over a shared Supabase backend, muscle map palette, and imag
 
 <br/>
 
-[![Download APK](https://img.shields.io/badge/Download-Grindz%20v1.8.0%20APK-00c6ff?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest)
+[![Download APK](https://img.shields.io/badge/Download-Grindz%20v1.8.1%20APK-00c6ff?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest)
 [![Install guide](https://img.shields.io/badge/How%20to%20install-555?style=for-the-badge)](docs/INSTALL.md)
 [![Open in browser](https://img.shields.io/badge/Open%20in%20browser-0072ff?style=for-the-badge)](https://app.grindz.dev)
 
@@ -48,6 +48,27 @@ you keep skipping is impossible to miss.
 <img src="docs/screenshots/phone/progress-female.png" width="30%" alt="The female muscle map" />
 
 <sub>One switch in Settings changes both the photo set and the muscle map, on Android and on the web</sub>
+
+</div>
+
+📊 **A DASHBOARD, NOT A LIST** - History leads with a momentum strip (sessions, volume and sets per week, trending against your recent average), a 12-week volume chart, and plain-English notes on what actually changed. Every session opens onto a muscle map of exactly what that session trained, a comparison against your last few sessions in the category, and a set-by-set bar chart where length is weight and colour is effort — so a session reads as a shape, not a column of numbers.
+
+<div align="center">
+
+<img src="docs/screenshots/phone/history.png" width="30%" alt="History, with the weekly momentum strip and volume trend" />
+<img src="docs/screenshots/phone/session-detail.png" width="30%" alt="Session detail, with a muscle map of that session" />
+
+<sub>The heatmap, the loaded filter chips and the per-set bars all come from the same numbers you were already logging — just drawn instead of listed</sub>
+
+</div>
+
+✨ **AI INSIGHTS** - Bring your own free Gemini key and get a plain-English read on your training: a headline, a handful of specific observations, and a suggested focus. Gemini only ever sees numbers Grindz has already computed — weekly totals, PR history, muscle-group balance — never your raw logged sets, so it's explaining your training, not guessing at it.
+
+<div align="center">
+
+<img src="docs/screenshots/phone/insights.png" width="30%" alt="AI Insights, showing a generated headline and observations" />
+
+<sub>Real output from a real key against real seeded data — nothing in this screenshot is placeholder text</sub>
 
 </div>
 

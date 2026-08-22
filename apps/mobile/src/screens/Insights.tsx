@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
-import { ActivityIndicator, Linking, ScrollView, StyleSheet, TextInput, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { ActivityIndicator, Linking, ScrollView, StyleSheet, View } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { C, R, alpha } from '../theme'
 import { T, Button, EmptyState } from '../components/ui'
 import { useData, usePrefs } from '../lib/app-context'
-import { getGeminiKey, setGeminiKey, testGeminiKey, maskKey } from '../lib/gemini'
+import { getGeminiKey, maskKey } from '../lib/gemini'
 import { buildInsightsPayload, generateInsights, NO_KEY, type AIInsightsResult, type AIInsight } from '../lib/ai-insights'
 import { IconAlert, IconChart, IconFlame, IconScale, IconSparkles, IconTrophy } from '../components/Icons'
 import { haptic } from '../lib/haptics'
@@ -49,10 +49,10 @@ export function Insights() {
   const { sessions, sets, prs, bodyweights, loading } = useData()
   const { unit } = usePrefs()
 
+  // Key management lives entirely in Settings now — this screen only reads it. Re-reading on
+  // every mount (this tab unmounts when the user switches tabs, since it's a conditional
+  // render, not a hidden one) is enough to pick up a key saved elsewhere.
   const [key, setKeyState] = useState('')
-  const [keyDraft, setKeyDraft] = useState('')
-  const [savingKey, setSavingKey] = useState(false)
-  const [keyErr, setKeyErr] = useState<string | null>(null)
 
   const [result, setResult] = useState<AIInsightsResult | null>(null)
   const [generatedAt, setGeneratedAt] = useState<string | null>(null)
@@ -70,23 +70,6 @@ export function Insights() {
   }, [])
 
   const hasEnoughData = sessions.length >= 3
-
-  const saveKey = async () => {
-    const k = keyDraft.trim()
-    if (!k) return
-    setSavingKey(true)
-    setKeyErr(null)
-    if (!(await testGeminiKey(k))) {
-      setKeyErr("That key didn't work. Check it and try again.")
-      setSavingKey(false)
-      return
-    }
-    await setGeminiKey(k)
-    setKeyState(k)
-    setKeyDraft('')
-    setSavingKey(false)
-    haptic.success()
-  }
 
   const run = async () => {
     setBusy(true)
@@ -123,21 +106,9 @@ export function Insights() {
           <T style={s.keyBody}>
             Grindz never runs its own AI backend for this — your Gemini API key talks directly to Google from your device, and only ever
             sees the numbers already on this screen (weekly totals, PRs, muscle-group balance), never your raw workout log. Get a free key at{' '}
-            <T style={{ color: C.cyanSoft }} onPress={() => Linking.openURL('https://aistudio.google.com')}>aistudio.google.com</T>.
+            <T style={{ color: C.cyanSoft }} onPress={() => Linking.openURL('https://aistudio.google.com')}>aistudio.google.com</T>,
+            then add it in Settings — tap your profile in the header.
           </T>
-          <TextInput
-            value={keyDraft}
-            onChangeText={setKeyDraft}
-            placeholder="AIza…"
-            placeholderTextColor={C.muted}
-            autoCapitalize="none"
-            autoCorrect={false}
-            secureTextEntry
-            style={[s.input, keyErr ? { borderColor: C.bad } : null]}
-            accessibilityLabel="Gemini API key"
-          />
-          {keyErr ? <T style={{ fontSize: 12, color: C.bad }} accessibilityRole="alert">{keyErr}</T> : null}
-          <Button disabled={!keyDraft.trim() || savingKey} onPress={saveKey}>{savingKey ? 'Checking…' : 'Save key'}</Button>
         </View>
       ) : (
         <View style={{ gap: 16 }}>
@@ -210,7 +181,6 @@ const s = StyleSheet.create({
   keyCard: { borderRadius: R.xxl, backgroundColor: alpha(C.cyan, 0.06), borderWidth: 1, borderColor: alpha(C.cyan, 0.25), padding: 18, gap: 10 },
   keyTitle: { fontSize: 16, fontWeight: '800' },
   keyBody: { fontSize: 13, lineHeight: 19, color: C.muted2 },
-  input: { minHeight: 44, borderRadius: R.md, borderWidth: 1, borderColor: C.line2, backgroundColor: C.panel2, paddingHorizontal: 12, color: C.ink, fontSize: 14 },
   statusRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, borderRadius: R.xl, borderWidth: 1, borderColor: C.line, paddingHorizontal: 14, paddingVertical: 10 },
   statusText: { flex: 1, fontSize: 11, color: C.muted },
   errBox: { borderRadius: R.xl, borderWidth: 1, borderColor: alpha(C.warn, 0.35), backgroundColor: alpha(C.warn, 0.08), paddingHorizontal: 14, paddingVertical: 12 },

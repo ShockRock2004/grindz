@@ -2,7 +2,7 @@
   "expo": {
     "name": "Grindz",
     "slug": "grindz",
-    "version": "1.8.0",
+    "version": "1.8.1",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -16,7 +16,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.grindz.app",
-      "versionCode": 22,
+      "versionCode": 23,
       "resizeableActivity": true
     },
     "web": {
