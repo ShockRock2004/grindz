@@ -6,8 +6,8 @@
 
 **Log lifts. Chase PRs. See exactly what you've trained.**
 
-One training log, on your phone and in your browser — a React Native Android app and an
-installable web app over a shared Supabase backend, muscle map palette, and image CDN.
+One training log on your phone and in your browser. The React Native Android app and the
+installable web app share a Supabase backend, the muscle map palette and an image CDN.
 
 <br/>
 
@@ -25,7 +25,7 @@ installable web app over a shared Supabase backend, muscle map palette, and imag
 <img src="docs/screenshots/phone/progress.png" width="30%" alt="Muscle heat map" />
 <img src="docs/screenshots/phone/planner.png" width="30%" alt="Weekly planner" />
 
-<sub><b>Train</b> · today's plan and the week's numbers &nbsp;&nbsp;|&nbsp;&nbsp; <b>Progress</b> · what you actually hit this week &nbsp;&nbsp;|&nbsp;&nbsp; <b>Plan</b> · drag a split onto your week</sub>
+<sub><b>Train</b> · today's plan and the week's numbers &nbsp;&nbsp;|&nbsp;&nbsp; <b>Progress</b> · what you hit this week &nbsp;&nbsp;|&nbsp;&nbsp; <b>Plan</b> · drag a split onto your week</sub>
 
 </div>
 
@@ -34,12 +34,12 @@ installable web app over a shared Supabase backend, muscle map palette, and imag
 ## What it does
 
 Most training logs give you a list of numbers and leave you to work out what you've been
-neglecting. Grindz shades a muscle map with what you actually trained this week, so the group
+neglecting. Grindz shades a muscle map with what you trained this week, so the group
 you keep skipping is impossible to miss.
 
-🗺️ **MUSCLE MAP** - Traced vector figures with every muscle individually addressable. Shaded by what you actually hit this week.
+🗺️ **MUSCLE MAP** - Traced vector figures with every muscle individually addressable. Shaded by what you hit this week.
 
-🧍 **BODY TYPE** - Switch between a male and female muscle map and exercise photo set from Settings, on the phone or in the browser. The choice is saved to your account, not the device, so it's already right the next time you sign in anywhere — switch on your phone and the web app has already changed by the time you open it.
+🧍 **BODY TYPE** - Switch between a male and female muscle map and exercise photo set from Settings, on the phone or in the browser. The choice is saved to your account rather than the device, so if you switch on your phone, the web app has changed too by the time you open it.
 
 <div align="center">
 
@@ -51,24 +51,24 @@ you keep skipping is impossible to miss.
 
 </div>
 
-📊 **A DASHBOARD, NOT A LIST** - History leads with a momentum strip (sessions, volume and sets per week, trending against your recent average), a 12-week volume chart, and plain-English notes on what actually changed. Every session opens onto a muscle map of exactly what that session trained, a comparison against your last few sessions in the category, and a set-by-set bar chart where length is weight and colour is effort — so a session reads as a shape, not a column of numbers.
+📊 **HISTORY DASHBOARD** - History leads with a momentum strip (sessions, volume and sets per week, trending against your recent average), a 12-week volume chart, and plain-English notes on what changed. Every session opens onto a muscle map of exactly what that session trained, a comparison against your last few sessions in the category, and a set-by-set bar chart where bar length is weight and colour is effort, so you can read a whole session at a glance.
 
 <div align="center">
 
 <img src="docs/screenshots/phone/history.png" width="30%" alt="History, with the weekly momentum strip and volume trend" />
 <img src="docs/screenshots/phone/session-detail.png" width="30%" alt="Session detail, with a muscle map of that session" />
 
-<sub>The heatmap, the loaded filter chips and the per-set bars all come from the same numbers you were already logging — just drawn instead of listed</sub>
+<sub>The heatmap, the loaded filter chips and the per-set bars are all drawn from the numbers you were already logging</sub>
 
 </div>
 
-✨ **AI INSIGHTS** - Bring your own free Gemini key and get a plain-English read on your training: a headline, a handful of specific observations, and a suggested focus. Gemini only ever sees numbers Grindz has already computed — weekly totals, PR history, muscle-group balance — never your raw logged sets, so it's explaining your training, not guessing at it.
+✨ **AI INSIGHTS** - Bring your own free Gemini key and get a plain-English read on your training: a headline, a handful of specific observations, and a suggested focus. Gemini only sees numbers Grindz has already computed, such as weekly totals, PR history and muscle-group balance. It never sees your raw logged sets.
 
 <div align="center">
 
 <img src="docs/screenshots/phone/insights.png" width="30%" alt="AI Insights, showing a generated headline and observations" />
 
-<sub>Real output from a real key against real seeded data — nothing in this screenshot is placeholder text</sub>
+<sub>Generated by Gemini with a real key on seeded data. None of the text in this screenshot is a placeholder</sub>
 
 </div>
 
@@ -78,7 +78,7 @@ you keep skipping is impossible to miss.
 
 📝 **LIVE LOGGING** - Record kg × reps with RPE captured right after the set. Timed holds, supersets, notes and warm-up flags are all handled. The rest timer starts itself and keeps the screen awake.
 
-🏋️ **ACCURATE TRACKING** - One trip to the gym is one session. Chest and triceps is a single workout, not two. Every set remembers the muscle it actually trained, so the map stays exact even when the session wanders off the plan.
+🏋️ **ACCURATE TRACKING** - One trip to the gym is one session. Chest and triceps is a single workout, not two. Every set remembers the muscle it trained, so the map stays exact even when the session wanders off the plan.
 
 ---
 
@@ -86,7 +86,7 @@ you keep skipping is impossible to miss.
 
 Neither layout is a stretched phone. At Material 3's `expanded` breakpoint the bottom tab bar
 becomes a side rail and card grids widen to three or four columns. The web app is rebuilt
-around what a browser actually has: a cursor, a keyboard and a viewport wider than it is tall.
+around what a browser has: a cursor, a keyboard and a viewport wider than it is tall.
 `⌘K` opens a command palette that reaches every section, muscle group and exercise.
 
 <div align="center">
@@ -159,9 +159,8 @@ grindz/
 └── scripts/           check-parity · check-cdn · check-domains
 ```
 
-The two apps are deliberately not a shared-component codebase — a Tailwind `<div>` and a React
-Native `<View>` do not usefully unify. What *is* shared is everything where disagreement would
-be a bug: the muscle geometry, the heat-map palette, the exercise-to-muscle mapping and the
+The two apps don't share components, because a Tailwind `<div>` and a React Native `<View>`
+don't usefully unify. They do share every file where a disagreement would be a bug: the muscle geometry, the heat-map palette, the exercise-to-muscle mapping and the
 PR maths. Those files are byte-identical across both apps, and `scripts/check-parity` fails the
 build if they ever drift.
 
