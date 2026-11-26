@@ -34,12 +34,18 @@ const BAD_KEY = "Your Gemini API key isn't working. Check it in Settings."
 const GENERIC = "Couldn't generate insights. Try again in a moment."
 const TIMEOUT_MS = 30_000
 /**
- * Google retires Gemini model ids faster than this file gets touched — gemini-2.5-flash
- * (the original choice here) started 404ing for new callers within weeks, with the error
- * body naming its own replacement. If this ever 404s with NOT_FOUND again, the fix is to
- * read the model name Google's error suggests and swap it in here, not to guess.
+ * Google retires Gemini model ids faster than this file gets touched: gemini-2.5-flash went
+ * first, then gemini-3.6-flash shut down on 19 Nov 2026 and took AI Insights with it. Pinning
+ * one id is a time bomb, so a 404 walks a short chain instead of failing: MODEL, then Google's
+ * own `gemini-flash-latest` alias (hot-swapped to each new Flash release), then the newest
+ * stable Flash id this key can actually see via models.list. Bump MODEL when a new stable
+ * Flash ships; the chain only exists so the screen keeps working until someone does.
  */
-const MODEL = 'gemini-3.6-flash'
+const MODEL = 'gemini-3.8-flash'
+const ALIAS = 'gemini-flash-latest'
+const API = 'https://generativelanguage.googleapis.com/v1beta'
+/** Whichever model last answered, so a retired MODEL costs the fallback walk once per session, not every time. */
+let workingModel: string | null = null
 const RECENT_SESSIONS = 8
 const TOP_PRS = 12
 
@@ -205,23 +211,33 @@ function toResult(o: Record<string, unknown>): AIInsightsResult {
   }
 }
 
-/** One request to Gemini. */
-export async function generateInsights(payload: InsightsPayload): Promise<AIInsightsResult> {
-  const key = await getGeminiKey()
-  if (!key) throw new Error(NO_KEY)
+/** Newest stable plain-Flash id (`gemini-<n>-flash`) that supports generateContent, or null. */
+async function discoverFlashModel(key: string): Promise<string | null> {
+  try {
+    const res = await fetch(`${API}/models?pageSize=1000&key=${encodeURIComponent(key)}`)
+    if (!res.ok) return null
+    const j = (await res.json()) as { models?: { name?: string; supportedGenerationMethods?: string[] }[] }
+    // Lite, preview, live, tts and image variants are all filtered out by the exact-shape match.
+    const found = (j.models ?? [])
+      .filter((m) => m.supportedGenerationMethods?.includes('generateContent'))
+      .map((m) => /^models\/(gemini-(\d+)(?:\.(\d+))?-flash)$/.exec(m.name ?? ''))
+      .filter((m): m is RegExpExecArray => !!m)
+      .map((m) => ({ id: m[1], major: Number(m[2]), minor: Number(m[3] ?? 0) }))
+      .sort((a, b) => b.major - a.major || b.minor - a.minor)
+    return found[0]?.id ?? null
+  } catch {
+    return null
+  }
+}
 
+async function post(model: string, key: string, body: string): Promise<Response> {
   const ctl = new AbortController()
   const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS)
-  let res: Response
   try {
-    res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${encodeURIComponent(key)}`, {
+    return await fetch(`${API}/models/${model}:generateContent?key=${encodeURIComponent(key)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{ role: 'user', parts: [{ text: JSON.stringify(payload) }] }],
-        generationConfig: { temperature: 0.4, responseMimeType: 'application/json', responseSchema: RESPONSE_SCHEMA },
-      }),
+      body,
       signal: ctl.signal,
     })
   } catch {
@@ -229,18 +245,45 @@ export async function generateInsights(payload: InsightsPayload): Promise<AIInsi
   } finally {
     clearTimeout(timer)
   }
+}
+
+/** One request to Gemini, plus the retired-model fallback walk described above MODEL. */
+export async function generateInsights(payload: InsightsPayload): Promise<AIInsightsResult> {
+  const key = await getGeminiKey()
+  if (!key) throw new Error(NO_KEY)
+
+  const body = JSON.stringify({
+    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+    contents: [{ role: 'user', parts: [{ text: JSON.stringify(payload) }] }],
+    generationConfig: { temperature: 0.4, responseMimeType: 'application/json', responseSchema: RESPONSE_SCHEMA },
+  })
+
+  let model = workingModel ?? MODEL
+  const tried = new Set([model])
+  let res = await post(model, key, body)
+  // 404 is how Gemini reports a retired or unknown model id. Anything else is not a model problem.
+  while (res.status === 404) {
+    const next = tried.has(ALIAS) ? await discoverFlashModel(key) : ALIAS
+    if (!next || tried.has(next)) break
+    tried.add(next)
+    model = next
+    res = await post(model, key, body)
+  }
+  if (res.ok) workingModel = model
 
   if (!res.ok) {
     // Gemini reports an invalid key as a 400 with reason API_KEY_INVALID, not a 401/403 —
     // check the actual reason so a genuine bad key is distinguished from any other 400
     // (e.g. a malformed request on our side), which would otherwise wrongly tell the user
     // to go check a key that was fine all along.
-    const body = (await res.json().catch(() => null)) as { error?: { status?: string; message?: string } } | null
-    const reason = `${body?.error?.status ?? ''} ${body?.error?.message ?? ''}`
+    const err = (await res.json().catch(() => null)) as { error?: { status?: string; message?: string } } | null
+    const reason = `${err?.error?.status ?? ''} ${err?.error?.message ?? ''}`.trim()
     if (res.status === 401 || res.status === 403 || /API_KEY_INVALID|PERMISSION_DENIED|UNAUTHENTICATED/i.test(reason)) {
       throw new Error(BAD_KEY)
     }
-    throw new Error(GENERIC)
+    // Surface what Google actually said: an opaque "try again" is what hid the last model
+    // retirement. It costs nothing when the message is empty.
+    throw new Error(reason ? `${GENERIC} (${reason})` : GENERIC)
   }
 
   const j = (await res.json().catch(() => null)) as { candidates?: { content?: { parts?: { text?: string }[] } }[] } | null
